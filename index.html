@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suna - オンライン学習プラットフォーム</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ランディングページ -->
+    <div class="landing-container">
+        <div class="landing-content">
+            <!-- Sunaロゴ -->
+            <div class="landing-logo">
+                <svg width="140" height="70" viewBox="0 0 115 55">
+                    <!-- 大きな円（右上、明るいターコイズブルー） -->
+                    <circle cx="90" cy="20" r="13" fill="#67E8F9" opacity="0.85"/>
+
+                    <!-- 中くらいの円（左中央、濃いブルー） -->
+                    <circle cx="73" cy="28" r="8" fill="#2563EB" opacity="0.9"/>
+
+                    <!-- 小さな円（右下、薄いターコイズ） -->
+                    <circle cx="83" cy="35" r="5" fill="#A7F3D0" opacity="0.75"/>
+
+                    <!-- テキスト "suna" -->
+                    <text x="0" y="42" font-size="26" font-weight="700" fill="#1E293B" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" letter-spacing="-1.2px">
+                        suna
+                    </text>
+                </svg>
+            </div>
+
+            <!-- メインメッセージ -->
+            <div class="landing-message">
+                <h1>次世代AIとの革新的な学習体験</h1>
+                <p>個別最適化された学習で、あなたの可能性を最大限に引き出します</p>
+            </div>
+
+            <!-- アクションボタン -->
+            <div class="landing-actions">
+                <a href="pages/login.html" class="landing-btn primary">ログイン</a>
+                <a href="signup.html" class="landing-btn secondary">アカウント作成</a>
+            </div>
+
+            <!-- ローディングメッセージ -->
+            <div class="loading-message" id="loading-message" style="display: none;">
+                <div class="spinner"></div>
+                <p>認証状態を確認しています...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        // 認証状態チェックとリダイレクト
+        document.addEventListener('DOMContentLoaded', () => {
+            // ローディング表示
+            const landingActions = document.querySelector('.landing-actions');
+            const loadingMessage = document.getElementById('loading-message');
+            
+            // 少し遅延させて認証チェック
+            setTimeout(() => {
+                if (typeof authManager !== 'undefined' && authManager && authManager.isLoggedIn) {
+                    // 既にログイン済みの場合はリダイレクト
+                    loadingMessage.style.display = 'block';
+                    landingActions.style.display = 'none';
+                    
+                    setTimeout(() => {
+                        authManager.redirectByRole();
+                    }, 1000);
+                } else {
+                    // 未ログインの場合はアクションボタンを表示
+                    landingActions.style.display = 'flex';
+                }
+            }, 500);
+        });
+    </script>
+
+    <style>
+        .landing-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .landing-content {
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .landing-logo {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .landing-message h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .landing-message p {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .landing-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .landing-btn {
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .landing-btn.primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .landing-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        .landing-btn.secondary {
+            background: white;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+        }
+
+        .landing-btn.secondary:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .loading-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .loading-message p {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e5e7eb;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .landing-message h1 {
+                font-size: 24px;
+            }
+            
+            .landing-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .landing-btn {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+    </style>
+</body>
+</html>

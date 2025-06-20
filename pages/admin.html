@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者画面 - Suna Admin</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <!-- 管理者専用ヘッダー -->
+    <header class="admin-header">
+        <div class="container">
+            <div class="admin-header-content">
+                <div class="admin-logo">
+                    <div class="flex items-center relative">
+                        <!-- Admin Sunaロゴ - 管理者専用カラー -->
+                        <svg width="115" height="55" viewBox="0 0 115 55" class="flex-shrink-0">
+                            <!-- 大きな円（右上、管理者ピンク） -->
+                            <circle cx="90" cy="20" r="13" fill="#EC4899" opacity="0.85"/>
+
+                            <!-- 中くらいの円（左中央、濃いピンク） -->
+                            <circle cx="73" cy="28" r="8" fill="#BE185D" opacity="0.9"/>
+
+                            <!-- 小さな円（右下、薄いピンク） -->
+                            <circle cx="83" cy="35" r="5" fill="#FBCFE8" opacity="0.75"/>
+
+                            <!-- テキスト "suna" - 太字、濃いネイビー -->
+                            <text x="0" y="42" font-size="26" font-weight="700" fill="#1E293B" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" letter-spacing="-1.2px">
+                                suna
+                            </text>
+                        </svg>
+                        <span class="admin-badge">Admin</span>
+                    </div>
+                </div>
+                <nav class="admin-nav">
+                    <div class="admin-auth-section" id="admin-auth-section">
+                        <!-- 管理者認証情報が動的に生成される -->
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- 管理者メインコンテンツ -->
+    <main class="admin-main">
+        <div class="container">
+            <!-- ダッシュボードヘッダー -->
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">📊 管理者ダッシュボード</h1>
+                <p class="dashboard-subtitle">受講生の学習状況を管理・監督</p>
+            </div>
+
+            <!-- 統計カードセクション -->
+            <div class="stats-grid" id="stats-grid">
+                <!-- 統計カードはJavaScriptで生成 -->
+            </div>
+
+            <!-- 受講生管理セクション -->
+            <section class="student-management">
+                <div class="section-header">
+                    <h2 class="section-title">👥 受講生管理</h2>
+                    <div class="section-actions">
+                        <a href="create-course.html" class="action-btn primary">
+                            📝 講座作成
+                        </a>
+                        <button class="action-btn secondary" onclick="adminApp.refreshStudentList()">
+                            🔄 更新
+                        </button>
+                        <button class="action-btn secondary" onclick="adminApp.exportStudentData()">
+                            📊 データエクスポート
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 検索・フィルター -->
+                <div class="filter-section">
+                    <div class="search-box">
+                        <input type="text" id="student-search" placeholder="受講生を検索..." class="search-input">
+                        <button class="search-btn">🔍</button>
+                    </div>
+                    <div class="filter-options">
+                        <select id="progress-filter" class="filter-select">
+                            <option value="">進捗で絞り込み</option>
+                            <option value="high">高進捗 (70%以上)</option>
+                            <option value="medium">中進捗 (30-70%)</option>
+                            <option value="low">低進捗 (30%未満)</option>
+                        </select>
+                        <select id="subject-filter" class="filter-select">
+                            <option value="">科目で絞り込み</option>
+                            <option value="japanese">国語</option>
+                            <option value="math">数学</option>
+                            <option value="english">英語</option>
+                            <option value="science">理科</option>
+                            <option value="social">社会</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 受講生一覧テーブル -->
+                <div class="student-table-container">
+                    <table class="student-table" id="student-table">
+                        <!-- テーブルヘッダーとデータはJavaScriptで生成 -->
+                    </table>
+                </div>
+            </section>
+
+            <!-- 受講生詳細モーダル -->
+            <div class="modal-overlay" id="student-detail-modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">受講生詳細</h3>
+                        <button class="modal-close" onclick="adminApp.closeStudentDetail()">&times;</button>
+                    </div>
+                    <div class="modal-body" id="student-detail-content">
+                        <!-- 詳細内容はJavaScriptで生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>
