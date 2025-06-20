@@ -18,11 +18,13 @@ async function handleLogin(event) {
     // バリデーション
     if (!validateEmail(email)) {
         showError('有効なメールアドレスを入力してください');
+        emailInput.focus();
         return;
     }
     
-    if (password.length < 8) {
-        showError('パスワードは8文字以上で入力してください');
+    if (!password) {
+        showError('パスワードを入力してください');
+        passwordInput.focus();
         return;
     }
     
@@ -30,27 +32,48 @@ async function handleLogin(event) {
     setLoading(true);
     
     try {
-        // ここでAPIにログイン情報を送信
-        const result = await loginUser(email, password);
+        // 管理者アカウント作成の特別処理
+        if (password === 'admin123' && email !== 'admin@suna.com') {
+            // 新しい管理者アカウントを作成
+            const result = await createAdminAccount({ email, password });
+            
+            if (result.success) {
+                localStorage.setItem('sunaUser', JSON.stringify({
+                    email: email,
+                    name: email.split('@')[0], // メールの@より前を名前として使用
+                    role: 'admin',
+                    loginTime: new Date().toISOString(),
+                    isNewAdmin: true
+                }));
+                
+                showLoadingScreen('管理者アカウント作成中...');
+                setTimeout(() => {
+                    window.location.href = 'pages/admin.html';
+                }, 2000);
+                return;
+            }
+        }
+        
+        // 通常のログイン処理
+        const result = await loginUser({ email, password });
         
         if (result.success) {
             // 認証情報をローカルストレージに保存
             localStorage.setItem('sunaUser', JSON.stringify({
                 email: email,
-                name: result.user?.name || 'ユーザー',
-                role: result.user?.role || 'student',
+                name: result.user.name,
+                role: result.user.role,
                 loginTime: new Date().toISOString()
             }));
             
             // ローディング画面を表示してからメインページにリダイレクト
-            showLoadingScreen();
+            showLoadingScreen('ログイン中...');
             setTimeout(() => {
                 // roleに基づいてリダイレクト
-                const role = result.user?.role || 'student';
-                if (role === 'admin') {
-                    window.location.href = 'admin.html';
+                if (result.user.role === 'admin') {
+                    window.location.href = 'pages/admin.html';
                 } else {
-                    window.location.href = 'student.html';
+                    window.location.href = 'pages/student.html';
                 }
             }, 2000);
         } else {
@@ -99,26 +122,26 @@ async function handleGoogleLogin() {
 }
 
 // ユーザーログイン API（デモ版）
-async function loginUser(email, password) {
+async function loginUser(userData) {
     // 実際のAPIコールをシミュレート
     return new Promise((resolve) => {
         setTimeout(() => {
             // デモ用の認証ロジック
             // デモ用認証ロジック - 管理者と受講生アカウントを追加
-            if (email === 'admin@suna.com' && password === 'admin123') {
+            if (userData.email === 'admin@suna.com' && userData.password === 'admin123') {
                 resolve({
                     success: true,
                     user: {
-                        email,
+                        email: userData.email,
                         name: '管理者',
                         role: 'admin'
                     }
                 });
-            } else if (email === 'demo@suna.com' && password === 'password123') {
+            } else if (userData.email === 'demo@suna.com' && userData.password === 'password123') {
                 resolve({
                     success: true,
                     user: {
-                        email,
+                        email: userData.email,
                         name: 'デモユーザー',
                         role: 'student'
                     }
@@ -129,6 +152,23 @@ async function loginUser(email, password) {
                     message: 'メールアドレスまたはパスワードが正しくありません'
                 });
             }
+        }, 1500);
+    });
+}
+
+// 管理者アカウント作成 API（デモ版）
+async function createAdminAccount(userData) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve({ 
+                success: true, 
+                user: {
+                    id: Date.now(),
+                    name: userData.email.split('@')[0],
+                    email: userData.email,
+                    role: 'admin'
+                }
+            });
         }, 1500);
     });
 }
@@ -238,7 +278,7 @@ function showInfo(message) {
 }
 
 // ローディング画面を表示
-function showLoadingScreen() {
+function showLoadingScreen(message = 'ログイン中...') {
     // フォームを非表示にする
     const loginFormContainer = document.querySelector('.login-form-container');
     if (loginFormContainer) {
@@ -267,7 +307,7 @@ function showLoadingScreen() {
                     </text>
                 </svg>
             </div>
-            <p class="loading-text">ログイン中...</p>
+            <p class="loading-text">${message}</p>
         </div>
     `;
     

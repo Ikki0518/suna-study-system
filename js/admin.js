@@ -21,7 +21,21 @@ class AdminApp {
 
     // モック受講生データの読み込み
     loadMockStudentData() {
-        this.students = [
+        // ログインユーザーの情報を取得
+        const currentUser = JSON.parse(localStorage.getItem('sunaUser') || '{}');
+        
+        // adminアカウントの場合のみデモデータを表示
+        if (currentUser.email === 'admin@suna.com') {
+            this.students = this.getDefaultStudentData();
+        } else {
+            // 新規管理者アカウントの場合は空配列
+            this.students = [];
+        }
+    }
+    
+    // デフォルトの受講生データ
+    getDefaultStudentData() {
+        return [
             {
                 id: 1,
                 name: '田中太郎',
@@ -145,7 +159,7 @@ class AdminApp {
 
         const activeStudents = this.students.filter(s => s.status === 'active').length;
         const totalStudents = this.students.length;
-        const avgProgress = Math.round(this.students.reduce((sum, s) => sum + s.totalProgress, 0) / totalStudents);
+        const avgProgress = totalStudents > 0 ? Math.round(this.students.reduce((sum, s) => sum + s.totalProgress, 0) / totalStudents) : 0;
         const highPerformers = this.students.filter(s => s.totalProgress >= 70).length;
         const recentActiveStudents = this.students.filter(s => {
             const lastAccess = new Date(s.lastAccess);
@@ -166,7 +180,7 @@ class AdminApp {
                 title: 'アクティブ受講生',
                 value: `${activeStudents}名`,
                 icon: '✅',
-                change: `${Math.round((activeStudents/totalStudents)*100)}%`,
+                change: totalStudents > 0 ? `${Math.round((activeStudents/totalStudents)*100)}%` : '0%',
                 changeType: 'positive'
             },
             {
@@ -193,7 +207,7 @@ class AdminApp {
                 </div>
                 <div class="stat-card-value">${stat.value}</div>
                 <div class="stat-card-change ${stat.changeType}">
-                    ${stat.change} ${stat.title === '総受講生数' ? '今月増加' : ''}
+                    ${stat.change} ${stat.title === '総受講生数' && totalStudents > 0 ? '今月増加' : ''}
                 </div>
             </div>
         `).join('');
@@ -205,6 +219,31 @@ class AdminApp {
         if (!studentTable) return;
 
         const filteredStudents = this.getFilteredStudents();
+
+        if (filteredStudents.length === 0) {
+            studentTable.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>受講生名</th>
+                        <th>メールアドレス</th>
+                        <th>登録日</th>
+                        <th>最終アクセス</th>
+                        <th>ステータス</th>
+                        <th>総合進捗</th>
+                        <th>主要科目</th>
+                        <th>アクション</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: #6b7280;">
+                            まだ受講生が登録されていません
+                        </td>
+                    </tr>
+                </tbody>
+            `;
+            return;
+        }
 
         studentTable.innerHTML = `
             <thead>

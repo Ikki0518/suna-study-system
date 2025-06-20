@@ -54,6 +54,12 @@ async function handleSignup(event) {
         return;
     }
     
+    // 管理者権限のチェック
+    if (role === 'admin') {
+        showError('管理者アカウントは直接作成できません。お問い合わせください。');
+        return;
+    }
+    
     if (!termsAccepted) {
         showError('利用規約とプライバシーポリシーに同意してください');
         return;
