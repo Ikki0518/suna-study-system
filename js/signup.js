@@ -128,7 +128,7 @@ async function handleSignup(event) {
                         // 招待コードがある場合は直接学習画面へ
                         window.location.href = '/pages/student.html';
                     } else {
-                        // 招待コードがない場合は申請画面へ
+                        // 招待コードがない場合は学習塾選択画面へ
                         window.location.href = '/school-selection.html';
                     }
                 }
@@ -168,7 +168,7 @@ async function handleGoogleSignup() {
         // ローディング画面を表示してからメインページにリダイレクト
         showLoadingScreen('アカウント作成中...');
         setTimeout(() => {
-            // Googleサインアップの場合は申請画面へ
+            // Googleサインアップの場合は学習塾選択画面へ
             window.location.href = '/school-selection.html';
         }, 2000);
     } catch (error) {

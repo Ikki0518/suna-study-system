@@ -27,30 +27,6 @@ class SchoolSelectionApp {
                 color: '#ec4899',
                 icon: '🏫',
                 instructors: ['田中先生', '佐藤先生', '山田先生']
-            },
-            {
-                id: 'sakura-juku',
-                name: 'さくら塾',
-                description: '地域密着型の進学塾です。一人ひとりに寄り添った指導を心がけています。',
-                color: '#f97316',
-                icon: '🌸',
-                instructors: ['鈴木先生', '高橋先生', '伊藤先生']
-            },
-            {
-                id: 'future-academy',
-                name: '未来アカデミー',
-                description: '最新の学習メソッドで未来を創る進学塾です。ITを活用した効率的な学習を提供します。',
-                color: '#3b82f6',
-                icon: '🚀',
-                instructors: ['中村先生', '小林先生', '加藤先生']
-            },
-            {
-                id: 'shining-stars',
-                name: 'シャイニングスターズ',
-                description: '一人ひとりが輝く個別指導塾です。生徒の可能性を最大限に引き出します。',
-                color: '#8b5cf6',
-                icon: '⭐',
-                instructors: ['渡辺先生', '松本先生', '木村先生']
             }
         ];
     }
@@ -87,6 +63,11 @@ class SchoolSelectionApp {
             schoolCard.addEventListener('click', () => this.selectSchool(school));
             schoolsGrid.appendChild(schoolCard);
         });
+        
+        // 学習塾が1つしかない場合は自動選択
+        if (this.schools.length === 1) {
+            this.selectSchool(this.schools[0]);
+        }
     }
     
     // 学習塾選択

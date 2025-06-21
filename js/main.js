@@ -7,27 +7,6 @@ const schools = {
         color: '#ec4899',
         instructors: ['田中先生', '佐藤先生', '山田先生'],
         isDefault: true
-    },
-    'sakura-juku': {
-        id: 'sakura-juku',
-        name: 'さくら塾',
-        description: '地域密着型の進学塾',
-        color: '#f97316',
-        instructors: ['鈴木先生', '高橋先生', '伊藤先生']
-    },
-    'mirai-academy': {
-        id: 'mirai-academy',
-        name: '未来アカデミー',
-        description: '最新の学習メソッドで未来を創る',
-        color: '#3b82f6',
-        instructors: ['中村先生', '小林先生', '加藤先生']
-    },
-    'shining-stars': {
-        id: 'shining-stars',
-        name: 'シャイニングスターズ',
-        description: '一人ひとりが輝く個別指導塾',
-        color: '#8b5cf6',
-        instructors: ['渡辺先生', '松本先生', '木村先生']
     }
 };
 
