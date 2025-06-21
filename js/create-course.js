@@ -35,9 +35,19 @@ class CourseCreator {
         if (!authSection) return;
 
         if (authManager && authManager.isLoggedIn && authManager.currentUser) {
+            const currentSchool = authManager.getCurrentSchool();
             authSection.innerHTML = `
                 <div class="admin-user-info">
                     <span class="user-name">管理者: ${authManager.currentUser.name || authManager.currentUser.email}</span>
+                    <div class="school-selector">
+                        <select id="create-course-school-select" onchange="authManager.changeSchool(this.value)">
+                            ${Object.values(schools).map(school => `
+                                <option value="${school.id}" ${currentSchool && currentSchool.id === school.id ? 'selected' : ''}>
+                                    ${school.name}
+                                </option>
+                            `).join('')}
+                        </select>
+                    </div>
                     <button class="logout-btn" onclick="authManager.logout()">ログアウト</button>
                 </div>
             `;

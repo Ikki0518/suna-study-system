@@ -21,9 +21,19 @@ class StudentApp extends StudyApp {
         if (!authSection) return;
 
         if (authManager && authManager.isLoggedIn && authManager.currentUser) {
+            const currentSchool = authManager.getCurrentSchool();
             authSection.innerHTML = `
                 <div class="user-info">
                     <span class="user-name">こんにちは、${authManager.currentUser.name || authManager.currentUser.email}さん</span>
+                    <div class="school-selector">
+                        <select id="student-school-select" onchange="authManager.changeSchool(this.value)">
+                            ${Object.values(schools).map(school => `
+                                <option value="${school.id}" ${currentSchool && currentSchool.id === school.id ? 'selected' : ''}>
+                                    ${school.name}
+                                </option>
+                            `).join('')}
+                        </select>
+                    </div>
                     <button class="logout-btn" onclick="authManager.logout()">ログアウト</button>
                 </div>
             `;

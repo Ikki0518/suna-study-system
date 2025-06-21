@@ -1,4 +1,38 @@
+// スクール管理システム
+const schools = {
+    'demo-school': {
+        id: 'demo-school',
+        name: 'デモ学習塾',
+        description: 'システムデモ用の学習塾です',
+        color: '#ec4899',
+        instructors: ['田中先生', '佐藤先生', '山田先生'],
+        isDefault: true
+    },
+    'sakura-juku': {
+        id: 'sakura-juku',
+        name: 'さくら塾',
+        description: '地域密着型の進学塾',
+        color: '#f97316',
+        instructors: ['鈴木先生', '高橋先生', '伊藤先生']
+    },
+    'mirai-academy': {
+        id: 'mirai-academy',
+        name: '未来アカデミー',
+        description: '最新の学習メソッドで未来を創る',
+        color: '#3b82f6',
+        instructors: ['中村先生', '小林先生', '加藤先生']
+    },
+    'shining-stars': {
+        id: 'shining-stars',
+        name: 'シャイニングスターズ',
+        description: '一人ひとりが輝く個別指導塾',
+        color: '#8b5cf6',
+        instructors: ['渡辺先生', '松本先生', '木村先生']
+    }
+};
+
 // 科目とコースデータの定義（新しい階層構造）
+// 各スクールで異なるコンテンツを配信可能
 const subjects = {
     japanese: {
         id: 'japanese',
@@ -593,6 +627,7 @@ class AuthManager {
     constructor() {
         this.currentUser = null;
         this.isLoggedIn = false;
+        this.currentSchool = null;
         this.init();
     }
 
@@ -603,6 +638,17 @@ class AuthManager {
             this.currentUser = JSON.parse(savedUser);
             this.isLoggedIn = true;
         }
+        
+        // 現在のスクール情報を復元
+        const savedSchool = localStorage.getItem('currentSchool');
+        if (savedSchool) {
+            this.currentSchool = JSON.parse(savedSchool);
+        } else {
+            // デフォルトスクールを設定
+            this.currentSchool = schools['demo-school'];
+            localStorage.setItem('currentSchool', JSON.stringify(this.currentSchool));
+        }
+        
         this.updateAuthUI();
     }
 
@@ -633,6 +679,26 @@ class AuthManager {
         }
     }
 
+    // スクール変更機能
+    changeSchool(schoolId) {
+        const school = schools[schoolId];
+        if (school) {
+            this.currentSchool = school;
+            localStorage.setItem('currentSchool', JSON.stringify(school));
+            this.showMessage(`${school.name}に切り替えました`, 'success');
+            
+            // ページをリロードしてスクール固有のコンテンツを反映
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        }
+    }
+
+    // 現在のスクール情報を取得
+    getCurrentSchool() {
+        return this.currentSchool || schools['demo-school'];
+    }
+
     updateAuthUI() {
         const authSection = document.getElementById('auth-section');
         if (!authSection) return;
@@ -641,6 +707,15 @@ class AuthManager {
             authSection.innerHTML = `
                 <div class="user-info">
                     <span class="user-name">こんにちは、${this.currentUser.name || this.currentUser.email}さん</span>
+                    <div class="school-selector">
+                        <select id="school-select" onchange="authManager.changeSchool(this.value)">
+                            ${Object.values(schools).map(school => `
+                                <option value="${school.id}" ${this.currentSchool && this.currentSchool.id === school.id ? 'selected' : ''}>
+                                    ${school.name}
+                                </option>
+                            `).join('')}
+                        </select>
+                    </div>
                     <button class="logout-btn" onclick="authManager.logout()">ログアウト</button>
                 </div>
             `;

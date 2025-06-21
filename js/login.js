@@ -71,9 +71,9 @@ async function handleLogin(event) {
             setTimeout(() => {
                 // roleに基づいてリダイレクト
                 if (result.user.role === 'admin') {
-                    window.location.href = 'pages/admin.html';
+                    window.location.href = 'admin.html';
                 } else {
-                    window.location.href = 'pages/student.html';
+                    window.location.href = 'student.html';
                 }
             }, 2000);
         } else {
