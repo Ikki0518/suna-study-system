@@ -67,7 +67,7 @@
                     🏫 スクール管理
                 </button>
                 <button class="tab-btn" data-tab="invitations" onclick="adminApp.switchTab('invitations')">
-                    ✉️ 招待管理
+                    👨‍🎓 受講生登録
                 </button>
             </div>
 
@@ -167,21 +167,21 @@
                     </section>
                 </div>
 
-                <!-- 招待管理タブ -->
+                <!-- 受講生登録タブ -->
                 <div class="tab-panel" id="invitations-panel">
-                    <section class="invitations-management">
+                    <section class="registrations-management">
                         <div class="section-header">
-                            <h2 class="section-title">✉️ 招待管理</h2>
+                            <h2 class="section-title">👨‍🎓 受講生登録</h2>
                             <div class="section-actions">
-                                <button class="action-btn primary" onclick="adminApp.showInviteModal()">
-                                    ✉️ 受講生を招待
+                                <button class="action-btn primary" onclick="adminApp.showRegistrationModal()">
+                                    ➕ 受講生を登録
                                 </button>
                             </div>
                         </div>
                         
-                        <!-- 招待一覧 -->
+                        <!-- 登録一覧 -->
                         <div class="invitations-container" id="invitations-container">
-                            <!-- 招待リストはJavaScriptで生成 -->
+                            <!-- 登録リストはJavaScriptで生成 -->
                         </div>
                     </section>
                 </div>
@@ -200,18 +200,78 @@
                 </div>
             </div>
 
-            <!-- 招待モーダル -->
+            <!-- 受講生登録モーダル -->
+            <div class="modal-overlay" id="registration-modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">👨‍🎓 受講生を登録</h3>
+                        <button class="modal-close" onclick="adminApp.closeRegistrationModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="registration-form" onsubmit="adminApp.registerStudent(event)">
+                            <div class="form-group">
+                                <label for="reg-email">メールアドレス</label>
+                                <input type="email" id="reg-email" required placeholder="student@example.com">
+                                <p class="form-help-text">このメールアドレスでログインします</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-name">受講生名</label>
+                                <input type="text" id="reg-name" required placeholder="山田太郎">
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-grade">学年</label>
+                                <select id="reg-grade" required>
+                                    <option value="">学年を選択</option>
+                                    <option value="小学1年">小学1年</option>
+                                    <option value="小学2年">小学2年</option>
+                                    <option value="小学3年">小学3年</option>
+                                    <option value="小学4年">小学4年</option>
+                                    <option value="小学5年">小学5年</option>
+                                    <option value="小学6年">小学6年</option>
+                                    <option value="中学1年">中学1年</option>
+                                    <option value="中学2年">中学2年</option>
+                                    <option value="中学3年">中学3年</option>
+                                    <option value="高校1年">高校1年</option>
+                                    <option value="高校2年">高校2年</option>
+                                    <option value="高校3年">高校3年</option>
+                                </select>
+                            </div>
+                            <div class="form-info">
+                                <div class="info-box">
+                                    <h4>📝 登録後の流れ</h4>
+                                    <ol>
+                                        <li>自動でパスワードが生成されます</li>
+                                        <li>専用URLが発行されます</li>
+                                        <li>ログイン情報をコピーして受講生にお渡しください</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="action-btn secondary" onclick="adminApp.closeRegistrationModal()">
+                                    キャンセル
+                                </button>
+                                <button type="submit" class="action-btn primary">
+                                    👨‍🎓 受講生を登録
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 互換性のため古いモーダルIDも残す -->
             <div class="modal-overlay" id="invite-modal" style="display: none;">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title">✉️ 受講生を招待</h3>
-                        <button class="modal-close" onclick="adminApp.closeInviteModal()">&times;</button>
+                        <h3 class="modal-title">👨‍🎓 受講生を登録</h3>
+                        <button class="modal-close" onclick="adminApp.closeRegistrationModal()">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <form id="invite-form" onsubmit="adminApp.sendInvitation(event)">
+                        <form id="invite-form" onsubmit="adminApp.registerStudent(event)">
                             <div class="form-group">
                                 <label for="invite-email">メールアドレス</label>
                                 <input type="email" id="invite-email" required placeholder="student@example.com">
+                                <p class="form-help-text">このメールアドレスでログインします</p>
                             </div>
                             <div class="form-group">
                                 <label for="invite-name">受講生名</label>
@@ -235,24 +295,12 @@
                                     <option value="高校3年">高校3年</option>
                                 </select>
                             </div>
-                            <div class="form-group" id="invite-role-group" style="display: none;">
-                                <label for="invite-role">アカウントタイプ</label>
-                                <select id="invite-role">
-                                    <option value="student">受講生</option>
-                                    <option value="admin">管理者</option>
-                                </select>
-                                <p class="form-help-text">※スーパー管理者のみ管理者アカウントを招待できます</p>
-                            </div>
-                            <div class="form-group">
-                                <label for="invite-message">招待メッセージ（任意）</label>
-                                <textarea id="invite-message" rows="3" placeholder="こんにちは！Suna Study Systemへようこそ。一緒に学習を始めましょう！"></textarea>
-                            </div>
                             <div class="form-actions">
-                                <button type="button" class="action-btn secondary" onclick="adminApp.closeInviteModal()">
+                                <button type="button" class="action-btn secondary" onclick="adminApp.closeRegistrationModal()">
                                     キャンセル
                                 </button>
                                 <button type="submit" class="action-btn primary">
-                                    ✉️ 招待を送信
+                                    👨‍🎓 受講生を登録
                                 </button>
                             </div>
                         </form>

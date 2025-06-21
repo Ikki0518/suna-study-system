@@ -767,184 +767,277 @@ class AdminApp {
         }
     }
 
-    // 招待管理セクションのレンダリング
+    // 受講生登録セクションのレンダリング
     renderInvitationsSection() {
         const container = document.getElementById('invitations-container');
         if (!container) return;
 
-        // 招待データ（将来的にはSupabaseから取得）
-        const invitations = JSON.parse(localStorage.getItem('invitations') || '[]');
+        // 登録済み受講生データ
+        const registrations = JSON.parse(localStorage.getItem('studentRegistrations') || '[]');
 
-        if (invitations.length === 0) {
+        if (registrations.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-state-icon">✉️</div>
-                    <h3>招待がありません</h3>
-                    <p>新しい招待を送信するには「受講生を招待」ボタンをクリックしてください</p>
+                    <div class="empty-state-icon">👨‍🎓</div>
+                    <h3>登録済み受講生がありません</h3>
+                    <p>新しい受講生を登録して専用URLを発行しましょう</p>
                 </div>
             `;
             return;
         }
 
-        const invitationsHtml = invitations.map(invitation => {
-            const isExpired = new Date(invitation.expires_at) < new Date();
-            const statusText = invitation.status === 'pending' 
-                ? (isExpired ? '期限切れ' : '送信済み')
-                : invitation.status === 'accepted' ? '承諾済み' : '期限切れ';
+        const registrationsHtml = registrations.map(registration => {
+            const statusText = registration.status === 'unused' ? '未使用' : 
+                              registration.status === 'active' ? '使用済み' : 
+                              registration.status;
             
             return `
-                <div class="invitation-card">
-                    <div class="invitation-header">
-                        <div class="invitation-info">
-                            <h3>${invitation.name}</h3>
-                            <p>📧 ${invitation.email}</p>
-                            <p>🎓 ${invitation.grade}</p>
-                            <p>🏫 ${invitation.school_name}</p>
-                            <p>📅 招待日: ${this.formatDate(invitation.created_at)}</p>
-                            <p>⏰ 有効期限: ${this.formatDate(invitation.expires_at)}</p>
-                            ${invitation.accepted_at ? `<p>✅ 承諾日: ${this.formatDate(invitation.accepted_at)}</p>` : ''}
+                <div class="registration-card">
+                    <div class="registration-header">
+                        <div class="registration-info">
+                            <h3>${registration.name}</h3>
+                            <p>📧 ${registration.email}</p>
+                            <p>🎓 ${registration.grade || '未設定'}</p>
+                            <p>🏫 ${registration.school_name}</p>
+                            <p>📅 登録日: ${this.formatDate(registration.created_at)}</p>
+                            ${registration.first_login_at ? `<p>✅ 初回ログイン: ${this.formatDate(registration.first_login_at)}</p>` : ''}
                         </div>
-                        <div class="invitation-status ${invitation.status} ${isExpired ? 'expired' : ''}">
+                        <div class="registration-status ${registration.status}">
                             ${statusText}
                         </div>
                     </div>
-                    <div class="invitation-details">
-                        <div class="invitation-code">
-                            <strong>招待コード:</strong> ${invitation.invitation_code}
+                    <div class="registration-details">
+                        <div class="login-credentials">
+                            <strong>ログイン情報:</strong><br>
+                            メール: ${registration.email}<br>
+                            パスワード: ${registration.password}
                         </div>
-                        ${invitation.message ? `
-                            <div class="invitation-message">
-                                <strong>メッセージ:</strong> ${invitation.message}
-                            </div>
-                        ` : ''}
-                        <div class="invitation-link">
-                            <strong>招待リンク:</strong> 
-                            <a href="signup.html?code=${invitation.invitation_code}" target="_blank">
-                                ${window.location.origin}/signup.html?code=${invitation.invitation_code}
+                        <div class="login-url">
+                            <strong>専用URL:</strong> 
+                            <a href="${registration.loginUrl}" target="_blank" class="url-link">
+                                ${registration.loginUrl}
                             </a>
+                            <button class="copy-btn" onclick="adminApp.copyToClipboard('${registration.loginUrl}')">
+                                📋 コピー
+                            </button>
                         </div>
                     </div>
-                    ${invitation.status === 'pending' && !isExpired ? `
-                        <div class="invitation-actions">
-                            <button class="action-btn secondary" onclick="adminApp.resendInvitation('${invitation.invitation_code}')">
-                                📧 再送信
+                    <div class="registration-actions">
+                        <button class="action-btn primary" onclick="adminApp.copyLoginInfo('${registration.id}')">
+                            📋 ログイン情報をコピー
+                        </button>
+                        ${registration.status === 'unused' ? `
+                            <button class="action-btn danger" onclick="adminApp.deleteRegistration('${registration.id}')">
+                                🗑️ 削除
                             </button>
-                            <button class="action-btn danger" onclick="adminApp.cancelInvitation('${invitation.invitation_code}')">
-                                ❌ キャンセル
-                            </button>
-                        </div>
-                    ` : ''}
+                        ` : ''}
+                    </div>
                 </div>
             `;
         }).join('');
 
-        container.innerHTML = invitationsHtml;
+        container.innerHTML = registrationsHtml;
     }
 
-    // 招待モーダル表示
-    showInviteModal() {
-        const modal = document.getElementById('invite-modal');
-        if (modal) {
-            modal.style.display = 'flex';
-            // フォームをリセット
-            document.getElementById('invite-form').reset();
-            
-            // スーパー管理者の場合のみロール選択を表示
-            const roleGroup = document.getElementById('invite-role-group');
-            if (roleGroup) {
-                roleGroup.style.display = authManager.isSuperAdmin() ? 'block' : 'none';
-            }
+    // 登録ステータステキストを取得
+    getRegistrationStatusText(status) {
+        switch(status) {
+            case 'unused': return '未使用';
+            case 'active': return '使用済み';
+            default: return status;
         }
     }
 
-    // 招待モーダルを閉じる
-    closeInviteModal() {
-        const modal = document.getElementById('invite-modal');
+    // 受講生登録モーダル表示
+    showRegistrationModal() {
+        const modal = document.getElementById('registration-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            // フォームをリセット
+            document.getElementById('registration-form').reset();
+        }
+    }
+
+    // 受講生登録モーダルを閉じる
+    closeRegistrationModal() {
+        const modal = document.getElementById('registration-modal');
         if (modal) {
             modal.style.display = 'none';
         }
     }
 
-    // 招待を送信
-    async sendInvitation(event) {
+    // 旧メソッドとの互換性のため残す
+    showInviteModal() {
+        this.showRegistrationModal();
+    }
+
+    closeInviteModal() {
+        this.closeRegistrationModal();
+    }
+
+    // 受講生を登録
+    async registerStudent(event) {
         event.preventDefault();
         
-        const email = document.getElementById('invite-email').value;
-        const name = document.getElementById('invite-name').value;
-        const grade = document.getElementById('invite-grade').value;
-        const message = document.getElementById('invite-message').value;
-        const role = document.getElementById('invite-role') ? document.getElementById('invite-role').value : 'student';
+        // 新旧フォームのIDに対応
+        const email = document.getElementById('reg-email')?.value || document.getElementById('invite-email')?.value;
+        const name = document.getElementById('reg-name')?.value || document.getElementById('invite-name')?.value;
+        const grade = document.getElementById('reg-grade')?.value || document.getElementById('invite-grade')?.value;
 
-        // 招待コードを生成
-        const invitationCode = this.generateInvitationCode();
+        // パスワードを自動生成（8文字）
+        const password = this.generatePassword();
         
         // 現在のスクール情報を取得
         const currentSchool = authManager.getCurrentSchool();
         
-        // 招待データを作成
-        const invitation = {
+        // 専用URLを生成
+        const loginUrl = `${window.location.origin}/pages/login.html?email=${encodeURIComponent(email)}&auto=true`;
+        
+        // 登録データを作成
+        const registration = {
             id: Date.now(),
             email: email,
             name: name,
             grade: grade,
-            message: message,
-            role: role,
-            invitation_code: invitationCode,
+            password: password,
             school_id: currentSchool.id,
             school_name: currentSchool.name,
-            status: 'pending',
+            loginUrl: loginUrl,
+            status: 'unused',
             created_at: new Date().toISOString(),
-            expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7日後
-            created_by_super_admin: authManager.isSuperAdmin() // スーパー管理者フラグ
+            created_by: authManager.getCurrentUser().email
         };
 
         // ローカルストレージに保存
-        const invitations = JSON.parse(localStorage.getItem('invitations') || '[]');
-        invitations.push(invitation);
-        localStorage.setItem('invitations', JSON.stringify(invitations));
+        const registrations = JSON.parse(localStorage.getItem('studentRegistrations') || '[]');
+        registrations.push(registration);
+        localStorage.setItem('studentRegistrations', JSON.stringify(registrations));
 
-        // 受講生招待の場合のみ、ログイン用の情報を保存
-        if (role !== 'admin') {
-            const invitedStudents = JSON.parse(localStorage.getItem('invitedStudents') || '[]');
-            const invitedStudent = {
-                email: email,
-                name: name,
-                tempPassword: invitationCode, // 招待コードを仮パスワードとして使用
-                schoolId: currentSchool.id,
-                schoolName: currentSchool.name,
-                grade: grade,
-                role: role,
-                invitationCode: invitationCode,
-                status: 'invited',
-                created_at: new Date().toISOString()
-            };
-            invitedStudents.push(invitedStudent);
-            localStorage.setItem('invitedStudents', JSON.stringify(invitedStudents));
-        }
-
-        // 招待メールをシミュレート（実際のプロダクションではメール送信API）
-        this.simulateEmailSend(invitation);
+        // 実際のユーザーアカウントも作成
+        const users = JSON.parse(localStorage.getItem('sunaUsers') || '[]');
+        const newUser = {
+            id: Date.now(),
+            email: email,
+            name: name,
+            password: password, // 実際のプロダクションではハッシュ化必要
+            role: 'student',
+            schoolId: currentSchool.id,
+            schoolName: currentSchool.name,
+            grade: grade,
+            registrationId: registration.id,
+            created_at: new Date().toISOString()
+        };
+        users.push(newUser);
+        localStorage.setItem('sunaUsers', JSON.stringify(users));
 
         // モーダルを閉じる
-        this.closeInviteModal();
+        this.closeRegistrationModal();
         
-        // 招待一覧を更新
+        // 登録一覧を更新
         this.renderInvitationsSection();
         
-        // 成功メッセージ
+        // 成功メッセージとログイン情報を表示
         if (window.authManager) {
-            authManager.showMessage(`${email} に招待メールを送信しました！`, 'success');
+            authManager.showMessage(`${name}さんの登録が完了しました！`, 'success');
         }
+
+        // ログイン情報をクリップボードにコピー
+        this.copyLoginInfo(registration.id);
     }
 
-    // 招待コード生成
-    generateInvitationCode() {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    // 旧メソッドとの互換性のため残す
+    async sendInvitation(event) {
+        return this.registerStudent(event);
+    }
+
+    // パスワード生成
+    generatePassword() {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         let result = '';
         for (let i = 0; i < 8; i++) {
             result += chars.charAt(Math.floor(Math.random() * chars.length));
         }
         return result;
+    }
+
+    // 招待コード生成（互換性のため残す）
+    generateInvitationCode() {
+        return this.generatePassword();
+    }
+
+    // ログイン情報をクリップボードにコピー
+    copyLoginInfo(registrationId) {
+        const registrations = JSON.parse(localStorage.getItem('studentRegistrations') || '[]');
+        const registration = registrations.find(r => r.id == registrationId);
+        
+        if (registration) {
+            const loginInfo = `
+【${registration.name}さんのログイン情報】
+URL: ${registration.loginUrl}
+メール: ${registration.email}
+パスワード: ${registration.password}
+
+※この情報を受講生にお渡しください
+            `.trim();
+            
+            this.copyToClipboard(loginInfo);
+            if (window.authManager) {
+                authManager.showMessage('ログイン情報をクリップボードにコピーしました！', 'success');
+            }
+        }
+    }
+
+    // クリップボードにコピー
+    copyToClipboard(text) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                console.log('クリップボードにコピーしました:', text);
+            }).catch(err => {
+                console.error('クリップボードへのコピーに失敗:', err);
+                // フォールバック
+                this.fallbackCopyToClipboard(text);
+            });
+        } else {
+            // フォールバック
+            this.fallbackCopyToClipboard(text);
+        }
+    }
+
+    // フォールバック用のコピー機能
+    fallbackCopyToClipboard(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            console.error('フォールバックコピーに失敗:', err);
+        }
+        document.body.removeChild(textArea);
+    }
+
+    // 登録を削除
+    deleteRegistration(registrationId) {
+        if (confirm('この登録を削除しますか？')) {
+            // 登録データを削除
+            let registrations = JSON.parse(localStorage.getItem('studentRegistrations') || '[]');
+            registrations = registrations.filter(r => r.id != registrationId);
+            localStorage.setItem('studentRegistrations', JSON.stringify(registrations));
+
+            // 対応するユーザーアカウントも削除
+            let users = JSON.parse(localStorage.getItem('sunaUsers') || '[]');
+            users = users.filter(u => u.registrationId != registrationId);
+            localStorage.setItem('sunaUsers', JSON.stringify(users));
+
+            // 表示を更新
+            this.renderInvitationsSection();
+            
+            if (window.authManager) {
+                authManager.showMessage('登録を削除しました', 'success');
+            }
+        }
     }
 
     // メール送信シミュレーション
