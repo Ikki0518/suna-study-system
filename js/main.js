@@ -674,9 +674,9 @@ class AuthManager {
         if (window.location.pathname.includes('/pages/')) {
             // pagesディレクトリ内からのログアウト
             window.location.href = 'login.html';
-} else {
+        } else {
             // ルートディレクトリからのログアウト
-            window.location.href = 'pages/login.html';
+            window.location.href = '/pages/login.html';
         }
     }
 
@@ -749,8 +749,8 @@ class AuthManager {
         } else {
             authSection.innerHTML = `
                 <div class="auth-buttons">
-                    <a href="pages/login.html" class="login-btn">ログイン</a>
-                    <a href="signup.html" class="signup-btn">会員登録</a>
+                    <a href="/pages/login.html" class="login-btn">ログイン</a>
+                    <a href="/signup.html" class="signup-btn">会員登録</a>
                 </div>
             `;
         }
@@ -824,7 +824,7 @@ class AuthManager {
                 if (window.location.pathname.includes('/pages/')) {
                     window.location.href = 'login.html';
                 } else {
-                    window.location.href = 'pages/login.html';
+                    window.location.href = '/pages/login.html';
                 }
             }, 1500);
             return false;
@@ -841,11 +841,11 @@ class AuthManager {
 
         switch (this.currentUser.role) {
             case 'admin':
-                window.location.href = 'pages/admin.html';
+                window.location.href = '/pages/admin.html';
                 break;
             case 'student':
             default:
-                window.location.href = 'pages/student.html';
+                window.location.href = '/pages/student.html';
                 break;
         }
     }
@@ -858,7 +858,7 @@ class AuthManager {
                 if (window.location.pathname.includes('/pages/')) {
                     window.location.href = 'login.html';
                 } else {
-                    window.location.href = 'pages/login.html';
+                    window.location.href = '/pages/login.html';
                 }
             }, 1500);
             return false;
@@ -870,7 +870,7 @@ class AuthManager {
                 if (window.location.pathname.includes('/pages/')) {
                     window.location.href = 'login.html';
                 } else {
-                    window.location.href = 'pages/login.html';
+                    window.location.href = '/pages/login.html';
                 }
             }, 1500);
             return false;
@@ -884,7 +884,7 @@ class AuthManager {
         if (!this.isLoggedIn) {
             this.showMessage('ログインが必要です', 'error');
             setTimeout(() => {
-                window.location.href = 'pages/login.html';
+                window.location.href = '/pages/login.html';
             }, 1500);
             return false;
         }
@@ -892,7 +892,7 @@ class AuthManager {
         if (this.currentUser.role && this.currentUser.role !== 'student') {
             this.showMessage('受講生権限が必要です', 'error');
             setTimeout(() => {
-                window.location.href = 'pages/admin.html';
+                window.location.href = '/pages/admin.html';
             }, 1500);
             return false;
         }

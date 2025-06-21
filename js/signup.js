@@ -121,9 +121,16 @@ async function handleSignup(event) {
             setTimeout(() => {
                 // roleに基づいてリダイレクト
                 if (role === 'admin') {
-                    window.location.href = 'pages/admin.html';
+                    window.location.href = '/pages/admin.html';
                 } else {
-                    window.location.href = 'pages/student.html';
+                    // 受講生の場合、招待コードがあるかどうかで分岐
+                    if (invitationData) {
+                        // 招待コードがある場合は直接学習画面へ
+                        window.location.href = '/pages/student.html';
+                    } else {
+                        // 招待コードがない場合は申請画面へ
+                        window.location.href = '/school-selection.html';
+                    }
                 }
             }, 2000);
         } else {
@@ -161,7 +168,8 @@ async function handleGoogleSignup() {
         // ローディング画面を表示してからメインページにリダイレクト
         showLoadingScreen('アカウント作成中...');
         setTimeout(() => {
-            window.location.href = 'pages/student.html';
+            // Googleサインアップの場合は申請画面へ
+            window.location.href = '/school-selection.html';
         }, 2000);
     } catch (error) {
         console.error('Google signup error:', error);

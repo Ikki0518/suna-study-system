@@ -903,6 +903,25 @@ class AdminApp {
         invitations.push(invitation);
         localStorage.setItem('invitations', JSON.stringify(invitations));
 
+        // 受講生招待の場合のみ、ログイン用の情報を保存
+        if (role !== 'admin') {
+            const invitedStudents = JSON.parse(localStorage.getItem('invitedStudents') || '[]');
+            const invitedStudent = {
+                email: email,
+                name: name,
+                tempPassword: invitationCode, // 招待コードを仮パスワードとして使用
+                schoolId: currentSchool.id,
+                schoolName: currentSchool.name,
+                grade: grade,
+                role: role,
+                invitationCode: invitationCode,
+                status: 'invited',
+                created_at: new Date().toISOString()
+            };
+            invitedStudents.push(invitedStudent);
+            localStorage.setItem('invitedStudents', JSON.stringify(invitedStudents));
+        }
+
         // 招待メールをシミュレート（実際のプロダクションではメール送信API）
         this.simulateEmailSend(invitation);
 
@@ -933,8 +952,32 @@ class AdminApp {
         console.log('=== 招待メール送信シミュレーション ===');
         console.log(`To: ${invitation.email}`);
         console.log(`Subject: ${invitation.school_name}からの学習システム招待`);
-        console.log(`
-招待内容:
+        
+        // 管理者招待の場合とそれ以外で処理を分ける
+        if (invitation.role === 'admin') {
+            console.log(`
+招待内容（管理者）:
+---
+${invitation.name}様
+
+${invitation.school_name}から学習システム「Suna Study System」の管理者として招待されました。
+
+${invitation.message || 'システム管理者としてご参加ください。'}
+
+以下のリンクから管理者アカウントを作成してください：
+https://suna-study-system.vercel.app/signup.html?code=${invitation.invitation_code}
+
+招待コード: ${invitation.invitation_code}
+有効期限: ${new Date(invitation.expires_at).toLocaleDateString()}
+
+※この招待は7日間有効です。
+
+${invitation.school_name}
+---
+            `);
+        } else {
+            console.log(`
+招待内容（受講生）:
 ---
 ${invitation.name}様
 
@@ -942,8 +985,15 @@ ${invitation.school_name}から学習システム「Suna Study System」への�
 
 ${invitation.message || 'こんにちは！一緒に学習を始めましょう！'}
 
-以下のリンクから登録を完了してください：
-http://localhost:8001/signup.html?code=${invitation.invitation_code}
+【ログイン方法】
+以下の情報でログインしてください：
+- メールアドレス: ${invitation.email}
+- パスワード: ${invitation.invitation_code}
+
+ログインページ: https://suna-study-system.vercel.app/pages/login.html
+
+または、以下のリンクから新規登録することもできます：
+https://suna-study-system.vercel.app/signup.html?code=${invitation.invitation_code}
 
 招待コード: ${invitation.invitation_code}
 学年: ${invitation.grade}
@@ -953,7 +1003,8 @@ http://localhost:8001/signup.html?code=${invitation.invitation_code}
 
 ${invitation.school_name}
 ---
-        `);
+            `);
+        }
     }
 
     // スクール追加モーダル表示

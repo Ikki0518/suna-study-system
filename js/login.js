@@ -48,7 +48,7 @@ async function handleLogin(event) {
                 
                 showLoadingScreen('管理者アカウント作成中...');
                 setTimeout(() => {
-                    window.location.href = 'pages/admin.html';
+                    window.location.href = '/pages/admin.html';
                 }, 2000);
                 return;
             }
@@ -70,10 +70,10 @@ async function handleLogin(event) {
             showLoadingScreen('ログイン中...');
             setTimeout(() => {
                 // roleに基づいてリダイレクト
-                if (result.user.role === 'admin') {
-                    window.location.href = 'admin.html';
+                if (result.user.role === 'admin' || result.user.role === 'super_admin') {
+                    window.location.href = '/pages/admin.html';
                 } else {
-                    window.location.href = 'student.html';
+                    window.location.href = '/pages/student.html';
                 }
             }, 2000);
         } else {
@@ -111,7 +111,7 @@ async function handleGoogleLogin() {
         // ローディング画面を表示してからメインページにリダイレクト
         showLoadingScreen();
         setTimeout(() => {
-            window.location.href = 'student.html';
+            window.location.href = '/pages/student.html';
         }, 2000);
     } catch (error) {
         console.error('Google login error:', error);
@@ -156,11 +156,33 @@ async function loginUser(userData) {
                         role: 'student'
                     }
                 });
-            } else {
-                resolve({
-                    success: false,
-                    message: 'メールアドレスまたはパスワードが正しくありません'
-                });
+            }
+            // 管理者から招待された受講生のログイン処理
+            else {
+                // ローカルストレージから招待された受講生情報を確認
+                const invitedStudents = JSON.parse(localStorage.getItem('invitedStudents') || '[]');
+                const invitedStudent = invitedStudents.find(student => 
+                    student.email === userData.email && student.tempPassword === userData.password
+                );
+                
+                if (invitedStudent) {
+                    resolve({
+                        success: true,
+                        user: {
+                            email: userData.email,
+                            name: invitedStudent.name,
+                            role: 'student',
+                            schoolId: invitedStudent.schoolId,
+                            grade: invitedStudent.grade,
+                            isInvitedStudent: true
+                        }
+                    });
+                } else {
+                    resolve({
+                        success: false,
+                        message: 'メールアドレスまたはパスワードが正しくありません'
+                    });
+                }
             }
         }, 1500);
     });
