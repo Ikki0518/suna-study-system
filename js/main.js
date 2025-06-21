@@ -50,7 +50,7 @@ const subjects = {
                     {
                         id: 'chapter1',
                         title: '第1章：基本的な読解技術',
-                        lessons: [
+        lessons: [
                             { id: 'jp-read-1-1', title: '講義1：文章の構造を理解しよう', completed: true },
                             { id: 'jp-read-1-2', title: '講義2：キーワードを見つける方法', completed: false }
                         ]
@@ -552,7 +552,7 @@ const lessonContents = {
     'lesson1-1': {
         title: 'Play your life　〜 Well-being 〜',
         videoUrl: 'videos/wellbeing.mp4',
-        textContent: `
+                textContent: `
             <div class="lesson-intro">
                 <p>この講義では、人生を主体的に生きるためのきっかけとなるWell-beingの概念について学習します。Well-beingは人間の幸福を意味する
 あらゆる概念の仮訳のことであり、これは記載された決定であることで、より多幸で楽しい人生を送ることができます。</p>
@@ -628,6 +628,7 @@ class AuthManager {
         this.currentUser = null;
         this.isLoggedIn = false;
         this.currentSchool = null;
+        this.superAdminEmail = 'ikki_y0518@icloud.com'; // スーパー管理者のメールアドレス
         this.init();
     }
 
@@ -673,7 +674,7 @@ class AuthManager {
         if (window.location.pathname.includes('/pages/')) {
             // pagesディレクトリ内からのログアウト
             window.location.href = 'login.html';
-        } else {
+} else {
             // ルートディレクトリからのログアウト
             window.location.href = 'pages/login.html';
         }
@@ -694,6 +695,29 @@ class AuthManager {
         }
     }
 
+    // スーパー管理者チェック
+    isSuperAdmin() {
+        return this.currentUser && this.currentUser.email === this.superAdminEmail;
+    }
+
+    // 管理者権限チェック（スーパー管理者も含む）
+    isAdmin() {
+        return this.currentUser && (this.currentUser.role === 'admin' || this.isSuperAdmin());
+    }
+
+    // スクール一覧を取得（スーパー管理者は全て、通常管理者は所属スクールのみ）
+    getSchools() {
+        if (this.isSuperAdmin()) {
+            return Object.values(schools);
+        }
+        return Object.values(schools);
+    }
+
+    // 現在のユーザー情報を取得
+    getCurrentUser() {
+        return this.currentUser;
+    }
+
     // 現在のスクール情報を取得
     getCurrentSchool() {
         return this.currentSchool || schools['demo-school'];
@@ -704,9 +728,12 @@ class AuthManager {
         if (!authSection) return;
 
         if (this.isLoggedIn && this.currentUser) {
+            const userDisplayName = this.currentUser.name || this.currentUser.email;
+            const superAdminBadge = this.isSuperAdmin() ? '<span class="super-admin-badge">👑 SUPER ADMIN</span>' : '';
+            
             authSection.innerHTML = `
                 <div class="user-info">
-                    <span class="user-name">こんにちは、${this.currentUser.name || this.currentUser.email}さん</span>
+                    <span class="user-name">こんにちは、${userDisplayName}さん ${superAdminBadge}</span>
                     <div class="school-selector">
                         <select id="school-select" onchange="authManager.changeSchool(this.value)">
                             ${Object.values(schools).map(school => `
@@ -986,7 +1013,7 @@ class StudyApp {
             
             courseCard.addEventListener('click', () => {
                 if (authManager.requireAuth()) {
-                    this.showCourse(course);
+                this.showCourse(course);
                 }
             });
             
@@ -1080,8 +1107,8 @@ class StudyApp {
                 <div class="chapter-section">
                     <div class="chapter-header">
                         <h3 class="chapter-title">${chapter.title}</h3>
-                    </div>
-                    <div class="lesson-list">
+            </div>
+            <div class="lesson-list">
                         ${chapter.lessons.map(lesson => `
                             <div class="lesson-item" onclick="app.showLesson('${lesson.id}')">
                                 <div class="lesson-checkbox ${lesson.completed ? 'completed' : ''}">
@@ -1092,10 +1119,10 @@ class StudyApp {
                                     <div class="lesson-subtitle">動画とテキストで学習</div>
                                 </div>
                                 <button class="lesson-button">受講する</button>
-                            </div>
-                        `).join('')}
-                    </div>
+                        </div>
+                    `).join('')}
                 </div>
+            </div>
             `).join('')}
         `;
     }
@@ -1132,7 +1159,7 @@ class StudyApp {
                     <span class="lesson-number">${lessonPosition.position} / ${lessonPosition.total}</span>
                     <div class="lesson-progress-bar">
                         <div class="lesson-progress-fill" style="width: ${(lessonPosition.position / lessonPosition.total) * 100}%"></div>
-                    </div>
+            </div>
                 </div>
                 <h2 class="lesson-title-main">${content.title}</h2>
                 <p class="lesson-course-name">${this.currentCourse.title}</p>
@@ -1334,7 +1361,7 @@ class StudyApp {
                         <span class="stat-number">${this.currentCourse.chapters.length}</span>
                         <span class="stat-label">章完了</span>
                     </div>
-                </div>
+                    </div>
                 <div class="completion-actions">
                     <button class="completion-btn primary" onclick="app.showSubject(app.currentSubject)">
                         他のコースを見る
@@ -1459,6 +1486,28 @@ style.textContent = `
         to {
             transform: translateX(100%);
             opacity: 0;
+        }
+    }
+    
+    .super-admin-badge {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: #92400e;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        margin-left: 8px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px rgba(251, 191, 36, 0.3);
+        animation: glow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow {
+        from {
+            box-shadow: 0 2px 4px rgba(251, 191, 36, 0.3);
+        }
+        to {
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.6);
         }
     }
 `;

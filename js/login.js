@@ -126,9 +126,19 @@ async function loginUser(userData) {
     // 実際のAPIコールをシミュレート
     return new Promise((resolve) => {
         setTimeout(() => {
-            // デモ用の認証ロジック
+            // スーパー管理者のログイン処理
+            if (userData.email === 'ikki_y0518@icloud.com' && userData.password === 'ikki0518') {
+                resolve({
+                    success: true,
+                    user: {
+                        email: userData.email,
+                        name: 'Ikki Yamamoto',
+                        role: 'super_admin'
+                    }
+                });
+            }
             // デモ用認証ロジック - 管理者と受講生アカウントを追加
-            if (userData.email === 'admin@suna.com' && userData.password === 'admin123') {
+            else if (userData.email === 'admin@suna.com' && userData.password === 'admin123') {
                 resolve({
                     success: true,
                     user: {

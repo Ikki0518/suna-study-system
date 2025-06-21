@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学習塾選択 - Suna Study System</title>
+    <link rel="stylesheet" href="styles/school-selection.css">
+</head>
+<body>
+    <div class="container">
+        <!-- ヘッダー -->
+        <header class="header">
+            <div class="logo">
+                <h1>🌊 Suna Study System</h1>
+                <p>学習塾を選択してください</p>
+            </div>
+        </header>
+
+        <!-- メインコンテンツ -->
+        <main class="main-content">
+            <!-- ステップインジケーター -->
+            <div class="steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">学習塾選択</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">申請情報入力</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">申請完了</div>
+                </div>
+            </div>
+
+            <!-- ステップ1: 学習塾選択 -->
+            <div class="step-content" id="step1">
+                <h2>参加したい学習塾を選択してください</h2>
+                <div class="schools-grid" id="schoolsGrid">
+                    <!-- 学習塾一覧がJavaScriptで動的に生成される -->
+                </div>
+            </div>
+
+            <!-- ステップ2: 申請情報入力 -->
+            <div class="step-content hidden" id="step2">
+                <h2>申請情報を入力してください</h2>
+                <div class="selected-school-display" id="selectedSchoolDisplay">
+                    <!-- 選択した学習塾の情報表示 -->
+                </div>
+                
+                <form class="application-form" id="applicationForm">
+                    <div class="form-group">
+                        <label for="applicantName">お名前 *</label>
+                        <input type="text" id="applicantName" name="applicantName" required 
+                               placeholder="山田太郎">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="applicantEmail">メールアドレス *</label>
+                        <input type="email" id="applicantEmail" name="applicantEmail" required 
+                               placeholder="example@example.com">
+                        <small>このメールアドレスでアカウント登録を行ってください</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="applicationMessage">申請メッセージ（任意）</label>
+                        <textarea id="applicationMessage" name="applicationMessage" rows="4" 
+                                  placeholder="学習への意気込みや質問があればご記入ください"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(1)">
+                            戻る
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            申請を送信
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ステップ3: 申請完了 -->
+            <div class="step-content hidden" id="step3">
+                <div class="completion-message">
+                    <div class="success-icon">✅</div>
+                    <h2>申請を送信しました</h2>
+                    <p>学習塾の管理者が申請を確認次第、メールでご連絡いたします。</p>
+                    
+                    <div class="next-steps">
+                        <h3>次のステップ</h3>
+                        <ol>
+                            <li>申請したメールアドレスでアカウント登録を行ってください</li>
+                            <li>管理者からの承認メールをお待ちください</li>
+                            <li>承認後、システムにログインして学習を開始できます</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="actions">
+                        <a href="signup.html" class="btn btn-primary">
+                            アカウント登録に進む
+                        </a>
+                        <a href="index.html" class="btn btn-secondary">
+                            トップページに戻る
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ローディング表示 -->
+        <div class="loading hidden" id="loading">
+            <div class="spinner"></div>
+            <p>処理中...</p>
+        </div>
+
+        <!-- エラーメッセージ -->
+        <div class="error-message hidden" id="errorMessage">
+            <div class="error-content">
+                <h3>エラーが発生しました</h3>
+                <p id="errorText"></p>
+                <button class="btn btn-primary" onclick="hideError()">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/school-selection.js"></script>
+</body>
+</html> 

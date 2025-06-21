@@ -54,59 +54,138 @@
                 <p class="dashboard-subtitle">受講生の学習状況を管理・監督</p>
             </div>
 
+            <!-- タブナビゲーション -->
+            <div class="admin-tabs">
+                <button class="tab-btn active" data-tab="students" onclick="adminApp.switchTab('students')">
+                    👥 受講生管理
+                </button>
+                <button class="tab-btn" data-tab="applications" onclick="adminApp.switchTab('applications')">
+                    📝 申請管理
+                    <span class="notification-badge" id="applicationsBadge" style="display: none;">0</span>
+                </button>
+                <button class="tab-btn" data-tab="schools" onclick="adminApp.switchTab('schools')">
+                    🏫 スクール管理
+                </button>
+                <button class="tab-btn" data-tab="invitations" onclick="adminApp.switchTab('invitations')">
+                    ✉️ 招待管理
+                </button>
+            </div>
+
             <!-- 統計カードセクション -->
             <div class="stats-grid" id="stats-grid">
                 <!-- 統計カードはJavaScriptで生成 -->
             </div>
 
-            <!-- 受講生管理セクション -->
-            <section class="student-management">
-                <div class="section-header">
-                    <h2 class="section-title">👥 受講生管理</h2>
-                    <div class="section-actions">
-                        <a href="create-course.html" class="action-btn primary">
-                            📝 講座作成
-                        </a>
-                        <button class="action-btn secondary" onclick="adminApp.refreshStudentList()">
-                            🔄 更新
-                        </button>
-                        <button class="action-btn secondary" onclick="adminApp.exportStudentData()">
-                            📊 データエクスポート
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- 検索・フィルター -->
-                <div class="filter-section">
-                    <div class="search-box">
-                        <input type="text" id="student-search" placeholder="受講生を検索..." class="search-input">
-                        <button class="search-btn">🔍</button>
-                    </div>
-                    <div class="filter-options">
-                        <select id="progress-filter" class="filter-select">
-                            <option value="">進捗で絞り込み</option>
-                            <option value="high">高進捗 (70%以上)</option>
-                            <option value="medium">中進捗 (30-70%)</option>
-                            <option value="low">低進捗 (30%未満)</option>
-                        </select>
-                        <select id="subject-filter" class="filter-select">
-                            <option value="">科目で絞り込み</option>
-                            <option value="japanese">国語</option>
-                            <option value="math">数学</option>
-                            <option value="english">英語</option>
-                            <option value="science">理科</option>
-                            <option value="social">社会</option>
-                        </select>
-                    </div>
+            <!-- タブコンテンツ -->
+            <div class="tab-content">
+                <!-- 受講生管理タブ -->
+                <div class="tab-panel active" id="students-panel">
+                    <section class="student-management">
+                        <div class="section-header">
+                            <h2 class="section-title">👥 受講生管理</h2>
+                            <div class="section-actions">
+                                <a href="create-course.html" class="action-btn primary">
+                                    📝 講座作成
+                                </a>
+                                <button class="action-btn secondary" onclick="adminApp.refreshStudentList()">
+                                    🔄 更新
+                                </button>
+                                <button class="action-btn secondary" onclick="adminApp.exportStudentData()">
+                                    📊 データエクスポート
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 検索・フィルター -->
+                        <div class="filter-section">
+                            <div class="search-box">
+                                <input type="text" id="student-search" placeholder="受講生を検索..." class="search-input">
+                                <button class="search-btn">🔍</button>
+                            </div>
+                            <div class="filter-options">
+                                <select id="progress-filter" class="filter-select">
+                                    <option value="">進捗で絞り込み</option>
+                                    <option value="high">高進捗 (70%以上)</option>
+                                    <option value="medium">中進捗 (30-70%)</option>
+                                    <option value="low">低進捗 (30%未満)</option>
+                                </select>
+                                <select id="subject-filter" class="filter-select">
+                                    <option value="">科目で絞り込み</option>
+                                    <option value="japanese">国語</option>
+                                    <option value="math">数学</option>
+                                    <option value="english">英語</option>
+                                    <option value="science">理科</option>
+                                    <option value="social">社会</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 受講生一覧テーブル -->
+                        <div class="student-table-container">
+                            <table class="student-table" id="student-table">
+                                <!-- テーブルヘッダーとデータはJavaScriptで生成 -->
+                            </table>
+                        </div>
+                    </section>
                 </div>
 
-                <!-- 受講生一覧テーブル -->
-                <div class="student-table-container">
-                    <table class="student-table" id="student-table">
-                        <!-- テーブルヘッダーとデータはJavaScriptで生成 -->
-                    </table>
+                <!-- 申請管理タブ -->
+                <div class="tab-panel" id="applications-panel">
+                    <section class="applications-management">
+                        <div class="section-header">
+                            <h2 class="section-title">📝 申請管理</h2>
+                            <div class="section-actions">
+                                <button class="action-btn secondary" onclick="adminApp.refreshApplications()">
+                                    🔄 更新
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 申請一覧 -->
+                        <div class="applications-container" id="applications-container">
+                            <!-- 申請リストはJavaScriptで生成 -->
+                        </div>
+                    </section>
                 </div>
-            </section>
+
+                <!-- スクール管理タブ -->
+                <div class="tab-panel" id="schools-panel">
+                    <section class="schools-management">
+                        <div class="section-header">
+                            <h2 class="section-title">🏫 スクール管理</h2>
+                            <div class="section-actions">
+                                <button class="action-btn primary" onclick="adminApp.showAddSchoolModal()">
+                                    ➕ スクール追加
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- スクール一覧 -->
+                        <div class="schools-container" id="schools-container">
+                            <!-- スクールリストはJavaScriptで生成 -->
+                        </div>
+                    </section>
+                </div>
+
+                <!-- 招待管理タブ -->
+                <div class="tab-panel" id="invitations-panel">
+                    <section class="invitations-management">
+                        <div class="section-header">
+                            <h2 class="section-title">✉️ 招待管理</h2>
+                            <div class="section-actions">
+                                <button class="action-btn primary" onclick="adminApp.showInviteModal()">
+                                    ✉️ 受講生を招待
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 招待一覧 -->
+                        <div class="invitations-container" id="invitations-container">
+                            <!-- 招待リストはJavaScriptで生成 -->
+                        </div>
+                    </section>
+                </div>
+            </div>
 
             <!-- 受講生詳細モーダル -->
             <div class="modal-overlay" id="student-detail-modal" style="display: none;">
@@ -117,6 +196,100 @@
                     </div>
                     <div class="modal-body" id="student-detail-content">
                         <!-- 詳細内容はJavaScriptで生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 招待モーダル -->
+            <div class="modal-overlay" id="invite-modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">✉️ 受講生を招待</h3>
+                        <button class="modal-close" onclick="adminApp.closeInviteModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="invite-form" onsubmit="adminApp.sendInvitation(event)">
+                            <div class="form-group">
+                                <label for="invite-email">メールアドレス</label>
+                                <input type="email" id="invite-email" required placeholder="student@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="invite-name">受講生名</label>
+                                <input type="text" id="invite-name" required placeholder="山田太郎">
+                            </div>
+                            <div class="form-group">
+                                <label for="invite-grade">学年</label>
+                                <select id="invite-grade" required>
+                                    <option value="">学年を選択</option>
+                                    <option value="小学1年">小学1年</option>
+                                    <option value="小学2年">小学2年</option>
+                                    <option value="小学3年">小学3年</option>
+                                    <option value="小学4年">小学4年</option>
+                                    <option value="小学5年">小学5年</option>
+                                    <option value="小学6年">小学6年</option>
+                                    <option value="中学1年">中学1年</option>
+                                    <option value="中学2年">中学2年</option>
+                                    <option value="中学3年">中学3年</option>
+                                    <option value="高校1年">高校1年</option>
+                                    <option value="高校2年">高校2年</option>
+                                    <option value="高校3年">高校3年</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="invite-role-group" style="display: none;">
+                                <label for="invite-role">アカウントタイプ</label>
+                                <select id="invite-role">
+                                    <option value="student">受講生</option>
+                                    <option value="admin">管理者</option>
+                                </select>
+                                <p class="form-help-text">※スーパー管理者のみ管理者アカウントを招待できます</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="invite-message">招待メッセージ（任意）</label>
+                                <textarea id="invite-message" rows="3" placeholder="こんにちは！Suna Study Systemへようこそ。一緒に学習を始めましょう！"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="action-btn secondary" onclick="adminApp.closeInviteModal()">
+                                    キャンセル
+                                </button>
+                                <button type="submit" class="action-btn primary">
+                                    ✉️ 招待を送信
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- スクール追加モーダル -->
+            <div class="modal-overlay" id="add-school-modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">🏫 スクール追加</h3>
+                        <button class="modal-close" onclick="adminApp.closeAddSchoolModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="add-school-form" onsubmit="adminApp.addSchool(event)">
+                            <div class="form-group">
+                                <label for="school-name">スクール名</label>
+                                <input type="text" id="school-name" required placeholder="○○学習塾">
+                            </div>
+                            <div class="form-group">
+                                <label for="school-color">テーマカラー</label>
+                                <input type="color" id="school-color" value="#3B82F6">
+                            </div>
+                            <div class="form-group">
+                                <label for="school-description">説明</label>
+                                <textarea id="school-description" rows="3" placeholder="スクールの特徴や方針を入力してください"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="action-btn secondary" onclick="adminApp.closeAddSchoolModal()">
+                                    キャンセル
+                                </button>
+                                <button type="submit" class="action-btn primary">
+                                    ➕ スクール追加
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

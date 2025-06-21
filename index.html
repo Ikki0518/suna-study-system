@@ -42,6 +42,7 @@
             <div class="landing-actions">
                 <a href="pages/login.html" class="landing-btn primary">ログイン</a>
                 <a href="signup.html" class="landing-btn secondary">アカウント作成</a>
+                <a href="school-selection.html" class="landing-btn tertiary">🏫 学習塾を探す</a>
             </div>
 
             <!-- ローディングメッセージ -->
@@ -154,6 +155,17 @@
             border-color: #2563eb;
             color: #2563eb;
             transform: translateY(-2px);
+        }
+
+        .landing-btn.tertiary {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(249, 115, 22, 0.2);
+        }
+
+        .landing-btn.tertiary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(249, 115, 22, 0.3);
         }
 
         .loading-message {

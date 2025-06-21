@@ -42,6 +42,20 @@
                 <p class="form-description">新しいアカウントを作成してSunaを始めましょう</p>
 
                 <form class="login-form" id="signupForm">
+                    <!-- 招待コード入力フィールド -->
+                    <div class="form-group" id="invitation-code-group">
+                        <label for="invitationCode">招待コード（任意）</label>
+                        <input 
+                            type="text" 
+                            id="invitationCode" 
+                            name="invitationCode" 
+                            placeholder="招待コードを入力（8文字）"
+                            maxlength="8"
+                            style="text-transform: uppercase;"
+                        >
+                        <p class="form-help-text">招待コードをお持ちの場合は入力してください</p>
+                    </div>
+
                     <div class="form-group">
                         <label for="name">お名前</label>
                         <input 
@@ -133,6 +147,7 @@
         </div>
     </div>
 
+    <script src="js/main.js"></script>
     <script src="js/signup.js"></script>
     
     <style>
@@ -163,6 +178,34 @@
             color: #6b7280;
             margin-top: 6px;
             line-height: 1.4;
+        }
+        
+        .form-help-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+        
+        .invitation-info {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .invitation-info h4 {
+            margin: 0 0 8px 0;
+            color: #0369a1;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .invitation-info p {
+            margin: 0;
+            color: #0369a1;
+            font-size: 13px;
         }
     </style>
 </body>

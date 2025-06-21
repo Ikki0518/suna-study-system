@@ -1,6 +1,7 @@
 // DOM要素の取得
 const signupForm = document.getElementById('signupForm');
 const googleSignupButton = document.getElementById('googleSignup');
+const invitationCodeInput = document.getElementById('invitationCode');
 const nameInput = document.getElementById('name');
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
@@ -12,16 +13,34 @@ const termsCheckbox = document.getElementById('terms');
 signupForm.addEventListener('submit', handleSignup);
 googleSignupButton.addEventListener('click', handleGoogleSignup);
 
+// 招待コード入力イベント
+invitationCodeInput.addEventListener('input', handleInvitationCodeInput);
+
+// ページ読み込み時に招待コードをチェック
+document.addEventListener('DOMContentLoaded', checkInvitationCode);
+
 // 通常のサインアップ処理
 async function handleSignup(event) {
     event.preventDefault();
     
+    const invitationCode = invitationCodeInput.value.trim().toUpperCase();
     const name = nameInput.value.trim();
     const email = emailInput.value.trim();
     const password = passwordInput.value.trim();
     const confirmPassword = confirmPasswordInput.value.trim();
     const role = roleSelect.value;
     const termsAccepted = termsCheckbox.checked;
+    
+    // 招待コードの検証
+    let invitationData = null;
+    if (invitationCode) {
+        invitationData = validateInvitationCode(invitationCode);
+        if (!invitationData) {
+            showError('無効な招待コードです');
+            invitationCodeInput.focus();
+            return;
+        }
+    }
     
     // バリデーション
     if (!validateName(name)) {
@@ -54,9 +73,9 @@ async function handleSignup(event) {
         return;
     }
     
-    // 管理者権限のチェック
-    if (role === 'admin') {
-        showError('管理者アカウントは直接作成できません。お問い合わせください。');
+    // 管理者権限のチェック（スーパー管理者からの招待は除く）
+    if (role === 'admin' && (!invitationData || !invitationData.created_by_super_admin)) {
+        showError('管理者アカウントは直接作成できません。システム管理者からの招待が必要です。');
         return;
     }
     
@@ -70,17 +89,32 @@ async function handleSignup(event) {
     
     try {
         // ここでAPIにサインアップ情報を送信
-        const result = await signupUser({ name, email, password, role });
+        const result = await signupUser({ name, email, password, role, invitationData });
         
         if (result.success) {
+            // 招待コードが使用された場合、ステータスを更新
+            if (invitationData) {
+                updateInvitationStatus(invitationCode, 'accepted');
+            }
+            
             // 認証情報をローカルストレージに保存
-            localStorage.setItem('sunaUser', JSON.stringify({
+            const userData = {
                 email: email,
                 name: name,
                 role: role,
                 loginTime: new Date().toISOString(),
                 isNewUser: true
-            }));
+            };
+            
+            // 招待情報がある場合は追加
+            if (invitationData) {
+                userData.schoolId = invitationData.school_id;
+                userData.schoolName = invitationData.school_name;
+                userData.grade = invitationData.grade;
+                userData.invitedBy = invitationData.invitation_code;
+            }
+            
+            localStorage.setItem('sunaUser', JSON.stringify(userData));
             
             // ローディング画面を表示してからメインページにリダイレクト
             showLoadingScreen('アカウント作成中...');
@@ -161,6 +195,91 @@ async function signupUser(userData) {
             }
         }, 1500);
     });
+}
+
+// 招待コード関連の関数
+function checkInvitationCode() {
+    // URLパラメータから招待コードを取得
+    const urlParams = new URLSearchParams(window.location.search);
+    const invitationCode = urlParams.get('code');
+    
+    if (invitationCode) {
+        invitationCodeInput.value = invitationCode.toUpperCase();
+        handleInvitationCodeInput();
+    }
+}
+
+function handleInvitationCodeInput() {
+    const code = invitationCodeInput.value.trim().toUpperCase();
+    
+    if (code.length === 8) {
+        const invitationData = validateInvitationCode(code);
+        if (invitationData) {
+            showInvitationInfo(invitationData);
+            // 招待データから情報を自動入力
+            if (invitationData.name && !nameInput.value) {
+                nameInput.value = invitationData.name;
+            }
+            if (invitationData.email && !emailInput.value) {
+                emailInput.value = invitationData.email;
+            }
+            // 受講生として自動設定
+            roleSelect.value = 'student';
+        } else {
+            hideInvitationInfo();
+        }
+    } else {
+        hideInvitationInfo();
+    }
+}
+
+function validateInvitationCode(code) {
+    const invitations = JSON.parse(localStorage.getItem('invitations') || '[]');
+    const invitation = invitations.find(inv => 
+        inv.invitation_code === code && 
+        inv.status === 'pending' && 
+        new Date(inv.expires_at) > new Date()
+    );
+    
+    return invitation || null;
+}
+
+function updateInvitationStatus(code, status) {
+    const invitations = JSON.parse(localStorage.getItem('invitations') || '[]');
+    const invitationIndex = invitations.findIndex(inv => inv.invitation_code === code);
+    
+    if (invitationIndex !== -1) {
+        invitations[invitationIndex].status = status;
+        invitations[invitationIndex].accepted_at = new Date().toISOString();
+        localStorage.setItem('invitations', JSON.stringify(invitations));
+    }
+}
+
+function showInvitationInfo(invitationData) {
+    // 既存の招待情報を削除
+    hideInvitationInfo();
+    
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'invitation-info';
+    infoDiv.id = 'invitation-info';
+    
+    infoDiv.innerHTML = `
+        <h4>✉️ 招待情報</h4>
+        <p><strong>スクール:</strong> ${invitationData.school_name}</p>
+        <p><strong>学年:</strong> ${invitationData.grade}</p>
+        <p><strong>有効期限:</strong> ${new Date(invitationData.expires_at).toLocaleDateString()}</p>
+        ${invitationData.message ? `<p><strong>メッセージ:</strong> ${invitationData.message}</p>` : ''}
+    `;
+    
+    const codeGroup = document.getElementById('invitation-code-group');
+    codeGroup.appendChild(infoDiv);
+}
+
+function hideInvitationInfo() {
+    const existingInfo = document.getElementById('invitation-info');
+    if (existingInfo) {
+        existingInfo.remove();
+    }
 }
 
 // バリデーション関数

@@ -98,6 +98,67 @@
     margin: 0;
 }
 
+/* タブナビゲーション */
+.admin-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-btn:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.tab-btn.active {
+    background: #f97316;
+    color: white;
+    font-weight: 600;
+}
+
+.notification-badge {
+    background: #dc2626;
+    color: white;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+    margin-left: 5px;
+}
+
+/* タブコンテンツ */
+.tab-content {
+    min-height: 400px;
+}
+
+.tab-panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
 /* 統計カードグリッド */
 .stats-grid {
     display: grid;
@@ -162,8 +223,11 @@
     color: #6b7280;
 }
 
-/* 受講生管理セクション */
-.student-management {
+/* 管理セクション共通 */
+.student-management,
+.applications-management,
+.schools-management,
+.invitations-management {
     background: white;
     border-radius: 12px;
     padding: 32px;
@@ -555,6 +619,293 @@
 }
 
 /* アニメーション */
+/* 申請管理スタイル */
+.applications-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.application-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.application-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.application-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.application-info h3 {
+    margin: 0 0 4px 0;
+    color: #1f2937;
+    font-size: 1.2rem;
+}
+
+.application-info p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.application-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.application-status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.application-status.approved {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.application-status.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.application-message {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 12px;
+    margin: 12px 0;
+    font-style: italic;
+    color: #4b5563;
+}
+
+.application-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.approve-btn {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.approve-btn:hover {
+    background: #059669;
+}
+
+.reject-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.reject-btn:hover {
+    background: #dc2626;
+}
+
+/* スクール管理スタイル */
+.schools-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.school-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.school-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--school-color, #f97316);
+}
+
+.school-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.school-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.school-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--school-color, #f97316);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 16px;
+}
+
+.school-info h3 {
+    margin: 0 0 4px 0;
+    color: #1f2937;
+    font-size: 1.3rem;
+}
+
+.school-info p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.school-instructors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 12px 0;
+}
+
+.instructor-tag {
+    background: var(--school-color, #f97316);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.school-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+/* 招待管理スタイル */
+.invitations-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.invitation-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.invitation-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.invitation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.invitation-info h3 {
+    margin: 0 0 4px 0;
+    color: #1f2937;
+    font-size: 1.2rem;
+}
+
+.invitation-info p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.invitation-code {
+    background: white;
+    border: 2px dashed #d1d5db;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: monospace;
+    font-weight: bold;
+    color: #1f2937;
+    margin: 8px 0;
+}
+
+.invitation-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.invitation-status.pending {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.invitation-status.accepted {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.invitation-status.expired {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* 空の状態 */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    margin: 0 0 8px 0;
+    color: #374151;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;

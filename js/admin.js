@@ -2,19 +2,25 @@
 class AdminApp {
     constructor() {
         this.students = [];
+        this.applications = [];
         this.currentFilter = {
             search: '',
             progress: '',
             subject: ''
         };
+        this.currentTab = 'students'; // 'students', 'applications', 'schools'
         this.init();
     }
 
     init() {
         console.log('AdminApp initialized');
         this.loadMockStudentData();
+        this.loadApplicationData();
         this.renderStatsCards();
         this.renderStudentTable();
+        this.renderApplicationsSection();
+        this.renderSchoolsSection();
+        this.renderInvitationsSection();
         this.bindEvents();
         this.updateAuthUI();
     }
@@ -537,6 +543,516 @@ class AdminApp {
         };
         return subjectNames[subjectId] || subjectId;
     }
+
+    // 申請データの読み込み
+    loadApplicationData() {
+        // ローカルストレージから申請データを読み込み
+        const applications = JSON.parse(localStorage.getItem('pendingApplications') || '[]');
+        this.applications = applications;
+        this.updateApplicationsBadge();
+    }
+
+    // 申請バッジの更新
+    updateApplicationsBadge() {
+        const badge = document.getElementById('applicationsBadge');
+        if (!badge) return;
+        
+        const pendingCount = this.applications.filter(app => app.status === 'pending').length;
+        
+        if (pendingCount > 0) {
+            badge.textContent = pendingCount;
+            badge.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    // タブ切り替え
+    switchTab(tabName) {
+        // タブボタンの状態更新
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
+        if (activeTab) activeTab.classList.add('active');
+
+        // タブパネルの表示切り替え
+        document.querySelectorAll('.tab-panel').forEach(panel => {
+            panel.classList.remove('active');
+        });
+        const activePanel = document.getElementById(`${tabName}-panel`);
+        if (activePanel) activePanel.classList.add('active');
+
+        this.currentTab = tabName;
+
+        // タブに応じてコンテンツを更新
+        switch(tabName) {
+            case 'students':
+                this.renderStudentTable();
+                break;
+            case 'applications':
+                this.renderApplicationsSection();
+                break;
+            case 'schools':
+                this.renderSchoolsSection();
+                break;
+            case 'invitations':
+                this.renderInvitationsSection();
+                break;
+        }
+    }
+
+    // 申請管理セクションのレンダリング
+    renderApplicationsSection() {
+        const container = document.getElementById('applications-container');
+        if (!container) return;
+
+        if (this.applications.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📝</div>
+                    <h3>申請がありません</h3>
+                    <p>新しい申請が届くとここに表示されます</p>
+                </div>
+            `;
+            return;
+        }
+
+        const applicationsHtml = this.applications.map(app => `
+            <div class="application-card">
+                <div class="application-header">
+                    <div class="application-info">
+                        <h3>${app.applicant_name}</h3>
+                        <p>${app.applicant_email}</p>
+                        <p>申請日: ${this.formatDate(app.applied_at)}</p>
+                        <p>希望学習塾: ${app.school_id}</p>
+                    </div>
+                    <div class="application-status ${app.status}">
+                        ${app.status === 'pending' ? '承認待ち' : 
+                          app.status === 'approved' ? '承認済み' : '拒否'}
+                    </div>
+                </div>
+                
+                ${app.message ? `
+                    <div class="application-message">
+                        "${app.message}"
+                    </div>
+                ` : ''}
+                
+                ${app.status === 'pending' ? `
+                    <div class="application-actions">
+                        <button class="approve-btn" onclick="adminApp.approveApplication('${app.id}')">
+                            ✅ 承認
+                        </button>
+                        <button class="reject-btn" onclick="adminApp.rejectApplication('${app.id}')">
+                            ❌ 拒否
+                        </button>
+                    </div>
+                ` : ''}
+            </div>
+        `).join('');
+
+        container.innerHTML = applicationsHtml;
+    }
+
+    // 申請承認
+    async approveApplication(applicationId) {
+        if (!confirm('この申請を承認しますか？')) return;
+
+        try {
+            // 申請データを更新
+            const appIndex = this.applications.findIndex(app => app.id === applicationId);
+            if (appIndex !== -1) {
+                this.applications[appIndex].status = 'approved';
+                this.applications[appIndex].reviewed_at = new Date().toISOString();
+                
+                // ローカルストレージを更新
+                localStorage.setItem('pendingApplications', JSON.stringify(this.applications));
+                
+                // UIを更新
+                this.renderApplicationsSection();
+                this.updateApplicationsBadge();
+                
+                if (window.authManager) {
+                    authManager.showMessage('申請を承認しました。', 'success');
+                }
+            }
+        } catch (error) {
+            console.error('Application approval error:', error);
+            if (window.authManager) {
+                authManager.showMessage('申請の承認に失敗しました。', 'error');
+            }
+        }
+    }
+
+    // 申請拒否
+    async rejectApplication(applicationId) {
+        const reason = prompt('拒否理由を入力してください（任意）：');
+        if (reason === null) return; // キャンセルされた場合
+
+        try {
+            // 申請データを更新
+            const appIndex = this.applications.findIndex(app => app.id === applicationId);
+            if (appIndex !== -1) {
+                this.applications[appIndex].status = 'rejected';
+                this.applications[appIndex].reviewed_at = new Date().toISOString();
+                this.applications[appIndex].rejection_reason = reason;
+                
+                // ローカルストレージを更新
+                localStorage.setItem('pendingApplications', JSON.stringify(this.applications));
+                
+                // UIを更新
+                this.renderApplicationsSection();
+                this.updateApplicationsBadge();
+                
+                if (window.authManager) {
+                    authManager.showMessage('申請を拒否しました。', 'info');
+                }
+            }
+        } catch (error) {
+            console.error('Application rejection error:', error);
+            if (window.authManager) {
+                authManager.showMessage('申請の拒否に失敗しました。', 'error');
+            }
+        }
+    }
+
+    // 申請データの更新
+    refreshApplications() {
+        this.loadApplicationData();
+        this.renderApplicationsSection();
+        if (window.authManager) {
+            authManager.showMessage('申請データを更新しました。', 'success');
+        }
+    }
+
+    // スクール管理セクションのレンダリング
+    renderSchoolsSection() {
+        const container = document.getElementById('schools-container');
+        if (!container) return;
+
+        // AuthManagerからスクールデータを取得
+        const schools = window.authManager ? window.authManager.getSchools() : [];
+
+        const schoolsHtml = schools.map(school => `
+            <div class="school-card" style="--school-color: ${school.color}">
+                <div class="school-card-header">
+                    <div class="school-icon">${school.icon}</div>
+                    <div class="school-info">
+                        <h3>${school.name}</h3>
+                        <p>講師 ${school.instructors.length}名</p>
+                    </div>
+                </div>
+                <p>${school.description}</p>
+                <div class="school-instructors">
+                    ${school.instructors.map(instructor => 
+                        `<span class="instructor-tag">${instructor}</span>`
+                    ).join('')}
+                </div>
+                <div class="school-actions">
+                    <button class="action-btn-small edit" onclick="adminApp.editSchool('${school.id}')">
+                        ✏️ 編集
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+        container.innerHTML = schoolsHtml;
+    }
+
+    // スクール編集（プレースホルダー）
+    editSchool(schoolId) {
+        if (window.authManager) {
+            authManager.showMessage(`スクール編集機能は実装予定です（ID: ${schoolId}）`, 'info');
+        }
+    }
+
+    // 招待管理セクションのレンダリング
+    renderInvitationsSection() {
+        const container = document.getElementById('invitations-container');
+        if (!container) return;
+
+        // 招待データ（将来的にはSupabaseから取得）
+        const invitations = JSON.parse(localStorage.getItem('invitations') || '[]');
+
+        if (invitations.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">✉️</div>
+                    <h3>招待がありません</h3>
+                    <p>新しい招待を送信するには「受講生を招待」ボタンをクリックしてください</p>
+                </div>
+            `;
+            return;
+        }
+
+        const invitationsHtml = invitations.map(invitation => {
+            const isExpired = new Date(invitation.expires_at) < new Date();
+            const statusText = invitation.status === 'pending' 
+                ? (isExpired ? '期限切れ' : '送信済み')
+                : invitation.status === 'accepted' ? '承諾済み' : '期限切れ';
+            
+            return `
+                <div class="invitation-card">
+                    <div class="invitation-header">
+                        <div class="invitation-info">
+                            <h3>${invitation.name}</h3>
+                            <p>📧 ${invitation.email}</p>
+                            <p>🎓 ${invitation.grade}</p>
+                            <p>🏫 ${invitation.school_name}</p>
+                            <p>📅 招待日: ${this.formatDate(invitation.created_at)}</p>
+                            <p>⏰ 有効期限: ${this.formatDate(invitation.expires_at)}</p>
+                            ${invitation.accepted_at ? `<p>✅ 承諾日: ${this.formatDate(invitation.accepted_at)}</p>` : ''}
+                        </div>
+                        <div class="invitation-status ${invitation.status} ${isExpired ? 'expired' : ''}">
+                            ${statusText}
+                        </div>
+                    </div>
+                    <div class="invitation-details">
+                        <div class="invitation-code">
+                            <strong>招待コード:</strong> ${invitation.invitation_code}
+                        </div>
+                        ${invitation.message ? `
+                            <div class="invitation-message">
+                                <strong>メッセージ:</strong> ${invitation.message}
+                            </div>
+                        ` : ''}
+                        <div class="invitation-link">
+                            <strong>招待リンク:</strong> 
+                            <a href="signup.html?code=${invitation.invitation_code}" target="_blank">
+                                ${window.location.origin}/signup.html?code=${invitation.invitation_code}
+                            </a>
+                        </div>
+                    </div>
+                    ${invitation.status === 'pending' && !isExpired ? `
+                        <div class="invitation-actions">
+                            <button class="action-btn secondary" onclick="adminApp.resendInvitation('${invitation.invitation_code}')">
+                                📧 再送信
+                            </button>
+                            <button class="action-btn danger" onclick="adminApp.cancelInvitation('${invitation.invitation_code}')">
+                                ❌ キャンセル
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = invitationsHtml;
+    }
+
+    // 招待モーダル表示
+    showInviteModal() {
+        const modal = document.getElementById('invite-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            // フォームをリセット
+            document.getElementById('invite-form').reset();
+            
+            // スーパー管理者の場合のみロール選択を表示
+            const roleGroup = document.getElementById('invite-role-group');
+            if (roleGroup) {
+                roleGroup.style.display = authManager.isSuperAdmin() ? 'block' : 'none';
+            }
+        }
+    }
+
+    // 招待モーダルを閉じる
+    closeInviteModal() {
+        const modal = document.getElementById('invite-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // 招待を送信
+    async sendInvitation(event) {
+        event.preventDefault();
+        
+        const email = document.getElementById('invite-email').value;
+        const name = document.getElementById('invite-name').value;
+        const grade = document.getElementById('invite-grade').value;
+        const message = document.getElementById('invite-message').value;
+        const role = document.getElementById('invite-role') ? document.getElementById('invite-role').value : 'student';
+
+        // 招待コードを生成
+        const invitationCode = this.generateInvitationCode();
+        
+        // 現在のスクール情報を取得
+        const currentSchool = authManager.getCurrentSchool();
+        
+        // 招待データを作成
+        const invitation = {
+            id: Date.now(),
+            email: email,
+            name: name,
+            grade: grade,
+            message: message,
+            role: role,
+            invitation_code: invitationCode,
+            school_id: currentSchool.id,
+            school_name: currentSchool.name,
+            status: 'pending',
+            created_at: new Date().toISOString(),
+            expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7日後
+            created_by_super_admin: authManager.isSuperAdmin() // スーパー管理者フラグ
+        };
+
+        // ローカルストレージに保存
+        const invitations = JSON.parse(localStorage.getItem('invitations') || '[]');
+        invitations.push(invitation);
+        localStorage.setItem('invitations', JSON.stringify(invitations));
+
+        // 招待メールをシミュレート（実際のプロダクションではメール送信API）
+        this.simulateEmailSend(invitation);
+
+        // モーダルを閉じる
+        this.closeInviteModal();
+        
+        // 招待一覧を更新
+        this.renderInvitationsSection();
+        
+        // 成功メッセージ
+        if (window.authManager) {
+            authManager.showMessage(`${email} に招待メールを送信しました！`, 'success');
+        }
+    }
+
+    // 招待コード生成
+    generateInvitationCode() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let result = '';
+        for (let i = 0; i < 8; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+
+    // メール送信シミュレーション
+    simulateEmailSend(invitation) {
+        console.log('=== 招待メール送信シミュレーション ===');
+        console.log(`To: ${invitation.email}`);
+        console.log(`Subject: ${invitation.school_name}からの学習システム招待`);
+        console.log(`
+招待内容:
+---
+${invitation.name}様
+
+${invitation.school_name}から学習システム「Suna Study System」への招待です。
+
+${invitation.message || 'こんにちは！一緒に学習を始めましょう！'}
+
+以下のリンクから登録を完了してください：
+http://localhost:8001/signup.html?code=${invitation.invitation_code}
+
+招待コード: ${invitation.invitation_code}
+学年: ${invitation.grade}
+有効期限: ${new Date(invitation.expires_at).toLocaleDateString()}
+
+※この招待は7日間有効です。
+
+${invitation.school_name}
+---
+        `);
+    }
+
+    // スクール追加モーダル表示
+    showAddSchoolModal() {
+        const modal = document.getElementById('add-school-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            // フォームをリセット
+            document.getElementById('add-school-form').reset();
+        }
+    }
+
+    // スクール追加モーダルを閉じる
+    closeAddSchoolModal() {
+        const modal = document.getElementById('add-school-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // スクール追加
+    addSchool(event) {
+        event.preventDefault();
+        
+        const name = document.getElementById('school-name').value;
+        const color = document.getElementById('school-color').value;
+        const description = document.getElementById('school-description').value;
+
+        // 新しいスクールを作成
+        const newSchool = {
+            id: Date.now(),
+            name: name,
+            color: color,
+            description: description,
+            teachers: [authManager.getCurrentUser().name || 'システム管理者'],
+            created_at: new Date().toISOString()
+        };
+
+        // 既存のスクールリストに追加
+        const schools = authManager.getSchools();
+        schools.push(newSchool);
+        localStorage.setItem('schools', JSON.stringify(schools));
+
+        // モーダルを閉じる
+        this.closeAddSchoolModal();
+        
+        // スクール一覧を更新
+        this.renderSchoolsSection();
+        
+        // 成功メッセージ
+        if (window.authManager) {
+            authManager.showMessage(`スクール「${name}」を追加しました！`, 'success');
+        }
+    }
+
+    // 招待再送信
+    resendInvitation(invitationCode) {
+        const invitations = JSON.parse(localStorage.getItem('invitations') || '[]');
+        const invitation = invitations.find(inv => inv.invitation_code === invitationCode);
+        
+        if (invitation) {
+            // 有効期限を延長
+            invitation.expires_at = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+            localStorage.setItem('invitations', JSON.stringify(invitations));
+            
+            // メール再送信をシミュレート
+            this.simulateEmailSend(invitation);
+            
+            // 招待一覧を更新
+            this.renderInvitationsSection();
+            
+            // 成功メッセージ
+            if (window.authManager) {
+                authManager.showMessage(`${invitation.email} に招待メールを再送信しました！`, 'success');
+            }
+        }
+    }
+
+    // 招待キャンセル
+    cancelInvitation(invitationCode) {
+        if (confirm('この招待をキャンセルしますか？')) {
+            const invitations = JSON.parse(localStorage.getItem('invitations') || '[]');
+            const invitationIndex = invitations.findIndex(inv => inv.invitation_code === invitationCode);
+            
+            if (invitationIndex !== -1) {
+                invitations[invitationIndex].status = 'cancelled';
+                invitations[invitationIndex].cancelled_at = new Date().toISOString();
+                localStorage.setItem('invitations', JSON.stringify(invitations));
+                
+                // 招待一覧を更新
+                this.renderInvitationsSection();
+                
+                // 成功メッセージ
+                if (window.authManager) {
+                    authManager.showMessage('招待をキャンセルしました', 'success');
+                }
+            }
+        }
+    }
 }
 
 // CSSの追加
@@ -630,6 +1146,105 @@ adminStyle.textContent = `
         .student-info-grid {
             grid-template-columns: 1fr;
         }
+    }
+    
+    /* 招待カードのスタイル */
+    .invitation-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 16px;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .invitation-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+    }
+    
+    .invitation-info h3 {
+        margin: 0 0 8px 0;
+        color: #1f2937;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    
+    .invitation-info p {
+        margin: 4px 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+    
+    .invitation-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+        min-width: 80px;
+    }
+    
+    .invitation-status.pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    .invitation-status.accepted {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .invitation-status.expired {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    
+    .invitation-details {
+        background: #f9fafb;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+    }
+    
+    .invitation-code,
+    .invitation-message,
+    .invitation-link {
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    .invitation-link a {
+        color: #2563eb;
+        text-decoration: none;
+        word-break: break-all;
+    }
+    
+    .invitation-link a:hover {
+        text-decoration: underline;
+    }
+    
+    .invitation-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+    
+    .invitation-actions .action-btn {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+    
+    .action-btn.danger {
+        background: #ef4444;
+        color: white;
+        border: none;
+    }
+    
+    .action-btn.danger:hover {
+        background: #dc2626;
     }
 `;
 document.head.appendChild(adminStyle);
