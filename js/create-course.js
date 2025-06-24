@@ -854,8 +854,8 @@ class CourseCreator {
                         </div>
                     </div>
                 </div>
-            </div>
-        `;
+                </div>
+            `;
     }
 
     // 講座をフォームに読み込む
@@ -1051,9 +1051,9 @@ class CourseCreator {
                 const name = prompt('新しい章のタイトルを入力');
                 if (name) {
                     this.createChapter(courseId, name);
-                }
-            });
-        }
+            }
+        });
+    }
 
         // セレクト連動
         const subjectSelect = document.getElementById('course-subject');

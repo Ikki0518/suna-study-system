@@ -843,6 +843,7 @@ class StudyApp {
         
         this.renderSubjects(); // 科目選択画面を表示
         this.updateSidebar();
+        this.updateNavigation(); // ナビゲーション初期化
         this.bindEvents();
         
         // 定期的にローカルストレージをチェック（管理者が新しい科目を追加した場合）
@@ -1215,7 +1216,7 @@ class StudyApp {
         
         this.hideAllViews();
         this.updateSidebar();
-        this.updateBreadcrumb();
+        this.updateNavigation();
         
         const courseView = document.getElementById('course-view');
         courseView.style.display = 'block';
@@ -1262,7 +1263,7 @@ class StudyApp {
         
         this.hideAllViews();
         this.updateSidebar();
-        this.updateBreadcrumb();
+        this.updateNavigation();
 
         const lessonView = document.getElementById('lesson-view');
         lessonView.style.display = 'block';
@@ -1331,7 +1332,7 @@ class StudyApp {
 
         this.hideAllViews();
         this.updateSidebar();
-        this.updateBreadcrumb();
+        this.updateNavigation();
         
         document.getElementById('home-view').style.display = 'block';
         this.renderSubjects();
@@ -1354,7 +1355,7 @@ class StudyApp {
 
         this.hideAllViews();
         this.updateSidebar();
-        this.updateBreadcrumb();
+        this.updateNavigation();
         
         document.getElementById('home-view').style.display = 'block';
         this.renderCourses(subject);
@@ -1626,6 +1627,154 @@ class StudyApp {
                 }
             }
         });
+    }
+
+    // ナビゲーション機能
+    updateNavigation() {
+        const homeView = document.getElementById('home-view');
+        if (!homeView) return;
+
+        // 既存のナビゲーションを削除
+        const existingNav = homeView.querySelector('.page-navigation');
+        if (existingNav) {
+            existingNav.remove();
+        }
+
+        // ナビゲーションHTML作成
+        let navigationHtml = '';
+
+        if (this.currentView !== 'subjects') {
+            navigationHtml = `
+                <div class="page-navigation">
+                    <div class="nav-breadcrumb">
+                        ${this.generateBreadcrumb()}
+                    </div>
+                    <div class="nav-actions">
+                        ${this.generateBackButton()}
+                        ${this.generateProgressIndicator()}
+                    </div>
+                </div>
+            `;
+        }
+
+        if (navigationHtml) {
+            homeView.insertAdjacentHTML('afterbegin', navigationHtml);
+            this.bindNavigationEvents();
+        }
+    }
+
+    generateBreadcrumb() {
+        let breadcrumb = `
+            <div class="breadcrumb-item">
+                <a href="#" class="breadcrumb-link" onclick="app.showSubjects()">
+                    <span class="icon">🏠</span>
+                    科目一覧
+                </a>
+            </div>
+        `;
+
+        if (this.currentView === 'courses' && this.currentSubject) {
+            breadcrumb += `
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item">
+                    <span class="breadcrumb-current">${this.currentSubject.name}</span>
+                </div>
+            `;
+        } else if (this.currentView === 'course' && this.currentSubject && this.currentCourse) {
+            breadcrumb += `
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link" onclick="app.showSubject(app.currentSubject)">
+                        ${this.currentSubject.name}
+                    </a>
+                </div>
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item">
+                    <span class="breadcrumb-current">${this.currentCourse.title}</span>
+                </div>
+            `;
+        } else if (this.currentView === 'lesson' && this.currentSubject && this.currentCourse) {
+            const lesson = this.findLessonById(this.currentLesson);
+            breadcrumb += `
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link" onclick="app.showSubject(app.currentSubject)">
+                        ${this.currentSubject.name}
+                    </a>
+                </div>
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link" onclick="app.showCourse(app.currentCourse)">
+                        ${this.currentCourse.title}
+                    </a>
+                </div>
+                <span class="breadcrumb-separator">›</span>
+                <div class="breadcrumb-item">
+                    <span class="breadcrumb-current">${lesson ? lesson.title : 'レッスン'}</span>
+                </div>
+            `;
+        }
+
+        return breadcrumb;
+    }
+
+    generateBackButton() {
+        let backAction = '';
+        let backText = '';
+
+        switch (this.currentView) {
+            case 'courses':
+                backAction = 'app.showSubjects()';
+                backText = '科目一覧に戻る';
+                break;
+            case 'course':
+                backAction = 'app.showSubject(app.currentSubject)';
+                backText = `${this.currentSubject ? this.currentSubject.name : 'コース一覧'}に戻る`;
+                break;
+            case 'lesson':
+                backAction = 'app.showCourse(app.currentCourse)';
+                backText = 'コース詳細に戻る';
+                break;
+            default:
+                return '';
+        }
+
+        return `
+            <button class="back-button" onclick="${backAction}">
+                <span class="icon">←</span>
+                ${backText}
+            </button>
+        `;
+    }
+
+    generateProgressIndicator() {
+        if (this.currentView === 'lesson' && this.currentCourse) {
+            const position = this.getLessonPosition(this.currentLesson);
+            const progressPercent = (position.position / position.total) * 100;
+            
+            return `
+                <div class="progress-indicator">
+                    <span>進捗: ${position.position} / ${position.total}</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progressPercent}%"></div>
+                    </div>
+                </div>
+            `;
+        }
+        return '';
+    }
+
+    bindNavigationEvents() {
+        // ナビゲーションボタンの追加イベントがあればここに追加
+    }
+
+    // 既存メソッドでナビゲーション更新を呼び出す
+    showSubject(subject) {
+        this.currentView = 'courses';
+        this.currentSubject = subject;
+        this.renderCourses(subject);
+        this.updateSidebar();
+        this.updateNavigation();
     }
 }
 
