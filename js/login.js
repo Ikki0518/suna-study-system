@@ -4,46 +4,9 @@ const googleLoginButton = document.getElementById('googleLogin');
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 
-// ページ読み込み時の処理
-document.addEventListener('DOMContentLoaded', function() {
-    checkSpecialLoginUrl();
-});
-
 // フォーム送信イベント
 loginForm.addEventListener('submit', handleLogin);
 googleLoginButton.addEventListener('click', handleGoogleLogin);
-
-// 専用URLからのアクセスをチェック
-function checkSpecialLoginUrl() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get('email');
-    const auto = urlParams.get('auto');
-    
-    if (email && auto === 'true') {
-        // 専用URLからのアクセスの場合
-        emailInput.value = decodeURIComponent(email);
-        passwordInput.focus(); // パスワード入力にフォーカス
-        
-        // 専用URL用のメッセージを表示
-        showInfo('管理者から発行された専用URLでアクセスしています。パスワードを入力してログインしてください。');
-        
-        // フォームにヒントを追加
-        const formContainer = document.querySelector('.login-form');
-        if (formContainer && !document.getElementById('special-url-hint')) {
-            const hintDiv = document.createElement('div');
-            hintDiv.id = 'special-url-hint';
-            hintDiv.className = 'special-url-hint';
-            hintDiv.innerHTML = `
-                <div class="hint-content">
-                    <h4>📝 ログイン方法</h4>
-                    <p>管理者から受け取ったパスワードを入力してください</p>
-                    <p>パスワードが分からない場合は、管理者にお問い合わせください</p>
-                </div>
-            `;
-            formContainer.insertBefore(hintDiv, formContainer.firstChild);
-        }
-    }
-}
 
 // 通常のログイン処理
 async function handleLogin(event) {
@@ -85,7 +48,7 @@ async function handleLogin(event) {
                 
                 showLoadingScreen('管理者アカウント作成中...');
                 setTimeout(() => {
-                    window.location.href = 'admin.html';
+                    window.location.href = '/pages/admin.html';
                 }, 2000);
                 return;
             }
@@ -108,9 +71,9 @@ async function handleLogin(event) {
             setTimeout(() => {
                 // roleに基づいてリダイレクト
                 if (result.user.role === 'admin' || result.user.role === 'super_admin') {
-                    window.location.href = 'admin.html';
+                    window.location.href = '/pages/admin.html';
                 } else {
-                    window.location.href = 'student.html';
+                    window.location.href = '/pages/student.html';
                 }
             }, 2000);
         } else {
@@ -148,7 +111,7 @@ async function handleGoogleLogin() {
         // ローディング画面を表示してからメインページにリダイレクト
         showLoadingScreen();
         setTimeout(() => {
-            window.location.href = 'student.html';
+            window.location.href = '/pages/student.html';
         }, 2000);
     } catch (error) {
         console.error('Google login error:', error);
@@ -194,63 +157,31 @@ async function loginUser(userData) {
                     }
                 });
             }
-            // 管理者から登録された受講生のログイン処理
+            // 管理者から招待された受講生のログイン処理
             else {
-                // ローカルストレージから登録された受講生情報を確認
-                const registeredUsers = JSON.parse(localStorage.getItem('sunaUsers') || '[]');
-                const registeredUser = registeredUsers.find(user => 
-                    user.email === userData.email && user.password === userData.password
+                // ローカルストレージから招待された受講生情報を確認
+                const invitedStudents = JSON.parse(localStorage.getItem('invitedStudents') || '[]');
+                const invitedStudent = invitedStudents.find(student => 
+                    student.email === userData.email && student.tempPassword === userData.password
                 );
                 
-                if (registeredUser) {
-                    // 初回ログインの場合、登録データのステータスを更新
-                    if (registeredUser.role === 'student') {
-                        const registrations = JSON.parse(localStorage.getItem('studentRegistrations') || '[]');
-                        const registration = registrations.find(r => r.id === registeredUser.registrationId);
-                        if (registration && registration.status === 'unused') {
-                            registration.status = 'active';
-                            registration.first_login_at = new Date().toISOString();
-                            localStorage.setItem('studentRegistrations', JSON.stringify(registrations));
-                        }
-                    }
-                    
+                if (invitedStudent) {
                     resolve({
                         success: true,
                         user: {
                             email: userData.email,
-                            name: registeredUser.name,
-                            role: registeredUser.role,
-                            schoolId: registeredUser.schoolId,
-                            grade: registeredUser.grade,
-                            isRegisteredStudent: true
+                            name: invitedStudent.name,
+                            role: 'student',
+                            schoolId: invitedStudent.schoolId,
+                            grade: invitedStudent.grade,
+                            isInvitedStudent: true
                         }
                     });
-                }
-                // 旧招待システムの互換性チェック
-                else {
-                    const invitedStudents = JSON.parse(localStorage.getItem('invitedStudents') || '[]');
-                    const invitedStudent = invitedStudents.find(student => 
-                        student.email === userData.email && student.tempPassword === userData.password
-                    );
-                    
-                    if (invitedStudent) {
-                        resolve({
-                            success: true,
-                            user: {
-                                email: userData.email,
-                                name: invitedStudent.name,
-                                role: 'student',
-                                schoolId: invitedStudent.schoolId,
-                                grade: invitedStudent.grade,
-                                isInvitedStudent: true
-                            }
-                        });
-                    } else {
-                        resolve({
-                            success: false,
-                            message: 'メールアドレスまたはパスワードが正しくありません'
-                        });
-                    }
+                } else {
+                    resolve({
+                        success: false,
+                        message: 'メールアドレスまたはパスワードが正しくありません'
+                    });
                 }
             }
         }, 1500);

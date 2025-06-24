@@ -1,870 +1,915 @@
-/* UTAGE風管理者ダッシュボード */
+/* 管理者専用スタイル */
 
-/* ベース設定 */
-.utage-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif;
-    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-    margin: 0;
-    padding: 0;
-    color: #1e293b;
-    line-height: 1.6;
+/* 管理者専用ボディ */
+.admin-body {
+    background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
     min-height: 100vh;
 }
 
-/* トップヘッダー */
-.utage-header {
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #ffffff 100%);
-    color: #1e293b;
-    padding: 0 24px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    position: fixed;
+/* 管理者ヘッダー */
+.admin-header {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    padding: 16px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-    border-bottom: 1px solid #e2e8f0;
+    z-index: 100;
 }
 
-.utage-header-content {
+.admin-header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
-.utage-logo {
-    display: flex;
-    align-items: center;
-    font-weight: 700;
-    font-size: 18px;
-}
-
-.utage-header-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.admin-user-info {
-    color: #64748b;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.utage-logout-btn {
-    background: rgba(0, 0, 0, 0.05);
-    border: 1px solid #e2e8f0;
-    color: #475569;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-}
-
-.utage-logout-btn:hover {
-    background: rgba(0, 0, 0, 0.08);
-    color: #1e293b;
-    transform: translateY(-1px);
-}
-
-/* レイアウト */
-.utage-layout {
-    display: flex;
-    min-height: 100vh;
-    padding-top: 60px;
-}
-
-/* 左サイドバー */
-.utage-sidebar {
-    width: 280px;
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-    border-right: 1px solid #e2e8f0;
-    padding: 24px 0;
-    position: fixed;
-    left: 0;
-    top: 60px;
-    bottom: 0;
-    overflow-y: auto;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
-}
-
-.utage-sidebar-content {
-    padding: 0 24px;
-}
-
-.utage-sidebar-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #1e293b;
-    margin: 0 0 24px 0;
-    padding-bottom: 16px;
-    border-bottom: 2px solid #e2e8f0;
-}
-
-.utage-nav-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.utage-nav-item {
-    margin-bottom: 6px;
-}
-
-.utage-nav-link {
+.admin-logo {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 14px 16px;
-    border-radius: 10px;
-    background: none;
-    border: none;
-    color: #64748b;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-    text-align: left;
-    position: relative;
-    overflow: hidden;
 }
 
-.utage-nav-link::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s;
-}
-
-.utage-nav-link:hover::before {
-    left: 100%;
-}
-
-.utage-nav-link:hover {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-    color: #1e293b;
-    transform: translateX(4px);
-}
-
-.utage-nav-link.active {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+.admin-badge {
+    background: rgba(255, 255, 255, 0.2);
     color: white;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.utage-nav-link.active:hover {
-    transform: translateX(4px);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+.admin-nav {
+    color: white;
 }
 
-.utage-nav-icon {
-    font-size: 16px;
-    width: 20px;
-    text-align: center;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-}
-
-/* ナビゲーショングループ（サブメニュー付き） */
-.utage-nav-group {
-    position: relative;
-}
-
-.utage-nav-submenu {
-    margin-top: 8px;
-    padding-left: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.utage-nav-sublink {
-    padding: 6px 12px;
-    background: none;
-    border: none;
-    color: #64748b;
-    font-size: 13px;
+.admin-auth-section .user-name {
+    color: white;
     font-weight: 500;
-    text-align: left;
-    cursor: pointer;
+    margin-right: 16px;
+}
+
+.admin-auth-section .logout-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
     border-radius: 6px;
-    transition: all 0.2s ease;
-    position: relative;
-}
-
-.utage-nav-sublink:hover {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-    color: #3b82f6;
-    transform: translateX(2px);
-}
-
-/* メインコンテンツ */
-.utage-main {
-    flex: 1;
-    margin-left: 280px;
-    padding: 32px;
-    min-height: calc(100vh - 60px);
-    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-}
-
-/* タブパネル */
-.utage-tab-panel {
-    display: none;
-    opacity: 0;
-    transform: translateY(20px);
+    font-size: 14px;
+    cursor: pointer;
     transition: all 0.3s ease;
 }
 
-.utage-tab-panel.active {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-    animation: fadeInUp 0.5s ease-out;
+.admin-auth-section .logout-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
 }
 
-/* コンテンツヘッダー */
-.utage-content-header {
-    margin-bottom: 32px;
+/* 管理者メインコンテンツ */
+.admin-main {
+    padding: 40px 0;
 }
 
-.utage-breadcrumb {
-    font-size: 14px;
-    color: #64748b;
-    margin-bottom: 8px;
-    font-weight: 500;
+.admin-main .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
-.utage-page-title {
+/* ダッシュボードヘッダー */
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.dashboard-title {
     font-size: 32px;
     font-weight: 700;
-    color: #1e293b;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.dashboard-subtitle {
+    font-size: 16px;
+    color: #6b7280;
     margin: 0;
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
-/* コンテンツボディ */
-.utage-content-body {
-    max-width: 1200px;
+/* タブナビゲーション */
+.admin-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
 }
 
-/* 統計グリッド */
-.utage-stats-grid {
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-btn:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.tab-btn.active {
+    background: #f97316;
+    color: white;
+    font-weight: 600;
+}
+
+.notification-badge {
+    background: #dc2626;
+    color: white;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+    margin-left: 5px;
+}
+
+/* タブコンテンツ */
+.tab-content {
+    min-height: 400px;
+}
+
+.tab-panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* 統計カードグリッド */
+.stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 24px;
     margin-bottom: 40px;
 }
 
-.utage-stat-card {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border-radius: 16px;
-    padding: 28px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.stat-card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    margin: 0;
+}
+
+.stat-card-icon {
+    font-size: 24px;
+}
+
+.stat-card-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.stat-card-change {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.stat-card-change.positive {
+    color: #059669;
+}
+
+.stat-card-change.negative {
+    color: #dc2626;
+}
+
+.stat-card-change.neutral {
+    color: #6b7280;
+}
+
+/* 管理セクション共通 */
+.student-management,
+.applications-management,
+.schools-management,
+.invitations-management {
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.section-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.action-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.action-btn.primary {
+    background: #ea580c;
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+    color: white;
+}
+
+.action-btn.secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.action-btn.secondary:hover {
+    background: #e5e7eb;
+    transform: translateY(-1px);
+}
+
+/* 検索・フィルターセクション */
+.filter-section {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.search-box {
+    display: flex;
+    flex: 1;
+    max-width: 400px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px 0 0 6px;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-input:focus {
+    border-color: #ea580c;
+    box-shadow: 0 0 0 1px #ea580c;
+}
+
+.search-btn {
+    padding: 8px 12px;
+    background: #ea580c;
+    color: white;
+    border: none;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.search-btn:hover {
+    background: #dc2626;
+}
+
+.filter-options {
+    display: flex;
+    gap: 12px;
+}
+
+.filter-select {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+    outline: none;
+}
+
+.filter-select:focus {
+    border-color: #ea580c;
+    box-shadow: 0 0 0 1px #ea580c;
+}
+
+/* 受講生テーブル */
+.student-table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.student-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    table-layout: auto;
+}
+
+.student-table th {
+    background: #f9fafb;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.student-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 14px;
+    color: #1f2937;
+}
+
+/* テーブル列の幅を調整 */
+.student-table th:nth-child(1),
+.student-table td:nth-child(1) { width: 15%; }
+.student-table th:nth-child(2),
+.student-table td:nth-child(2) { width: 20%; }
+.student-table th:nth-child(3),
+.student-table td:nth-child(3) { width: 10%; }
+.student-table th:nth-child(4),
+.student-table td:nth-child(4) { width: 10%; }
+.student-table th:nth-child(5),
+.student-table td:nth-child(5) { width: 12%; }
+.student-table th:nth-child(6),
+.student-table td:nth-child(6) { width: 15%; }
+.student-table th:nth-child(7),
+.student-table td:nth-child(7) { width: 13%; }
+.student-table th:nth-child(8),
+.student-table td:nth-child(8) { width: 15%; }
+
+.student-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* 進捗バー */
+.progress-bar {
+    width: 100px;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    transition: width 0.3s ease;
+}
+
+.progress-fill.low {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.progress-fill.medium {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.progress-fill.high {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* アクションボタン */
+.action-buttons {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+}
+
+.action-btn-small {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    min-width: 50px;
+}
+
+.action-btn-small.view {
+    background: #3b82f6;
+    color: white;
+}
+
+.action-btn-small.view:hover {
+    background: #2563eb;
+}
+
+.action-btn-small.edit {
+    background: #f59e0b;
+    color: white;
+}
+
+.action-btn-small.edit:hover {
+    background: #d97706;
+}
+
+/* モーダル */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6b7280;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+/* ステータスバッジ */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    display: inline-block;
+    min-width: 70px;
+    text-align: center;
+}
+
+.status-badge.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.inactive {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.status-badge.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    .admin-header-content {
+        padding: 0 16px;
+    }
+    
+    .admin-main .container {
+        padding: 0 16px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    
+    .filter-section {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .search-box {
+        max-width: none;
+    }
+    
+    .filter-options {
+        flex-direction: column;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .student-management {
+        padding: 20px;
+    }
+
+    .student-table th,
+    .student-table td {
+        padding: 8px 4px;
+        font-size: 12px;
+    }
+
+    .action-btn-small {
+        padding: 4px 8px;
+        font-size: 10px;
+        min-width: 35px;
+    }
+}
+
+/* アニメーション */
+/* 申請管理スタイル */
+.applications-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.application-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.application-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.application-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.application-info h3 {
+    margin: 0 0 4px 0;
+    color: #1f2937;
+    font-size: 1.2rem;
+}
+
+.application-info p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.application-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.application-status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.application-status.approved {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.application-status.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.application-message {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 12px;
+    margin: 12px 0;
+    font-style: italic;
+    color: #4b5563;
+}
+
+.application-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.approve-btn {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.approve-btn:hover {
+    background: #059669;
+}
+
+.reject-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.reject-btn:hover {
+    background: #dc2626;
+}
+
+/* スクール管理スタイル */
+.schools-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.school-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
 }
 
-.utage-stat-card::before {
+.school-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    background: var(--school-color, #f97316);
 }
 
-.utage-stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+.school-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.utage-stat-card:hover::before {
-    opacity: 1;
-}
-
-.utage-stat-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 20px;
-}
-
-.utage-stat-card-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.utage-stat-card-icon {
-    font-size: 24px;
-    opacity: 0.8;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.utage-stat-card-value {
-    font-size: 36px;
-    font-weight: 700;
-    color: #1e293b;
-    margin-bottom: 12px;
-    line-height: 1;
-}
-
-.utage-stat-card-change {
-    font-size: 14px;
-    font-weight: 500;
+.school-card-header {
     display: flex;
     align-items: center;
-    gap: 4px;
+    margin-bottom: 16px;
 }
 
-.utage-stat-card-change.positive {
-    color: #059669;
-}
-
-.utage-stat-card-change.negative {
-    color: #dc2626;
-}
-
-.utage-stat-card-change.neutral {
-    color: #64748b;
-}
-
-/* セクション */
-.utage-section {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-    margin-bottom: 32px;
-    overflow: hidden;
-}
-
-.utage-section-header {
+.school-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--school-color, #f97316);
+    color: white;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 24px 28px;
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-    border-bottom: 1px solid #e2e8f0;
-    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 16px;
 }
 
-.utage-section-left {
+.school-info h3 {
+    margin: 0 0 4px 0;
+    color: #1f2937;
+    font-size: 1.3rem;
+}
+
+.school-info p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.school-instructors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 12px 0;
+}
+
+.instructor-tag {
+    background: var(--school-color, #f97316);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.school-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+/* 招待管理スタイル */
+.invitations-container {
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-.utage-section-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #1e293b;
-    margin: 0;
-}
-
-.utage-section-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-/* タブ */
-.utage-tabs {
-    display: flex;
-    gap: 4px;
-}
-
-.utage-tab-btn {
-    padding: 8px 16px;
-    border: none;
-    background: transparent;
-    color: #64748b;
-    font-size: 14px;
-    font-weight: 500;
+.invitation-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
     border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.utage-tab-btn.active {
-    background: #3b82f6;
-    color: white;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
-}
-
-.utage-tab-btn:hover:not(.active) {
-    background: #f1f5f9;
-    color: #1e293b;
-}
-
-/* ボタン */
-.utage-btn {
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    position: relative;
-    overflow: hidden;
-}
-
-.utage-btn::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.3s, height 0.3s;
-}
-
-.utage-btn:hover::before {
-    width: 300px;
-    height: 300px;
-}
-
-.utage-btn-primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    color: white;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.utage-btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
-}
-
-.utage-btn-secondary {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-    color: #475569;
-    border: 1px solid #e2e8f0;
-}
-
-.utage-btn-secondary:hover {
-    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* 検索ボックス */
-.utage-search-box {
-    display: flex;
-    align-items: center;
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 20px;
     transition: all 0.3s ease;
 }
 
-.utage-search-box:focus-within {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+.invitation-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.utage-search-input {
-    border: none;
-    padding: 10px 16px;
-    font-size: 14px;
-    color: #1e293b;
-    background: transparent;
-    outline: none;
-    flex: 1;
-    min-width: 200px;
-}
-
-.utage-search-btn {
-    background: none;
-    border: none;
-    padding: 10px 12px;
-    color: #64748b;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.utage-search-btn:hover {
-    color: #3b82f6;
-}
-
-/* テーブル */
-.utage-table-container {
-    overflow-x: auto;
-}
-
-.utage-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-}
-
-.utage-table th,
-.utage-table td {
-    padding: 16px 20px;
-    text-align: left;
-    border-bottom: 1px solid #f1f5f9;
-    color: #1e293b;
-}
-
-.utage-table th {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    font-weight: 600;
-    color: #374151;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-.utage-table tbody tr {
-    transition: all 0.2s ease;
-}
-
-.utage-table tbody tr:hover {
-    background: linear-gradient(135deg, #f1f5f9 0%, #f8fafc 100%);
-    transform: scale(1.001);
-}
-
-.utage-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-/* チェックボックス */
-.utage-checkbox {
-    width: 16px;
-    height: 16px;
-    border: 2px solid #cbd5e1;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.utage-checkbox:checked {
-    background: #3b82f6;
-    border-color: #3b82f6;
-}
-
-/* ステータスバッジ */
-.utage-status-badge {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.utage-status-badge.active {
-    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-    color: #166534;
-    border: 1px solid #86efac;
-}
-
-.utage-status-badge.inactive {
-    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-    color: #991b1b;
-    border: 1px solid #fca5a5;
-}
-
-.utage-status-badge.pending {
-    background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
-    color: #92400e;
-    border: 1px solid #fde68a;
-}
-
-/* アクションボタン */
-.utage-action-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-.utage-action-btn {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.utage-action-btn.edit {
-    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-    color: #1e40af;
-    border: 1px solid #93c5fd;
-}
-
-.utage-action-btn.edit:hover {
-    background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
-    transform: translateY(-1px);
-}
-
-.utage-action-btn.delete {
-    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-    color: #991b1b;
-    border: 1px solid #fca5a5;
-}
-
-.utage-action-btn.delete:hover {
-    background: linear-gradient(135deg, #fecaca 0%, #f87171 100%);
-    transform: translateY(-1px);
-}
-
-/* モーダル */
-.utage-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(8px);
-}
-
-.utage-modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.utage-modal-content {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    max-width: 500px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    transform: scale(0.9) translateY(20px);
-    transition: transform 0.3s ease;
-}
-
-.utage-modal-overlay.active .utage-modal-content {
-    transform: scale(1) translateY(0);
-}
-
-.utage-modal-header {
-    padding: 24px 28px 0;
+.invitation-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    margin-bottom: 12px;
 }
 
-.utage-modal-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #1e293b;
+.invitation-info h3 {
+    margin: 0 0 4px 0;
+    color: #1f2937;
+    font-size: 1.2rem;
+}
+
+.invitation-info p {
     margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
 }
 
-.utage-modal-close {
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: #64748b;
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-}
-
-.utage-modal-close:hover {
-    background: #f1f5f9;
-    color: #475569;
-    transform: rotate(90deg);
-}
-
-.utage-modal-body {
-    padding: 24px 28px 28px;
-}
-
-/* フォーム */
-.utage-form-group {
-    margin-bottom: 20px;
-}
-
-.utage-form-group label {
-    display: block;
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 6px;
-}
-
-.utage-form-input,
-.utage-form-textarea {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 14px;
-    color: #1e293b;
-    transition: all 0.3s ease;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-}
-
-.utage-form-input:focus,
-.utage-form-textarea:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+.invitation-code {
     background: white;
+    border: 2px dashed #d1d5db;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: monospace;
+    font-weight: bold;
+    color: #1f2937;
+    margin: 8px 0;
 }
 
-.utage-form-help {
-    font-size: 12px;
-    color: #64748b;
-    margin-top: 4px;
-}
-
-/* 情報ボックス */
-.utage-form-info {
-    margin-top: 20px;
-}
-
-.utage-info-box {
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-    border: 1px solid #7dd3fc;
-    border-radius: 12px;
-    padding: 20px;
-}
-
-.utage-info-box h4 {
-    color: #0c4a6e;
-    font-size: 16px;
+.invitation-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
     font-weight: 600;
-    margin: 0 0 12px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    text-transform: uppercase;
 }
 
-.utage-info-box ol {
-    color: #075985;
-    font-size: 14px;
-    margin: 0;
-    padding-left: 20px;
+.invitation-status.pending {
+    background: #dbeafe;
+    color: #1e40af;
 }
 
-.utage-info-box li {
-    margin-bottom: 8px;
-    line-height: 1.5;
+.invitation-status.accepted {
+    background: #d1fae5;
+    color: #065f46;
 }
 
-/* フォームアクション */
-.utage-form-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid #e2e8f0;
+.invitation-status.expired {
+    background: #fee2e2;
+    color: #991b1b;
 }
 
 /* 空の状態 */
-.utage-empty-state {
+.empty-state {
     text-align: center;
     padding: 60px 20px;
-    color: #64748b;
+    color: #6b7280;
 }
 
-.utage-empty-state-icon {
-    font-size: 48px;
+.empty-state-icon {
+    font-size: 3rem;
     margin-bottom: 16px;
     opacity: 0.5;
 }
 
-.utage-empty-state h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #475569;
+.empty-state h3 {
     margin: 0 0 8px 0;
+    color: #374151;
 }
 
-.utage-empty-state p {
-    font-size: 14px;
-    color: #64748b;
+.empty-state p {
     margin: 0;
+    font-size: 0.9rem;
 }
 
-/* プログレスバー */
-.utage-progress-bar {
-    width: 100%;
-    height: 8px;
-    background: #e2e8f0;
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 8px 0;
-}
-
-.utage-progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #3b82f6, #06b6d4);
-    border-radius: 4px;
-    transition: width 0.3s ease;
-}
-
-.utage-progress-fill.low {
-    background: linear-gradient(90deg, #ef4444, #f97316);
-}
-
-.utage-progress-fill.medium {
-    background: linear-gradient(90deg, #f59e0b, #eab308);
-}
-
-.utage-progress-fill.high {
-    background: linear-gradient(90deg, #10b981, #059669);
-}
-
-/* アニメーション */
-@keyframes fadeInUp {
+@keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(20px);
     }
     to {
         opacity: 1;
@@ -872,116 +917,10 @@
     }
 }
 
-@keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+.stat-card {
+    animation: fadeIn 0.5s ease-out;
 }
 
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.7;
-    }
-}
-
-/* ローディング状態 */
-.utage-loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-    color: #64748b;
-}
-
-.utage-loading::after {
-    content: '';
-    width: 20px;
-    height: 20px;
-    border: 2px solid #e2e8f0;
-    border-top: 2px solid #3b82f6;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-left: 12px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 1024px) {
-    .utage-sidebar {
-        width: 260px;
-    }
-    
-    .utage-main {
-        margin-left: 260px;
-        padding: 24px;
-    }
-}
-
-@media (max-width: 768px) {
-    .utage-sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-    }
-    
-    .utage-main {
-        margin-left: 0;
-        padding: 16px;
-    }
-    
-    .utage-section-header {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 16px;
-    }
-    
-    .utage-section-actions {
-        justify-content: flex-start;
-    }
-    
-    .utage-search-input {
-        min-width: 150px;
-    }
-    
-    .utage-stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .utage-page-title {
-        font-size: 24px;
-    }
-}
-
-/* ダークモード対応 */
-@media (prefers-color-scheme: dark) {
-    .utage-body {
-        background-color: #0f172a;
-        color: #e2e8f0;
-    }
-    
-    .utage-sidebar {
-        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-        border-right-color: #334155;
-    }
-    
-    .utage-main {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    }
-    
-    .utage-stat-card,
-    .utage-section {
-        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-        border-color: #475569;
-    }
+.student-management {
+    animation: fadeIn 0.6s ease-out;
 }
