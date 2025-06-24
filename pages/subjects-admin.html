@@ -33,7 +33,12 @@
                 <nav class="utage-nav">
                     <ul class="utage-nav-list">
                         <li class="utage-nav-item"><button class="utage-nav-link" onclick="window.location.href='admin.html'">📊 ダッシュボード</button></li>
-                        <li class="utage-nav-item"><button class="utage-nav-link active" onclick="window.location.href='subjects-admin.html'">📚 コンテンツ管理</button></li>
+                        <li class="utage-nav-group">
+                            <button class="utage-nav-link active">📚 コンテンツ管理</button>
+                            <ul class="utage-nav-submenu">
+                                <li><a class="utage-nav-sublink active" href="subjects-admin.html">科目一覧</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </nav>
             </div>

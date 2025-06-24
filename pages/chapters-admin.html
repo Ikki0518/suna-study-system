@@ -34,8 +34,14 @@
                 <nav class="utage-nav">
                     <ul class="utage-nav-list">
                         <li class="utage-nav-item"><button class="utage-nav-link" onclick="window.location.href='admin.html'">📊 ダッシュボード</button></li>
-                        <li class="utage-nav-item"><button class="utage-nav-link" onclick="window.location.href='subjects-admin.html'">📁 コース管理</button></li>
-                        <li class="utage-nav-item"><button class="utage-nav-link active" onclick="window.location.href='courses-admin.html'">📑 章管理</button></li>
+                        <li class="utage-nav-group">
+                            <button class="utage-nav-link active">📚 コンテンツ管理</button>
+                            <ul class="utage-nav-submenu">
+                                <li><a class="utage-nav-sublink" href="subjects-admin.html">科目一覧</a></li>
+                                <li><a class="utage-nav-sublink" href="#" onclick="history.back()">コース一覧</a></li>
+                                <li><a class="utage-nav-sublink active" href="#">章一覧</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </nav>
             </div>
@@ -57,10 +63,12 @@
 
                 <div class="page-header">
                     <h1 class="page-title" id="course-name">Course</h1>
-                    <button id="add-chapter-btn" class="btn btn-outline">＋ 章追加</button>
+                    <button id="add-chapter-btn" class="utage-btn utage-btn-primary">＋ 章追加</button>
                 </div>
 
-                <table id="chapters-table" class="manager-table"></table>
+                <div class="utage-table-container">
+                    <table id="chapters-table" class="utage-table"></table>
+                </div>
             </div>
         </main>
     </div>

@@ -34,7 +34,15 @@
                 <nav class="utage-nav">
                     <ul class="utage-nav-list">
                         <li class="utage-nav-item"><button class="utage-nav-link" onclick="window.location.href='admin.html'">📊 ダッシュボード</button></li>
-                        <li class="utage-nav-item"><button class="utage-nav-link active" onclick="window.location.href='subjects-admin.html'">📚 コンテンツ管理</button></li>
+                        <li class="utage-nav-group">
+                            <button class="utage-nav-link active">📚 コンテンツ管理</button>
+                            <ul class="utage-nav-submenu">
+                                <li><a class="utage-nav-sublink" href="subjects-admin.html">科目一覧</a></li>
+                                <li><a class="utage-nav-sublink" href="#" onclick="history.back()">コース一覧</a></li>
+                                <li><a class="utage-nav-sublink" href="#" onclick="history.back()">章一覧</a></li>
+                                <li><a class="utage-nav-sublink active" href="#">レッスン一覧</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </nav>
             </div>
@@ -59,12 +67,14 @@
                 <div class="page-header">
                     <h1 class="page-title" id="chapter-name">Chapter</h1>
                     <div style="display:flex; gap:12px;">
-                        <button id="add-lesson-btn" class="btn btn-outline">＋ 追加</button>
-                        <button id="reorder-lessons-btn" class="btn btn-secondary">並べ替え</button>
+                        <button id="add-lesson-btn" class="utage-btn utage-btn-primary">＋ 追加</button>
+                        <button id="reorder-lessons-btn" class="utage-btn utage-btn-secondary">並べ替え</button>
                     </div>
                 </div>
 
-                <table id="lessons-table" class="manager-table"></table>
+                <div class="utage-table-container">
+                    <table id="lessons-table" class="utage-table"></table>
+                </div>
             </div>
         </main>
     </div>

@@ -82,63 +82,6 @@
                 </div>
             </div>
 
-            <!-- 検索・フィルタ機能 -->
-            <div class="search-filter-section">
-                <div class="search-container">
-                    <div class="search-box">
-                        <span class="search-icon">🔍</span>
-                        <input type="text" id="course-search" placeholder="科目やコースを検索..." class="search-input">
-                        <button id="clear-search" class="clear-search" style="display: none;">✕</button>
-                    </div>
-                    <div class="filter-buttons">
-                        <button class="filter-btn active" data-filter="all">すべて</button>
-                        <button class="filter-btn" data-filter="beginner">初級</button>
-                        <button class="filter-btn" data-filter="intermediate">中級</button>
-                        <button class="filter-btn" data-filter="advanced">上級</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 学習進捗ダッシュボード -->
-            <div id="progress-dashboard" class="progress-dashboard">
-                <h3 class="dashboard-title">📊 学習進捗ダッシュボード</h3>
-                <div class="progress-stats">
-                    <div class="stat-card">
-                        <div class="stat-icon">📚</div>
-                        <div class="stat-content">
-                            <div class="stat-number" id="total-courses">22</div>
-                            <div class="stat-label">総コース数</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-content">
-                            <div class="stat-number" id="completed-lessons">0</div>
-                            <div class="stat-label">完了レッスン</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⏱️</div>
-                        <div class="stat-content">
-                            <div class="stat-number" id="study-time">0h</div>
-                            <div class="stat-label">総学習時間</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🔥</div>
-                        <div class="stat-content">
-                            <div class="stat-number" id="streak-days">0</div>
-                            <div class="stat-label">連続学習日数</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="progress-chart">
-                    <h4>科目別進捗</h4>
-                    <div class="subjects-progress" id="subjects-progress">
-                        <!-- JavaScriptで動的生成 -->
-                    </div>
-                </div>
-            </div>
 
             <!-- 科目一覧 -->
             <div id="subjects-container" class="subjects-container">

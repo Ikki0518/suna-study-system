@@ -1362,8 +1362,6 @@ class StudyApp {
         this.renderSubjects(); // 科目選択画面を表示
         this.updateSidebar();
         this.updateNavigation(); // ナビゲーション初期化
-        this.initializeProgressDashboard(); // 進捗ダッシュボード初期化
-        this.initializeSearchAndFilter(); // 検索・フィルタ機能初期化
         this.bindEvents();
         
         // 定期的にローカルストレージをチェック（管理者が新しい科目を追加した場合）
@@ -1476,9 +1474,6 @@ class StudyApp {
             const subjectsGrid = document.getElementById('subjects-grid');
             this.populateSubjectsGrid(subjectsGrid, subjectValues);
         }
-        
-        // 進捗ダッシュボードの更新
-        this.updateProgressDashboard();
     }
 
     // 科目グリッドに科目を追加
