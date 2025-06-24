@@ -6,7 +6,10 @@
 // that wraps the OpenAI Chat Completion API. Update ENDPOINT_URL if you expose the function elsewhere.
 // ------------------------------
 
+console.log('🤖 Support AI script loaded!');
+
 (function () {
+    console.log('🤖 Support AI IIFE started');
     // Configuration (change to your deployed function URL if necessary)
     const ENDPOINT_URL = '/api/support-ai'; // Relative path on Vercel /functions/v1/support-ai on Supabase, etc.
 
@@ -86,7 +89,12 @@
 
     // Append the widget container to body
     function mountWidget() {
-        if (document.getElementById('support-ai-widget')) return; // Already mounted
+        console.log('🤖 Support AI mountWidget() called');
+        if (document.getElementById('support-ai-widget')) {
+            console.log('🤖 Support AI widget already exists, skipping mount');
+            return; // Already mounted
+        }
+        console.log('🤖 Creating new Support AI widget');
 
         const widgetHTML = `
             <div id="support-ai-widget">
@@ -198,9 +206,16 @@
     }
 
     // Wait for DOM to be ready
+    console.log('🤖 Checking DOM ready state:', document.readyState);
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', mountWidget);
+        console.log('🤖 DOM loading, adding event listener');
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🤖 DOMContentLoaded fired, mounting widget');
+            mountWidget();
+        });
     } else {
+        console.log('🤖 DOM already ready, mounting widget immediately');
         mountWidget();
     }
-})(); 
+    console.log('🤖 Support AI script setup complete');
+})();
