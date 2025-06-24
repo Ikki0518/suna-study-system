@@ -555,3 +555,27 @@
         transform: scale(1.02);
     }
 }
+
+/* 追加: マネージャテーブル */
+.manager-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+}
+.manager-table td {
+    border: 1px solid #e5e7eb;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+.manager-table tr.selected-row {
+    background: #bfdbfe;
+}
+.manager-header {
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    margin-bottom:6px;
+}
+.manager-block {
+    margin-bottom:24px;
+}

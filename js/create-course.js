@@ -19,6 +19,8 @@ class CourseCreator {
         this.hierarchyKey = 'contentHierarchy';
         this.hierarchy = this.loadHierarchy();
         this.editingIndex = null; // 追加: 編集中のインデックス
+        this.selectedCourseId = '';
+        this.selectedChapterId = '';
         this.init();
     }
 
@@ -32,6 +34,7 @@ class CourseCreator {
         this.updateCourseSelect();
         this.updateChapterSelect();
         this.renderCoursesList(); // 既存講座を表示
+        this.renderCoursesManager();
     }
 
     // 管理者認証チェック
@@ -1045,6 +1048,82 @@ class CourseCreator {
         if (courseSelect) {
             courseSelect.addEventListener('change', () => this.updateChapterSelect());
         }
+    }
+
+    /* ========= コース/章 表示 ========= */
+    renderCoursesManager() {
+        this.renderCoursesTable();
+        this.renderChaptersTable();
+
+        // グローバル追加ボタン
+        const addCourseBtn = document.getElementById('global-add-course-btn');
+        if (addCourseBtn) {
+            addCourseBtn.onclick = () => {
+                const name = prompt('コース名を入力');
+                if (name) {
+                    const subjId = this.courseData.subjectId || this.hierarchy.subjects[0]?.id || this.createSubject('未分類');
+                    this.createCourse(subjId, name);
+                    this.renderCoursesTable();
+                }
+            };
+        }
+
+        const addChapterBtn = document.getElementById('global-add-chapter-btn');
+        if (addChapterBtn) {
+            addChapterBtn.onclick = () => {
+                if (!this.selectedCourseId) {
+                    alert('先にコースを選択してください');
+                    return;
+                }
+                const name = prompt('章タイトルを入力');
+                if (name) {
+                    this.createChapter(this.selectedCourseId, name);
+                    this.renderChaptersTable();
+                }
+            };
+        }
+    }
+
+    renderCoursesTable() {
+        const table = document.getElementById('courses-table');
+        if (!table) return;
+        const courses = [];
+        this.hierarchy.subjects.forEach(s => s.courses.forEach(c => courses.push({...c, subjectName: s.name})));
+        table.innerHTML = courses.map(c => `<tr data-id="${c.id}" class="${c.id===this.selectedCourseId?'selected-row':''}"><td>${c.name}</td><td>${c.subjectName}</td></tr>`).join('') || '<tr><td>コースがありません</td></tr>';
+        Array.from(table.querySelectorAll('tr[data-id]')).forEach(row=>{
+            row.onclick = ()=>{
+                this.selectedCourseId = row.dataset.id;
+                this.selectedChapterId='';
+                this.renderCoursesTable();
+                this.renderChaptersTable();
+                document.getElementById('chapters-block').style.display='block';
+                document.getElementById('current-course-name').textContent = row.cells[0].textContent;
+            };
+        });
+    }
+
+    renderChaptersTable() {
+        const table = document.getElementById('chapters-table');
+        if (!table) return;
+        if (!this.selectedCourseId) { table.innerHTML=''; return; }
+        let chapters=[];
+        this.hierarchy.subjects.forEach(s=>{
+            const course=s.courses.find(c=>c.id===this.selectedCourseId);
+            if (course) chapters=course.chapters;
+        });
+        table.innerHTML = chapters.map(ch=>`<tr data-id="${ch.id}" class="${ch.id===this.selectedChapterId?'selected-row':''}"><td>${ch.name}</td></tr>`).join('') || '<tr><td>章がありません</td></tr>';
+        Array.from(table.querySelectorAll('tr[data-id]')).forEach(row=>{
+            row.onclick=()=>{
+                this.selectedChapterId=row.dataset.id;
+                this.renderChaptersTable();
+                // フォームを開く
+                document.getElementById('lesson-editor-block').style.display='block';
+                document.getElementById('course-course').value=this.selectedCourseId;
+                this.updateChapterSelect();
+                document.getElementById('course-chapter').value=this.selectedChapterId;
+                this.updateCourseData();
+            };
+        });
     }
 }
 
