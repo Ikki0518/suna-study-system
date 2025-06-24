@@ -35,6 +35,7 @@ const subjects = {
                 id: 'japanese-modern',
                 title: '現代文基礎',
                 description: '読解力と表現力を身につける',
+                progress: 0,
                 chapters: [
                     {
                         id: 'japanese-ch1',
@@ -61,6 +62,102 @@ const subjects = {
                         ]
                     }
                 ]
+            },
+            {
+                id: 'japanese-classical',
+                title: '古文入門',
+                description: '古典文学の基礎から応用まで',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'classical-ch1',
+                        title: '第1章：古文の基礎知識',
+                        lessons: [
+                            {
+                                id: 'classical1-1',
+                                title: '古文の文法基礎',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'classical1-2',
+                                title: '枕草子を読む',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'classical1-3',
+                                title: '源氏物語の世界',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'japanese-chinese',
+                title: '漢文基礎',
+                description: '漢文の読み方と古典中国文学',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'chinese-ch1',
+                        title: '第1章：漢文の読み方',
+                        lessons: [
+                            {
+                                id: 'chinese1-1',
+                                title: '返り点の基礎',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'chinese1-2',
+                                title: '書き下し文の作り方',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'chinese1-3',
+                                title: '論語を読む',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'japanese-essay',
+                title: '小論文対策',
+                description: '論理的な文章の書き方をマスター',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'essay-ch1',
+                        title: '第1章：小論文の基本構成',
+                        lessons: [
+                            {
+                                id: 'essay1-1',
+                                title: '序論・本論・結論の組み立て',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'essay1-2',
+                                title: '論理的な文章構成',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'essay1-3',
+                                title: '具体例の効果的な使い方',
+                                duration: '25分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     },
@@ -77,6 +174,7 @@ const subjects = {
                 id: 'math-algebra',
                 title: '代数基礎',
                 description: '方程式と関数の基本',
+                progress: 0,
                 chapters: [
                     {
                         id: 'math-ch1',
@@ -109,6 +207,102 @@ const subjects = {
                         ]
                     }
                 ]
+            },
+            {
+                id: 'math-geometry',
+                title: '幾何学入門',
+                description: '図形の性質と証明の基礎',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'geometry-ch1',
+                        title: '第1章：平面図形の基礎',
+                        lessons: [
+                            {
+                                id: 'geometry1-1',
+                                title: '三角形の性質',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'geometry1-2',
+                                title: '四角形と円',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'geometry1-3',
+                                title: '証明の基本',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'math-calculus',
+                title: '微分積分基礎',
+                description: '変化率と面積の概念を理解',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'calculus-ch1',
+                        title: '第1章：微分の基礎',
+                        lessons: [
+                            {
+                                id: 'calculus1-1',
+                                title: '極限の概念',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'calculus1-2',
+                                title: '導関数の計算',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'calculus1-3',
+                                title: '微分の応用',
+                                duration: '45分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'math-statistics',
+                title: '確率・統計入門',
+                description: 'データ分析と確率の基本概念',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'statistics-ch1',
+                        title: '第1章：確率の基礎',
+                        lessons: [
+                            {
+                                id: 'statistics1-1',
+                                title: '確率の基本法則',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'statistics1-2',
+                                title: '平均と分散',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'statistics1-3',
+                                title: 'データの可視化',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     },
@@ -125,6 +319,7 @@ const subjects = {
                 id: 'science-physics',
                 title: '物理基礎',
                 description: '力学と電気の基本原理',
+                progress: 0,
                 chapters: [
                     {
                         id: 'physics-ch1',
@@ -151,6 +346,102 @@ const subjects = {
                         ]
                     }
                 ]
+            },
+            {
+                id: 'science-chemistry',
+                title: '化学基礎',
+                description: '原子・分子から化学反応まで',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'chemistry-ch1',
+                        title: '第1章：原子と分子',
+                        lessons: [
+                            {
+                                id: 'chemistry1-1',
+                                title: '原子の構造',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'chemistry1-2',
+                                title: '元素の周期表',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'chemistry1-3',
+                                title: '化学結合の基礎',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'science-biology',
+                title: '生物基礎',
+                description: '生命現象の仕組みを理解する',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'biology-ch1',
+                        title: '第1章：細胞の構造と機能',
+                        lessons: [
+                            {
+                                id: 'biology1-1',
+                                title: '細胞の基本構造',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'biology1-2',
+                                title: 'DNA と遺伝',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'biology1-3',
+                                title: '生態系と環境',
+                                duration: '30分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'science-earth',
+                title: '地学基礎',
+                description: '地球と宇宙の科学',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'earth-ch1',
+                        title: '第1章：地球の構造',
+                        lessons: [
+                            {
+                                id: 'earth1-1',
+                                title: '地球の内部構造',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'earth1-2',
+                                title: '天気と気象',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'earth1-3',
+                                title: '太陽系と惑星',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     },
@@ -167,6 +458,7 @@ const subjects = {
                 id: 'social-geography',
                 title: '地理基礎',
                 description: '日本と世界の地理',
+                progress: 0,
                 chapters: [
                     {
                         id: 'geography-ch1',
@@ -193,6 +485,70 @@ const subjects = {
                         ]
                     }
                 ]
+            },
+            {
+                id: 'social-civics',
+                title: '公民・政治経済',
+                description: '現代社会の仕組みと政治経済の基礎',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'civics-ch1',
+                        title: '第1章：現代社会の特色',
+                        lessons: [
+                            {
+                                id: 'civics1-1',
+                                title: '民主主義と人権',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'civics1-2',
+                                title: '日本国憲法の基本原理',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'civics1-3',
+                                title: '市場経済の仕組み',
+                                duration: '30分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'social-japanese-history',
+                title: '日本史概観',
+                description: '古代から現代までの日本史の流れ',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'jpnhistory-ch1',
+                        title: '第1章：古代から中世へ',
+                        lessons: [
+                            {
+                                id: 'jpnhistory1-1',
+                                title: '縄文・弥生・古墳時代',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'jpnhistory1-2',
+                                title: '飛鳥・奈良時代',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'jpnhistory1-3',
+                                title: '平安時代の文化',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     },
@@ -209,6 +565,7 @@ const subjects = {
                 id: 'jhistory-ancient',
                 title: '古代・中世の日本',
                 description: '奈良時代から鎌倉・室町時代まで',
+                progress: 0,
                 chapters: [
                     {
                         id: 'jhistory-ch1',
@@ -235,6 +592,70 @@ const subjects = {
                         ]
                     }
                 ]
+            },
+            {
+                id: 'jhistory-early-modern',
+                title: '近世日本の発展',
+                description: '戦国時代から江戸時代まで',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'jhistory-modern-ch1',
+                        title: '第1章：戦国時代の統一',
+                        lessons: [
+                            {
+                                id: 'jhistory-modern1-1',
+                                title: '織田信長の革新',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'jhistory-modern1-2',
+                                title: '豊臣秀吉の天下統一',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'jhistory-modern1-3',
+                                title: '徳川幕府の成立',
+                                duration: '30分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'jhistory-modern',
+                title: '近現代日本史',
+                description: '明治維新から現代まで',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'jhistory-modern2-ch1',
+                        title: '第1章：明治維新と近代化',
+                        lessons: [
+                            {
+                                id: 'jhistory-modern2-1',
+                                title: '黒船来航と開国',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'jhistory-modern2-2',
+                                title: '明治維新の改革',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'jhistory-modern2-3',
+                                title: '大正デモクラシー',
+                                duration: '30分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     },
@@ -251,6 +672,7 @@ const subjects = {
                 id: 'whistory-ancient',
                 title: '古代文明',
                 description: '四大文明と古代帝国',
+                progress: 0,
                 chapters: [
                     {
                         id: 'whistory-ch1',
@@ -272,6 +694,102 @@ const subjects = {
                                 id: 'whistory1-3',
                                 title: '中国古代王朝',
                                 duration: '28分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'whistory-medieval',
+                title: '中世ヨーロッパ史',
+                description: 'フランク王国から十字軍まで',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'whistory-medieval-ch1',
+                        title: '第1章：中世ヨーロッパの成立',
+                        lessons: [
+                            {
+                                id: 'whistory-medieval1-1',
+                                title: 'フランク王国の発展',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-medieval1-2',
+                                title: '封建制度の確立',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-medieval1-3',
+                                title: '十字軍とその影響',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'whistory-early-modern',
+                title: '大航海時代と絶対王政',
+                description: 'ルネサンスから市民革命まで',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'whistory-early-modern-ch1',
+                        title: '第1章：大航海時代',
+                        lessons: [
+                            {
+                                id: 'whistory-early-modern1-1',
+                                title: 'ルネサンスと地理上の発見',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-early-modern1-2',
+                                title: '絶対王政の確立',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-early-modern1-3',
+                                title: '宗教改革の展開',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'whistory-modern',
+                title: '近現代世界史',
+                description: '産業革命から現代グローバル化まで',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'whistory-modern-ch1',
+                        title: '第1章：市民革命と産業革命',
+                        lessons: [
+                            {
+                                id: 'whistory-modern1-1',
+                                title: 'イギリス産業革命',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-modern1-2',
+                                title: 'フランス革命とナポレオン',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-modern1-3',
+                                title: '帝国主義と植民地支配',
+                                duration: '35分',
                                 completed: false
                             }
                         ]
