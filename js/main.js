@@ -884,6 +884,22 @@ class StudyApp {
             const storedSubjects = localStorage.getItem('subjects');
             if (storedSubjects) {
                 const parsedSubjects = JSON.parse(storedSubjects);
+                
+                // 既存データにアイコンが含まれているかチェック
+                let needsUpdate = false;
+                for (const [key, storedSubject] of Object.entries(parsedSubjects)) {
+                    if (!storedSubject.icon && subjects[key] && subjects[key].icon) {
+                        storedSubject.icon = subjects[key].icon;
+                        needsUpdate = true;
+                    }
+                }
+                
+                // 更新が必要な場合はローカルストレージを更新
+                if (needsUpdate) {
+                    localStorage.setItem('subjects', JSON.stringify(parsedSubjects));
+                    console.log('Updated subjects with missing icons');
+                }
+                
                 // グローバルのsubjectsオブジェクトを更新
                 Object.assign(subjects, parsedSubjects);
                 console.log('Loaded subjects from storage:', Object.keys(subjects));
