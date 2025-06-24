@@ -27,6 +27,7 @@ const subjects = {
         name: '国語',
         description: '現代文・古文・漢文の総合的な学習',
         color: '#dc2626',
+        icon: '📚',
         instructor: '国語担当',
         schoolId: 'production-school',
         courses: [
@@ -68,6 +69,7 @@ const subjects = {
         name: '数学',
         description: '基礎から応用まで体系的に学習',
         color: '#2563eb',
+        icon: '🔢',
         instructor: '数学担当',
         schoolId: 'production-school',
         courses: [
@@ -115,6 +117,7 @@ const subjects = {
         name: '理科',
         description: '物理・化学・生物・地学の基礎',
         color: '#059669',
+        icon: '🧪',
         instructor: '理科担当',
         schoolId: 'production-school',
         courses: [
@@ -156,6 +159,7 @@ const subjects = {
         name: '社会',
         description: '地理・歴史・公民の総合学習',
         color: '#d97706',
+        icon: '🏛️',
         instructor: '社会担当',
         schoolId: 'production-school',
         courses: [
@@ -197,6 +201,7 @@ const subjects = {
         name: '日本史',
         description: '古代から現代までの日本の歴史',
         color: '#7c3aed',
+        icon: '🏯',
         instructor: '日本史担当',
         schoolId: 'production-school',
         courses: [
@@ -238,6 +243,7 @@ const subjects = {
         name: '世界史',
         description: '古代文明から現代史まで',
         color: '#be185d',
+        icon: '🌍',
         instructor: '世界史担当',
         schoolId: 'production-school',
         courses: [
