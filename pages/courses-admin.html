@@ -7,32 +7,47 @@
     <link rel="stylesheet" href="../styles/main.css">
     <link rel="stylesheet" href="../styles/admin.css">
 </head>
-<body class="utage-admin-body">
-    <!-- 共通ヘッダー -->
+<body class="utage-body">
+    <!-- 共通ヘッダー（UTAGEスタイル） -->
     <header class="utage-header">
         <div class="utage-header-content">
-            <div class="utage-logo" onclick="window.location.href='admin.html'" style="cursor:pointer;">suna</div>
-            <div class="utage-header-right" id="admin-auth-section"></div>
+            <div class="utage-logo" onclick="window.location.href='admin.html'" style="cursor:pointer;">
+                <svg width="115" height="55" viewBox="0 0 115 55" class="flex-shrink-0">
+                    <circle cx="90" cy="20" r="13" fill="#67E8F9" opacity="0.85"/>
+                    <circle cx="73" cy="28" r="8" fill="#2563EB" opacity="0.9"/>
+                    <circle cx="83" cy="35" r="5" fill="#A7F3D0" opacity="0.75"/>
+                    <text x="0" y="42" font-size="26" font-weight="700" fill="#1E293B" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" letter-spacing="-1.2px">suna</text>
+                </svg>
+            </div>
+            <div class="utage-header-right">
+                <span class="admin-user-info" id="admin-user-info">管理者: </span>
+                <button class="utage-logout-btn" onclick="window.location.href='admin.html'">戻る</button>
+            </div>
         </div>
     </header>
 
     <div class="utage-layout">
         <aside class="utage-sidebar">
-            <nav class="utage-nav">
-                <ul class="utage-nav-list">
-                    <li class="utage-nav-item"><button class="utage-nav-link" onclick="location.href='admin.html'">📊 ダッシュボード</button></li>
-                    <li class="utage-nav-item"><button class="utage-nav-link active" onclick="location.href='courses-admin.html'">📁 コース管理</button></li>
-                </ul>
-            </nav>
+            <div class="utage-sidebar-content">
+                <h2 class="utage-sidebar-title">スキルアップ講座管理</h2>
+                <nav class="utage-nav">
+                    <ul class="utage-nav-list">
+                        <li class="utage-nav-item"><button class="utage-nav-link" onclick="window.location.href='admin.html'">📊 ダッシュボード</button></li>
+                        <li class="utage-nav-item"><button class="utage-nav-link active" onclick="window.location.href='subjects-admin.html'">📁 コース管理</button></li>
+                    </ul>
+                </nav>
+            </div>
         </aside>
 
         <main class="utage-main">
             <div class="container">
                 <div class="page-header">
                     <h1 class="page-title">📚 コース一覧</h1>
-                    <button id="add-course-btn" class="btn btn-outline">＋ コース追加</button>
+                    <button id="add-course-btn" class="utage-btn utage-btn-primary">＋ コース追加</button>
                 </div>
-                <table id="courses-table" class="manager-table"></table>
+                <div class="utage-table-container">
+                    <table id="courses-table" class="utage-table"></table>
+                </div>
             </div>
         </main>
     </div>

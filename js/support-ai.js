@@ -10,8 +10,8 @@ console.log('🤖 Support AI script loaded!');
 
 (function () {
     console.log('🤖 Support AI IIFE started');
-    // Configuration (change to your deployed function URL if necessary)
-    const ENDPOINT_URL = '/api/support-ai'; // Relative path on Vercel /functions/v1/support-ai on Supabase, etc.
+    // Use relative path in normal hosted environments. If opened via file:// protocol, fallback to localhost:8000
+    const ENDPOINT_URL = (window.location.protocol === 'file:' ? 'http://localhost:8000' : '') + '/api/support-ai';
 
     // Keeps conversation context (optional, first N exchanges)
     let conversationHistory = [];

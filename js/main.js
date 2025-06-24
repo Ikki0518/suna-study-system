@@ -1362,6 +1362,8 @@ class StudyApp {
         this.renderSubjects(); // 科目選択画面を表示
         this.updateSidebar();
         this.updateNavigation(); // ナビゲーション初期化
+        this.initializeProgressDashboard(); // 進捗ダッシュボード初期化
+        this.initializeSearchAndFilter(); // 検索・フィルタ機能初期化
         this.bindEvents();
         
         // 定期的にローカルストレージをチェック（管理者が新しい科目を追加した場合）
@@ -1437,13 +1439,21 @@ class StudyApp {
 
     // 科目選択画面を表示
     renderSubjects() {
+        // ホームビューを表示
+        this.hideAllViews();
         const homeView = document.getElementById('home-view');
-        if (!homeView) return;
+        if (homeView) {
+            homeView.style.display = 'block';
+        }
+        
+        // 科目コンテナを取得
+        const subjectsContainer = document.getElementById('subjects-container');
+        if (!subjectsContainer) return;
         
         // 科目が空の場合の表示
         const subjectValues = Object.values(subjects);
         if (subjectValues.length === 0) {
-            homeView.innerHTML = `
+            subjectsContainer.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-state-icon">📚</div>
                     <h2>科目がまだ作成されていません</h2>
@@ -1453,19 +1463,27 @@ class StudyApp {
                     </div>
                 </div>
             `;
-            return;
+        } else {
+            subjectsContainer.innerHTML = `
+                <div class="subjects-header">
+                    <h2>学習科目を選択してください</h2>
+                    <p>興味のある科目から学習を始めましょう</p>
+                </div>
+                <div class="subjects-grid" id="subjects-grid">
+                </div>
+            `;
+
+            const subjectsGrid = document.getElementById('subjects-grid');
+            this.populateSubjectsGrid(subjectsGrid, subjectValues);
         }
         
-        homeView.innerHTML = `
-            <div class="subjects-header">
-                <h2>学習科目を選択してください</h2>
-                <p>興味のある科目から学習を始めましょう</p>
-            </div>
-            <div class="subjects-grid" id="subjects-grid">
-            </div>
-        `;
+        // 進捗ダッシュボードの更新
+        this.updateProgressDashboard();
+    }
 
-        const subjectsGrid = document.getElementById('subjects-grid');
+    // 科目グリッドに科目を追加
+    populateSubjectsGrid(subjectsGrid, subjectValues) {
+        if (!subjectsGrid) return;
         
         subjectValues.forEach(subject => {
             const subjectCard = document.createElement('div');
@@ -2284,6 +2302,271 @@ class StudyApp {
 
     bindNavigationEvents() {
         // ナビゲーションボタンの追加イベントがあればここに追加
+    }
+
+    // 進捗ダッシュボードの初期化
+    initializeProgressDashboard() {
+        const dashboardElement = document.querySelector('.progress-dashboard');
+        if (!dashboardElement) return;
+
+        this.updateProgressDashboard();
+    }
+
+    // 進捗ダッシュボードの更新
+    updateProgressDashboard() {
+        // 全体の統計を計算
+        const stats = this.calculateOverallStats();
+        
+        // 各統計の更新
+        const totalCoursesEl = document.getElementById('total-courses');
+        const completedLessonsEl = document.getElementById('completed-lessons');
+        const studyTimeEl = document.getElementById('study-time');
+        const streakDaysEl = document.getElementById('streak-days');
+        
+        if (totalCoursesEl) totalCoursesEl.textContent = stats.totalCourses;
+        if (completedLessonsEl) completedLessonsEl.textContent = stats.completedLessons;
+        if (studyTimeEl) studyTimeEl.textContent = `${Math.floor(stats.completedLessons * 0.5)}h`;
+        if (streakDaysEl) streakDaysEl.textContent = stats.studyStreak;
+        
+        // 科目別進捗の更新
+        this.updateSubjectsProgress(stats);
+    }
+
+    // 全体統計の計算
+    calculateOverallStats() {
+        const progress = this.getUserProgress();
+        let totalLessons = 0;
+        let completedLessons = 0;
+        let totalCourses = 0;
+        
+        Object.values(subjects).forEach(subject => {
+            if (subject.courses) {
+                totalCourses += subject.courses.length;
+                subject.courses.forEach(course => {
+                    if (course.chapters) {
+                        course.chapters.forEach(chapter => {
+                            totalLessons += chapter.lessons.length;
+                            chapter.lessons.forEach(lesson => {
+                                if (progress[lesson.id]) {
+                                    completedLessons++;
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+        });
+
+        const completionRate = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+        const studyStreak = this.calculateStudyStreak();
+
+        return {
+            totalSubjects: Object.keys(subjects).length,
+            totalCourses,
+            totalLessons,
+            completedLessons,
+            completionRate,
+            studyStreak
+        };
+    }
+
+    // 連続学習日数の計算
+    calculateStudyStreak() {
+        // 簡単な実装：完了したレッスン数に基づいて計算
+        const progress = this.getUserProgress();
+        const completedCount = Object.keys(progress).length;
+        return Math.floor(completedCount / 3); // 3レッスンで1日と仮定
+    }
+
+    // 科目別進捗の更新
+    updateSubjectsProgress(stats) {
+        const container = document.getElementById('subjects-progress');
+        if (!container) return;
+
+        const progress = this.getUserProgress();
+        let html = '';
+
+        Object.values(subjects).forEach(subject => {
+            if (subject.courses) {
+                let subjectTotal = 0;
+                let subjectCompleted = 0;
+
+                subject.courses.forEach(course => {
+                    if (course.chapters) {
+                        course.chapters.forEach(chapter => {
+                            subjectTotal += chapter.lessons.length;
+                            chapter.lessons.forEach(lesson => {
+                                if (progress[lesson.id]) {
+                                    subjectCompleted++;
+                                }
+                            });
+                        });
+                    }
+                });
+
+                const subjectProgress = subjectTotal > 0 ? Math.round((subjectCompleted / subjectTotal) * 100) : 0;
+                
+                html += `
+                    <div class="subject-progress-item">
+                        <div class="subject-progress-header">
+                            <span class="subject-icon">${subject.icon}</span>
+                            <span class="subject-name">${subject.name}</span>
+                            <span class="progress-percentage">${subjectProgress}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${subjectProgress}%"></div>
+                        </div>
+                        <div class="progress-details">
+                            ${subjectCompleted} / ${subjectTotal} レッスン完了
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        container.innerHTML = html;
+    }
+
+    // 検索・フィルタ機能の初期化
+    initializeSearchAndFilter() {
+        const searchInput = document.getElementById('course-search');
+        const clearButton = document.getElementById('clear-search');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                this.performSearch(e.target.value);
+                // 検索語があるときにクリアボタンを表示
+                if (clearButton) {
+                    clearButton.style.display = e.target.value ? 'block' : 'none';
+                }
+            });
+        }
+
+        if (clearButton) {
+            clearButton.addEventListener('click', () => {
+                searchInput.value = '';
+                this.performSearch('');
+                clearButton.style.display = 'none';
+            });
+        }
+
+        // フィルタボタンのイベントリスナー
+        filterButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                // アクティブクラスの切り替え
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                const filter = e.target.dataset.filter;
+                this.filterByLevel(filter);
+            });
+        });
+    }
+
+    // 科目フィルタオプションの追加
+    populateSubjectFilter() {
+        const subjectFilter = document.getElementById('subjectFilter');
+        if (!subjectFilter) return;
+
+        let options = '<option value="">すべての科目</option>';
+        Object.values(subjects).forEach(subject => {
+            options += `<option value="${subject.id}">${subject.name}</option>`;
+        });
+        
+        subjectFilter.innerHTML = options;
+    }
+
+    // 検索機能の実装
+    performSearch(query) {
+        if (!query.trim()) {
+            this.showAllSubjects();
+            return;
+        }
+
+        const filteredSubjects = {};
+        Object.entries(subjects).forEach(([key, subject]) => {
+            // 科目名での検索
+            if (subject.name.toLowerCase().includes(query.toLowerCase())) {
+                filteredSubjects[key] = subject;
+                return;
+            }
+
+            // コース名での検索
+            const matchingCourses = [];
+            if (subject.courses) {
+                subject.courses.forEach(course => {
+                    if (course.title.toLowerCase().includes(query.toLowerCase())) {
+                        matchingCourses.push(course);
+                    }
+                });
+            }
+
+            if (matchingCourses.length > 0) {
+                filteredSubjects[key] = {
+                    ...subject,
+                    courses: matchingCourses
+                };
+            }
+        });
+
+        this.renderFilteredSubjects(filteredSubjects);
+    }
+
+    // レベル別フィルタ機能の実装
+    filterByLevel(level) {
+        if (level === 'all') {
+            this.showAllSubjects();
+            return;
+        }
+
+        // 現在の実装では全て表示（将来的にレベル情報を追加する場合のための準備）
+        const filteredSubjects = {};
+        Object.entries(subjects).forEach(([key, subject]) => {
+            // レベル情報が追加されたら、ここでフィルタリング
+            filteredSubjects[key] = subject;
+        });
+
+        this.renderFilteredSubjects(filteredSubjects);
+    }
+
+    // フィルタされた科目の表示
+    renderFilteredSubjects(filteredSubjects) {
+        const container = document.getElementById('subjects-container');
+        if (!container) return;
+
+        if (Object.keys(filteredSubjects).length === 0) {
+            container.innerHTML = `
+                <div class="no-results">
+                    <h3>検索結果がありません</h3>
+                    <p>別のキーワードで検索してみてください。</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '<div class="subjects-grid">';
+        Object.values(filteredSubjects).forEach(subject => {
+            const courseCount = subject.courses ? subject.courses.length : 0;
+            html += `
+                <div class="subject-card" onclick="app.showSubject(subjects.${subject.id})">
+                    <div class="subject-icon">${subject.icon}</div>
+                    <h3 class="subject-title">${subject.name}</h3>
+                    <p class="subject-description">${subject.description}</p>
+                    <div class="subject-stats">
+                        <span class="course-count">${courseCount}コース</span>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        
+        container.innerHTML = html;
+    }
+
+    // すべての科目を表示
+    showAllSubjects() {
+        this.renderSubjects();
     }
 
     // 既存メソッドでナビゲーション更新を呼び出す

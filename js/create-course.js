@@ -43,12 +43,20 @@ class CourseCreator {
         const params=new URLSearchParams(location.search);
         const chapId=params.get('chapterId');
         const courseId=params.get('courseId');
+        if(!courseId){
+            // 直接アクセスされた場合は科目管理にリダイレクト
+            window.location.href='subjects-admin.html';
+            return;
+        }
         if(chapId&&courseId){
             this.selectedCourseId=courseId; this.selectedChapterId=chapId;
             document.getElementById('lesson-editor-block').style.display='block';
             document.getElementById('course-course').value=courseId;
             this.updateChapterSelect();
             document.getElementById('course-chapter').value=chapId;
+        }else{
+            // 編集対象がない場合はエディタを非表示のまま
+            document.getElementById('lesson-editor-block').style.display='none';
         }
     }
 

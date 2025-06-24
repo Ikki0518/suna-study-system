@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>章管理 - Suna Admin</title>
+    <title>科目管理 - Suna Admin</title>
     <link rel="stylesheet" href="../styles/main.css">
     <link rel="stylesheet" href="../styles/admin.css">
 </head>
@@ -27,15 +27,13 @@
     </header>
 
     <div class="utage-layout">
-        <!-- サイドバー -->
         <aside class="utage-sidebar">
             <div class="utage-sidebar-content">
                 <h2 class="utage-sidebar-title">スキルアップ講座管理</h2>
                 <nav class="utage-nav">
                     <ul class="utage-nav-list">
                         <li class="utage-nav-item"><button class="utage-nav-link" onclick="window.location.href='admin.html'">📊 ダッシュボード</button></li>
-                        <li class="utage-nav-item"><button class="utage-nav-link" onclick="window.location.href='subjects-admin.html'">📁 コース管理</button></li>
-                        <li class="utage-nav-item"><button class="utage-nav-link active" onclick="window.location.href='courses-admin.html'">📑 章管理</button></li>
+                        <li class="utage-nav-item"><button class="utage-nav-link active" onclick="window.location.href='subjects-admin.html'">📚 コンテンツ管理</button></li>
                     </ul>
                 </nav>
             </div>
@@ -43,24 +41,13 @@
 
         <main class="utage-main">
             <div class="container">
-                <!-- ページナビゲーション -->
-                <div class="page-navigation">
-                    <div class="nav-breadcrumb">
-                        <a href="courses-admin.html" class="breadcrumb-link">コース一覧</a>
-                        <span class="breadcrumb-separator">›</span>
-                        <span class="breadcrumb-current" id="breadcrumb-course-name">Course</span>
-                    </div>
-                    <div class="nav-actions">
-                        <button class="back-button" onclick="history.back()">← 戻る</button>
-                    </div>
-                </div>
-
                 <div class="page-header">
-                    <h1 class="page-title" id="course-name">Course</h1>
-                    <button id="add-chapter-btn" class="btn btn-outline">＋ 章追加</button>
+                    <h1 class="page-title">📂 科目一覧</h1>
+                    <button id="add-subject-btn" class="utage-btn utage-btn-primary">＋ 科目追加</button>
                 </div>
-
-                <table id="chapters-table" class="manager-table"></table>
+                <div class="utage-table-container">
+                    <table id="subjects-table" class="utage-table"></table>
+                </div>
             </div>
         </main>
     </div>
