@@ -2529,6 +2529,47 @@ body:has([id="subject-icon"]) .lesson-count {
     align-self: flex-start;
     border: 1px solid #e5e7eb;
     border-bottom-left-radius: 4px;
+    line-height: 1.6;
+}
+
+/* AIメッセージ内のフォーマット改善 */
+.support-ai-message.ai p {
+    margin: 0 0 8px 0;
+}
+
+.support-ai-message.ai p:last-child {
+    margin-bottom: 0;
+}
+
+.support-ai-message.ai strong {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.support-ai-message.ai br {
+    line-height: 1.8;
+}
+
+/* 箇条書きのスタイル改善 */
+.support-ai-message.ai ul {
+    margin: 8px 0;
+    padding-left: 16px;
+}
+
+.support-ai-message.ai li {
+    margin: 4px 0;
+    line-height: 1.5;
+}
+
+/* 番号付きリストのスタイル */
+.support-ai-message.ai ol {
+    margin: 8px 0;
+    padding-left: 16px;
+}
+
+.support-ai-message.ai ol li {
+    margin: 6px 0;
+    line-height: 1.5;
 }
 
 .support-ai-form {

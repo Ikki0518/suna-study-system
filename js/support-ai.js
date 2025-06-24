@@ -129,11 +129,53 @@ console.log('🤖 Support AI script loaded!');
         function appendMessage(sender, text) {
             const msgEl = document.createElement('div');
             msgEl.className = `support-ai-message ${sender}`;
-            msgEl.textContent = text;
+            
+            if (sender === 'ai') {
+                // AIメッセージの場合は改行と段落を適切に処理
+                const formattedText = formatAIMessage(text);
+                msgEl.innerHTML = formattedText;
+            } else {
+                // ユーザーメッセージはそのまま
+                msgEl.textContent = text;
+            }
+            
             messagesDiv.appendChild(msgEl);
             // Scroll to bottom
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             return msgEl;
+        }
+
+        // AIメッセージのフォーマット処理
+        function formatAIMessage(text) {
+            // セキュリティのため基本的なHTMLエスケープ
+            let escaped = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            
+            // 改行文字を <br> に変換
+            escaped = escaped.replace(/\n/g, '<br>');
+            
+            // 箇条書き対応（- で始まる行）
+            escaped = escaped.replace(/^- (.+)$/gm, '&bull; $1');
+            
+            // 番号付きリスト対応（1. で始まる行）
+            escaped = escaped.replace(/^(\d+)\. (.+)$/gm, '<strong>$1.</strong> $2');
+            
+            // 見出し風の行（** で囲まれた部分）
+            escaped = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            
+            // 段落分け（2つ以上の連続する改行）
+            escaped = escaped.replace(/(<br>\s*){2,}/g, '</p><p>');
+            
+            // 段落タグで全体を囲む
+            if (escaped.includes('</p><p>')) {
+                escaped = '<p>' + escaped + '</p>';
+            }
+            
+            return escaped;
         }
 
         toggleBtn.addEventListener('click', () => {

@@ -832,10 +832,10 @@ class CourseCreator {
                         <div>
                             <button class="course-button" style="background:#6b7280;margin-right:6px;" onclick="courseCreator.loadCourseToForm(${index})">編集</button>
                             <button class="course-button" style="background:#dc2626;" onclick="courseCreator.deleteCourse(${index})">削除</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                    </div>
         `;
     }
 
