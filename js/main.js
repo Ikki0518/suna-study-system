@@ -22,135 +22,215 @@ const schools = loadSchools();
 // 科目とコースデータの定義（管理者が作成するまで空の状態）
 // 各スクールで異なるコンテンツを配信可能
 const subjects = {
-    'demo-skillplus': {
-        id: 'demo-skillplus',
-        name: 'スキルプラス活用マスター講座',
-        description: 'ビジネススキルを学ぶ実践的な講座',
-        color: '#10b981',
-        instructor: '塾長',
+    'demo-japanese': {
+        id: 'demo-japanese',
+        name: '国語',
+        description: '現代文・古文・漢文の総合的な学習',
+        color: '#dc2626',
+        instructor: '国語担当',
         schoolId: 'production-school',
         courses: [
             {
-                id: 'course-1',
-                title: '成長を最大化するマインドセット',
-                description: '成長思考と学習効率を高める基礎講座',
+                id: 'japanese-modern',
+                title: '現代文基礎',
+                description: '読解力と表現力を身につける',
                 lessons: [
                     {
-                        id: 'lesson1-1',
-                        title: 'Play your life　〜 Well-being 〜',
-                        duration: '20分',
-                        completed: false
-                    },
-                    {
-                        id: 'lesson1-2',
-                        title: 'Life Time Time (LTT) の考え方',
-                        duration: '15分',
-                        completed: false
-                    },
-                    {
-                        id: 'lesson1-3',
-                        title: 'Giver・Taker の関係性',
-                        duration: '18分',
-                        completed: false
-                    },
-                    {
-                        id: 'lesson1-4',
-                        title: 'ToDo至上主義からの脱却',
-                        duration: '22分',
-                        completed: false
-                    }
-                ]
-            },
-            {
-                id: 'course-2',
-                title: 'Play my life をするために必要なマインドセット',
-                description: '自分らしく生きるための思考法を学ぶ',
-                lessons: [
-                    {
-                        id: 'lesson2-1',
-                        title: '自分で解決「できるもの」と「できないもの」を分けて考えよう',
-                        duration: '16分',
-                        completed: false
-                    },
-                    {
-                        id: 'lesson2-2',
-                        title: '「お金がない」を言い訳にしない',
-                        duration: '19分',
-                        completed: false
-                    },
-                    {
-                        id: 'lesson2-3',
-                        title: '「時間がない」はありえない',
-                        duration: '14分',
-                        completed: false
-                    }
-                ]
-            }
-        ]
-    },
-    'demo-business': {
-        id: 'demo-business',
-        name: 'ビジネス基礎講座',
-        description: 'ビジネスの基本的な知識とスキルを習得',
-        color: '#3b82f6',
-        instructor: '講師A',
-        schoolId: 'production-school',
-        courses: [
-            {
-                id: 'business-course-1',
-                title: 'ビジネスマナー基礎',
-                description: '社会人として必要なマナーと常識',
-                lessons: [
-                    {
-                        id: 'business1-1',
-                        title: '挨拶とコミュニケーション',
-                        duration: '12分',
-                        completed: false
-                    },
-                    {
-                        id: 'business1-2',
-                        title: 'メールの書き方',
-                        duration: '15分',
-                        completed: false
-                    },
-                    {
-                        id: 'business1-3',
-                        title: '会議の進め方',
-                        duration: '18分',
-                        completed: false
-                    }
-                ]
-            }
-        ]
-    },
-    'demo-programming': {
-        id: 'demo-programming',
-        name: 'プログラミング入門',
-        description: 'プログラミングの基礎から実践まで',
-        color: '#8b5cf6',
-        instructor: '講師B',
-        schoolId: 'production-school',
-        courses: [
-            {
-                id: 'programming-course-1',
-                title: 'JavaScript基礎',
-                description: 'JavaScript言語の基本文法を学習',
-                lessons: [
-                    {
-                        id: 'js1-1',
-                        title: '変数とデータ型',
+                        id: 'japanese1-1',
+                        title: '文章の構成と要約',
                         duration: '25分',
                         completed: false
                     },
                     {
-                        id: 'js1-2',
-                        title: '関数とスコープ',
+                        id: 'japanese1-2',
+                        title: '論説文の読み方',
                         duration: '30分',
                         completed: false
                     },
                     {
-                        id: 'js1-3',
-                        title: 'オブジェクトと配列',
+                        id: 'japanese1-3',
+                        title: '小説の読解技法',
+                        duration: '28分',
+                        completed: false
+                    }
+                ]
+            }
+        ]
+    },
+    'demo-math': {
+        id: 'demo-math',
+        name: '数学',
+        description: '基礎から応用まで体系的に学習',
+        color: '#2563eb',
+        instructor: '数学担当',
+        schoolId: 'production-school',
+        courses: [
+            {
+                id: 'math-algebra',
+                title: '代数基礎',
+                description: '方程式と関数の基本',
+                lessons: [
+                    {
+                        id: 'math1-1',
+                        title: '一次方程式',
+                        duration: '20分',
+                        completed: false
+                    },
+                    {
+                        id: 'math1-2',
+                        title: '連立方程式',
+                        duration: '25分',
+                        completed: false
+                    },
+                    {
+                        id: 'math1-3',
+                        title: '一次関数',
+                        duration: '30分',
+                        completed: false
+                    },
+                    {
+                        id: 'math1-4',
+                        title: '二次方程式',
+                        duration: '35分',
+                        completed: false
+                    }
+                ]
+            }
+        ]
+    },
+    'demo-science': {
+        id: 'demo-science',
+        name: '理科',
+        description: '物理・化学・生物・地学の基礎',
+        color: '#059669',
+        instructor: '理科担当',
+        schoolId: 'production-school',
+        courses: [
+            {
+                id: 'science-physics',
+                title: '物理基礎',
+                description: '力学と電気の基本原理',
+                lessons: [
+                    {
+                        id: 'physics1-1',
+                        title: '運動の法則',
+                        duration: '30分',
+                        completed: false
+                    },
+                    {
+                        id: 'physics1-2',
+                        title: '力とつりあい',
+                        duration: '25分',
+                        completed: false
+                    },
+                    {
+                        id: 'physics1-3',
+                        title: '電流と電圧',
+                        duration: '28分',
+                        completed: false
+                    }
+                ]
+            }
+        ]
+    },
+    'demo-social': {
+        id: 'demo-social',
+        name: '社会',
+        description: '地理・歴史・公民の総合学習',
+        color: '#d97706',
+        instructor: '社会担当',
+        schoolId: 'production-school',
+        courses: [
+            {
+                id: 'social-geography',
+                title: '地理基礎',
+                description: '日本と世界の地理',
+                lessons: [
+                    {
+                        id: 'geo1-1',
+                        title: '日本の地形と気候',
+                        duration: '25分',
+                        completed: false
+                    },
+                    {
+                        id: 'geo1-2',
+                        title: '世界の気候区分',
+                        duration: '30分',
+                        completed: false
+                    },
+                    {
+                        id: 'geo1-3',
+                        title: '産業と貿易',
+                        duration: '28分',
+                        completed: false
+                    }
+                ]
+            }
+        ]
+    },
+    'demo-japanese-history': {
+        id: 'demo-japanese-history',
+        name: '日本史',
+        description: '古代から現代までの日本の歴史',
+        color: '#7c3aed',
+        instructor: '日本史担当',
+        schoolId: 'production-school',
+        courses: [
+            {
+                id: 'jhistory-ancient',
+                title: '古代・中世の日本',
+                description: '奈良時代から鎌倉・室町時代まで',
+                lessons: [
+                    {
+                        id: 'jhistory1-1',
+                        title: '奈良時代と平安時代',
+                        duration: '30分',
+                        completed: false
+                    },
+                    {
+                        id: 'jhistory1-2',
+                        title: '鎌倉幕府の成立',
+                        duration: '25分',
+                        completed: false
+                    },
+                    {
+                        id: 'jhistory1-3',
+                        title: '室町時代と戦国時代',
+                        duration: '35分',
+                        completed: false
+                    }
+                ]
+            }
+        ]
+    },
+    'demo-world-history': {
+        id: 'demo-world-history',
+        name: '世界史',
+        description: '古代文明から現代史まで',
+        color: '#be185d',
+        instructor: '世界史担当',
+        schoolId: 'production-school',
+        courses: [
+            {
+                id: 'whistory-ancient',
+                title: '古代文明',
+                description: '四大文明と古代帝国',
+                lessons: [
+                    {
+                        id: 'whistory1-1',
+                        title: '四大文明の特徴',
+                        duration: '30分',
+                        completed: false
+                    },
+                    {
+                        id: 'whistory1-2',
+                        title: 'ギリシア・ローマ文明',
+                        duration: '35分',
+                        completed: false
+                    },
+                    {
+                        id: 'whistory1-3',
+                        title: '中国古代王朝',
                         duration: '28分',
                         completed: false
                     }
@@ -165,171 +245,252 @@ const subjects = {
 
 // レッスンの詳細コンテンツ
 const lessonContents = {
-    'lesson1-1': {
-        title: 'Play your life　〜 Well-being 〜',
-        videoUrl: 'videos/wellbeing.mp4',
+    'japanese1-1': {
+        title: '文章の構成と要約',
+        videoUrl: 'videos/japanese-composition.mp4',
         textContent: `
             <div class="lesson-intro">
-                <p>この講義では、人生を主体的に生きるためのきっかけとなるWell-beingの概念について学習します。Well-beingは人間の幸福を意味する
-あらゆる概念の仮訳のことであり、これは記載された決定であることで、より多幸で楽しい人生を送ることができます。</p>
+                <p>この講義では、文章の基本的な構成を理解し、要約する技術を身につけます。</p>
             </div>
 
-            <h4>Well-beingの5つの要素</h4>
-            
-            <div class="wellbeing-elements">
+            <h4>文章の基本構成</h4>
+            <div class="composition-elements">
                 <div class="element">
-                    <h5>1. 欲求の解消</h5>
-                    <p>やりたいことを実現し、悔ややそれた思うことは終幸の一要素です。ただし、こんばんは困難確あるする間際には状況ません。</p>
+                    <h5>1. 序論（はじめ）</h5>
+                    <p>文章の目的や論点を提示する部分です。読み手の興味を引き、これから何について述べるかを明確にします。</p>
                 </div>
-                
                 <div class="element">
-                    <h5>2. 意味性</h5>
-                    <p>自分のやっていることに意味や意義を見出すことが、複々な欲求の解决上位向问的な回転を高じるうえでも重要です。</p>
+                    <h5>2. 本論（なか）</h5>
+                    <p>具体的な内容を展開する部分です。根拠や例を示しながら、論点を詳しく説明します。</p>
                 </div>
-                
                 <div class="element">
-                    <h5>3. 成長実感</h5>
-                    <p>人间は成长することに喜びを見出す生き物てあします。新しいことができるようになる、スキルの向上を実感できることが要素です。</p>
-                </div>
-                
-                <div class="element">
-                    <h5>4. 没頭</h5>
-                    <p>自分の物事に集中して取り積み取る時間、时间它中かられる程度に没胜することも、幸せな人生には重要です。</p>
-                </div>
-                
-                <div class="element">
-                    <h5>5. 豊かな人間関係</h5>
-                    <p>上記4つの要素をに過还されさうる内朋の存在、ポジティブな人閒関係は豊かな人生には区分をい要素です。</p>
+                    <h5>3. 結論（おわり）</h5>
+                    <p>文章全体をまとめ、結論を示す部分です。読み手に印象を残す重要な役割があります。</p>
                 </div>
             </div>
 
-            <h4>「楽をする」ことと「人生を楽しむ」ことの違い</h4>
-            
-            <div class="concept-comparison">
-                <div class="concept">
-                    <h5>楽をすることの本質</h5>
-                    <p>楽をするとは、数手イノ中の課題を越けて、成果の解消だけを求めることです。</p>
-                    
+            <h4>要約のポイント</h4>
+            <ul>
+                <li><strong>主題を把握する</strong>：文章で最も伝えたいことは何か</li>
+                <li><strong>重要な部分を見つける</strong>：キーワードや重要な文を特定</li>
+                <li><strong>不要な部分を削る</strong>：具体例や詳細説明は省略</li>
+                <li><strong>自分の言葉で表現</strong>：原文をそのまま写すのではなく言い換える</li>
+            </ul>
+        `
+    },
+    'math1-1': {
+        title: '一次方程式',
+        videoUrl: 'videos/math-linear-equation.mp4',
+        textContent: `
+            <div class="lesson-intro">
+                <p>一次方程式の基本的な解き方を学習します。未知数を求める重要な技術です。</p>
+            </div>
+
+            <h4>一次方程式とは</h4>
+            <p>文字（未知数）を1つ含み、その文字の最高次数が1である方程式のことです。</p>
+            <p>例：2x + 5 = 11</p>
+
+            <h4>基本的な解き方</h4>
+            <div class="math-steps">
+                <div class="step">
+                    <h5>ステップ1：移項</h5>
+                    <p>等号を挟んで項を移動する際は、符号を変えます。</p>
+                    <p>2x + 5 = 11<br>2x = 11 - 5<br>2x = 6</p>
+                </div>
+                <div class="step">
+                    <h5>ステップ2：両辺を同じ数で割る</h5>
+                    <p>係数で両辺を割って、xの値を求めます。</p>
+                    <p>2x = 6<br>x = 6 ÷ 2<br>x = 3</p>
+                </div>
+            </div>
+
+            <h4>検算</h4>
+            <p>求めた解を元の式に代入して確認します。</p>
+            <p>2 × 3 + 5 = 6 + 5 = 11 ✓</p>
+        `
+    },
+    'physics1-1': {
+        title: '運動の法則',
+        videoUrl: 'videos/physics-motion.mp4',
+        textContent: `
+            <div class="lesson-intro">
+                <p>物体の運動を理解するための基本法則を学習します。</p>
+            </div>
+
+            <h4>ニュートンの運動法則</h4>
+            <div class="physics-laws">
+                <div class="law">
+                    <h5>第1法則（慣性の法則）</h5>
+                    <p>物体は、外から力を加えられない限り、静止している物体は静止し続け、運動している物体は等速直線運動を続けます。</p>
+                </div>
+                <div class="law">
+                    <h5>第2法則（運動の法則）</h5>
+                    <p>物体の加速度は、作用する力に比例し、質量に反比例します。</p>
+                    <p><strong>F = ma</strong></p>
+                    <p>F：力[N]、m：質量[kg]、a：加速度[m/s²]</p>
+                </div>
+                <div class="law">
+                    <h5>第3法則（作用・反作用の法則）</h5>
+                    <p>物体Aが物体Bに力を加えると、物体Bも物体Aに同じ大きさで逆向きの力を加えます。</p>
+                </div>
+            </div>
+
+            <h4>具体例</h4>
+            <ul>
+                <li><strong>慣性</strong>：電車が急停車すると体が前に傾く</li>
+                <li><strong>運動の法則</strong>：重い物は動かしにくい</li>
+                <li><strong>作用・反作用</strong>：歩くときは地面を押し、地面が足を押し返す</li>
+            </ul>
+        `
+    },
+    'geo1-1': {
+        title: '日本の地形と気候',
+        videoUrl: 'videos/geography-japan.mp4',
+        textContent: `
+            <div class="lesson-intro">
+                <p>日本列島の地形的特徴と気候の特色について学習します。</p>
+            </div>
+
+            <h4>日本の地形</h4>
+            <div class="geography-features">
+                <div class="feature">
+                    <h5>山地の特徴</h5>
+                    <p>日本の面積の約75％を山地が占めています。主要な山脈：</p>
                     <ul>
-                        <li><strong>課題目の興除</strong><br>自分の行動を都过や問题を理解する</li>
-                        <li><strong>責任持成の阴台</strong><br>会的義務や非期を満え</li>
-                        <li><strong>成長課题の興阴</strong><br>物事について深く考えない</li>
-                        <li><strong>白己理解の興阴</strong><br>自己理解の向上自会えよい</li>
+                        <li><strong>日本アルプス</strong>：飛騨・木曽・赤石山脈</li>
+                        <li><strong>中国山地</strong>：本州西部の山地</li>
+                        <li><strong>九州山地</strong>：九州中央部の山地</li>
+                    </ul>
+                </div>
+                <div class="feature">
+                    <h5>平野の特徴</h5>
+                    <p>人口が集中し、農業や工業が発達しています。主要な平野：</p>
+                    <ul>
+                        <li><strong>関東平野</strong>：日本最大の平野</li>
+                        <li><strong>濃尾平野</strong>：愛知県・岐阜県</li>
+                        <li><strong>大阪平野</strong>：近畿地方の中心</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h4>日本の気候</h4>
+            <div class="climate-zones">
+                <div class="zone">
+                    <h5>温帯湿潤気候</h5>
+                    <p>本州・四国・九州の大部分。四季がはっきりしており、梅雨と台風の影響を受けます。</p>
+                </div>
+                <div class="zone">
+                    <h5>亜寒帯気候</h5>
+                    <p>北海道の大部分。冬は長く厳しく、夏は短く涼しいのが特徴です。</p>
+                </div>
+            </div>
+        `
+    },
+    'jhistory1-1': {
+        title: '奈良時代と平安時代',
+        videoUrl: 'videos/history-nara-heian.mp4',
+        textContent: `
+            <div class="lesson-intro">
+                <p>奈良時代から平安時代にかけての政治・文化の変化を学習します。</p>
+            </div>
+
+            <h4>奈良時代（710-794年）</h4>
+            <div class="historical-period">
+                <div class="politics">
+                    <h5>政治</h5>
+                    <ul>
+                        <li><strong>律令制</strong>：中国にならった政治制度</li>
+                        <li><strong>平城京</strong>：日本初の本格的な都城</li>
+                        <li><strong>聖武天皇</strong>：東大寺・大仏を建立</li>
+                    </ul>
+                </div>
+                <div class="culture">
+                    <h5>文化</h5>
+                    <ul>
+                        <li><strong>天平文化</strong>：仏教中心の国際的文化</li>
+                        <li><strong>正倉院</strong>：宝物の保管庫</li>
+                        <li><strong>万葉集</strong>：日本最古の歌集</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h4>平安時代（794-1185年）</h4>
+            <div class="historical-period">
+                <div class="politics">
+                    <h5>政治</h5>
+                    <ul>
+                        <li><strong>平安京</strong>：京都に遷都</li>
+                        <li><strong>摂関政治</strong>：藤原氏による政治</li>
+                        <li><strong>院政</strong>：上皇による政治</li>
+                    </ul>
+                </div>
+                <div class="culture">
+                    <h5>文化</h5>
+                    <ul>
+                        <li><strong>国風文化</strong>：日本独自の文化</li>
+                        <li><strong>ひらがな・カタカナ</strong>：日本の文字</li>
+                        <li><strong>源氏物語</strong>：紫式部による世界最古の長編小説</li>
+                    </ul>
+                </div>
+            </div>
+        `
+    },
+    'whistory1-1': {
+        title: '四大文明の特徴',
+        videoUrl: 'videos/world-history-civilizations.mp4',
+        textContent: `
+            <div class="lesson-intro">
+                <p>人類最初の文明である四大文明の特徴と発展について学習します。</p>
+            </div>
+
+            <h4>四大文明とは</h4>
+            <p>紀元前3500年頃から紀元前2500年頃にかけて、大河のほとりで発達した4つの古代文明です。</p>
+
+            <div class="civilizations">
+                <div class="civilization">
+                    <h5>メソポタミア文明（チグリス・ユーフラテス川）</h5>
+                    <ul>
+                        <li><strong>楔形文字</strong>：世界最古の文字</li>
+                        <li><strong>ハンムラビ法典</strong>：成文法の始まり</li>
+                        <li><strong>都市国家</strong>：ウル、バビロンなど</li>
                     </ul>
                 </div>
                 
-                <div class="concept">
-                    <h5>人生課題の本質</h5>
-                    <p>期間とは、興阵に限定をるものからエス、周世とのかかるり人間形や文書奏</p>
-                    
+                <div class="civilization">
+                    <h5>エジプト文明（ナイル川）</h5>
                     <ul>
-                        <li><strong>期間は間题に対して优しい</strong><br>間的の問题をよ使してい、实界对象と自について学んでい習</li>
-                        <li><strong>本整美问の經取</strong><br>新しいことに挑戦しに</li>
-                        <li><strong>自己理解の向上を通讯</strong><br>何際の興えは自己実現を図る</li>
-                        <li><strong>人際関係の築除</strong><br>周囲と連視してきる人との関係を築委事</li>
+                        <li><strong>ヒエログリフ</strong>：神聖文字</li>
+                        <li><strong>ピラミッド</strong>：ファラオの墓</li>
+                        <li><strong>ミイラ</strong>：死後の世界への信仰</li>
+                    </ul>
+                </div>
+                
+                <div class="civilization">
+                    <h5>インダス文明（インダス川）</h5>
+                    <ul>
+                        <li><strong>計画都市</strong>：モヘンジョ・ダロ</li>
+                        <li><strong>下水道</strong>：優れた都市計画</li>
+                        <li><strong>印章</strong>：商業の発達</li>
+                    </ul>
+                </div>
+                
+                <div class="civilization">
+                    <h5>中国文明（黄河）</h5>
+                    <ul>
+                        <li><strong>漢字</strong>：表意文字</li>
+                        <li><strong>殷（商）</strong>：最古の王朝</li>
+                        <li><strong>青銅器</strong>：高度な技術</li>
                     </ul>
                 </div>
             </div>
 
-            <h4>まとめと次のステップ</h4>
-            <p>Well-beingは、整う「楽」や「快楽」を経あつたものの、より深いほ心の女受益を表現えず。</p>
-            <p>次章は、これら5つの要素をどうことによって、其界对象な方法において学んでいている解す。</p>
-        `
-    },
-    'lesson1-2': {
-        title: 'Life Time Time (LTT) の考え方',
-        videoUrl: 'videos/ltt.mp4',
-        textContent: `
-            <div class="lesson-intro">
-                <p>この講義では、時間の概念を見直し、より充実した人生を送るためのLife Time Time（LTT）について学習します。</p>
-            </div>
-
-            <h4>LTTとは何か</h4>
-            <p>Life Time Time（LTT）とは、自分の人生における時間の使い方を戦略的に考える概念です。単なる時間管理ではなく、人生全体の時間配分を最適化することを目指します。</p>
-
-            <h4>従来の時間管理との違い</h4>
+            <h4>文明の共通点</h4>
             <ul>
-                <li><strong>短期的な効率</strong> → <strong>長期的な価値創造</strong></li>
-                <li><strong>タスクの消化</strong> → <strong>人生の充実度向上</strong></li>
-                <li><strong>忙しさの追求</strong> → <strong>意味のある活動の選択</strong></li>
+                <li><strong>大河のほとり</strong>：農業に適した土地</li>
+                <li><strong>文字の発明</strong>：記録・伝達手段</li>
+                <li><strong>都市の形成</strong>：人口の集中</li>
+                <li><strong>階級社会</strong>：支配者と被支配者</li>
             </ul>
-
-            <h4>LTTの3つの軸</h4>
-            <div class="ltt-elements">
-                <div class="element">
-                    <h5>1. 投資時間</h5>
-                    <p>将来の自分のための時間投資。学習、スキル向上、人間関係構築など。</p>
-                </div>
-                <div class="element">
-                    <h5>2. 享受時間</h5>
-                    <p>現在の幸福感を得る時間。趣味、娯楽、リラクゼーションなど。</p>
-                </div>
-                <div class="element">
-                    <h5>3. 必要時間</h5>
-                    <p>生活維持に必要な時間。仕事、家事、睡眠など。</p>
-                </div>
-            </div>
-        `
-    },
-    'business1-1': {
-        title: '挨拶とコミュニケーション',
-        videoUrl: 'videos/business-greeting.mp4',
-        textContent: `
-            <div class="lesson-intro">
-                <p>ビジネスシーンにおける適切な挨拶とコミュニケーションの基本を学習します。</p>
-            </div>
-
-            <h4>基本的な挨拶</h4>
-            <ul>
-                <li><strong>おはようございます</strong> - 朝の挨拶（午前中）</li>
-                <li><strong>お疲れ様です</strong> - 日中の挨拶</li>
-                <li><strong>失礼いたします</strong> - 退社時の挨拶</li>
-            </ul>
-
-            <h4>名刺交換のマナー</h4>
-            <ol>
-                <li>両手で相手の名刺を受け取る</li>
-                <li>「お預かりいたします」と言う</li>
-                <li>机の上の左上に置く</li>
-                <li>会議終了まで丁寧に扱う</li>
-            </ol>
-
-            <h4>電話応対の基本</h4>
-            <p>「お忙しい中、お電話いただきありがとうございます。〇〇の△△と申します。」</p>
-        `
-    },
-    'js1-1': {
-        title: '変数とデータ型',
-        videoUrl: 'videos/js-variables.mp4',
-        textContent: `
-            <div class="lesson-intro">
-                <p>JavaScriptにおける変数の宣言方法とデータ型について学習します。</p>
-            </div>
-
-            <h4>変数の宣言</h4>
-            <pre><code>// let - 再代入可能
-let name = "田中";
-let age = 25;
-
-// const - 再代入不可
-const PI = 3.14159;
-
-// var - 古い書き方（非推奨）
-var oldStyle = "使わない方が良い";</code></pre>
-
-            <h4>データ型</h4>
-            <ul>
-                <li><strong>string（文字列）</strong>: "Hello World"</li>
-                <li><strong>number（数値）</strong>: 42, 3.14</li>
-                <li><strong>boolean（真偽値）</strong>: true, false</li>
-                <li><strong>undefined</strong>: 未定義</li>
-                <li><strong>null</strong>: 空の値</li>
-            </ul>
-
-            <h4>型の確認</h4>
-            <pre><code>console.log(typeof "Hello"); // "string"
-console.log(typeof 42);     // "number"
-console.log(typeof true);   // "boolean"</code></pre>
         `
     }
 };
