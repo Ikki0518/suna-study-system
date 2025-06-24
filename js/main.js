@@ -882,10 +882,15 @@ class StudyApp {
                 Object.assign(subjects, parsedSubjects);
                 console.log('Loaded subjects from storage:', Object.keys(subjects));
             } else {
-                console.log('No subjects found in localStorage');
+                console.log('No subjects found in localStorage, using default subjects');
+                // デフォルト科目データをローカルストレージに保存
+                localStorage.setItem('subjects', JSON.stringify(subjects));
+                console.log('Saved default subjects to storage:', Object.keys(subjects));
             }
         } catch (error) {
             console.error('Error loading subjects from storage:', error);
+            // エラーの場合もデフォルトデータを使用
+            console.log('Using default subjects due to error');
         }
     }
 
