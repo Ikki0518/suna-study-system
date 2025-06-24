@@ -13,170 +13,209 @@
     <!-- PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
-<body class="admin-body">
-    <!-- 管理者専用ヘッダー -->
-    <header class="admin-header">
-        <div class="container">
-            <div class="admin-header-content">
-                <div class="admin-logo">
-                    <div class="flex items-center relative">
-                        <!-- Admin Sunaロゴ -->
-                        <svg width="115" height="55" viewBox="0 0 115 55" class="flex-shrink-0">
-                            <circle cx="90" cy="20" r="13" fill="#EC4899" opacity="0.85"/>
-                            <circle cx="73" cy="28" r="8" fill="#BE185D" opacity="0.9"/>
-                            <circle cx="83" cy="35" r="5" fill="#FBCFE8" opacity="0.75"/>
-                            <text x="0" y="42" font-size="26" font-weight="700" fill="#1E293B" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" letter-spacing="-1.2px">
-                                suna
-                            </text>
-                        </svg>
-                        <span class="admin-badge">Admin</span>
-                    </div>
+<body class="utage-admin-body">
+    <!-- UTAGEスタイルのヘッダーを共通化 -->
+    <header class="utage-header">
+        <div class="utage-header-content">
+            <div class="utage-logo">
+                <svg width="115" height="55" viewBox="0 0 115 55" class="flex-shrink-0">
+                    <!-- 大きな円（右上、明るいターコイズブルー） -->
+                    <circle cx="90" cy="20" r="13" fill="#67E8F9" opacity="0.85"/>
+                    <!-- 中くらいの円（左中央、濃いブルー） -->
+                    <circle cx="73" cy="28" r="8" fill="#2563EB" opacity="0.9"/>
+                    <!-- 小さな円（右下、薄いターコイズ） -->
+                    <circle cx="83" cy="35" r="5" fill="#A7F3D0" opacity="0.75"/>
+                    <!-- テキスト "suna" -->
+                    <text x="0" y="42" font-size="26" font-weight="700" fill="#1E293B" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" letter-spacing="-1.2px">suna</text>
+                </svg>
+            </div>
+            <div class="utage-header-right">
+                <span class="admin-user-info" id="admin-user-info">管理者: </span>
+                <div class="admin-auth-section" id="admin-auth-section">
+                    <!-- JS で管理者情報が挿入される -->
                 </div>
-                <nav class="admin-nav">
-                    <div class="nav-links">
-                        <a href="admin.html" class="nav-link">📊 ダッシュボード</a>
-                        <a href="create-course.html" class="nav-link active">📝 講座作成</a>
-                    </div>
-                    <div class="admin-auth-section" id="admin-auth-section">
-                        <!-- 管理者認証情報が動的に生成される -->
-                    </div>
-                </nav>
             </div>
         </div>
     </header>
 
-    <!-- 講座作成メインコンテンツ -->
-    <main class="create-course-main">
-        <div class="container">
-            <!-- ページヘッダー -->
-            <div class="page-header">
-                <h1 class="page-title">📝 新しい講座を作成</h1>
-                <p class="page-subtitle">受講生向けの学習コンテンツを作成・管理</p>
+    <div class="utage-layout">
+        <!-- 左サイドバー -->
+        <aside class="utage-sidebar">
+            <div class="utage-sidebar-content">
+                <h2 class="utage-sidebar-title">スキルアップ講座管理</h2>
+                <nav class="utage-nav">
+                    <ul class="utage-nav-list">
+                        <li class="utage-nav-item">
+                            <button class="utage-nav-link" onclick="window.location.href='admin.html'">
+                                <span class="utage-nav-icon">📊</span>
+                                <span>ダッシュボード</span>
+                            </button>
+                        </li>
+                        <li class="utage-nav-item">
+                            <button class="utage-nav-link active" onclick="window.location.href='create-course.html'">
+                                <span class="utage-nav-icon">📁</span>
+                                <span>コンテンツ管理</span>
+                            </button>
+                        </li>
+                        <li class="utage-nav-item">
+                            <button class="utage-nav-link" onclick="window.location.href='admin.html#students'">
+                                <span class="utage-nav-icon">👥</span>
+                                <span>受講生管理</span>
+                            </button>
+                        </li>
+                        <li class="utage-nav-item">
+                            <button class="utage-nav-link" onclick="window.location.href='admin.html#lessons'">
+                                <span class="utage-nav-icon">📚</span>
+                                <span>レッスン管理</span>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
             </div>
+        </aside>
 
-            <!-- 講座作成フォーム -->
-            <div class="create-course-container">
-                <div class="course-form-section">
-                    <form id="course-form" class="course-form">
-                        <!-- 基本情報セクション -->
-                        <div class="form-section">
-                            <h3 class="section-title">📋 基本情報</h3>
-                            
-                            <div class="form-group">
-                                <label for="course-title" class="form-label">講座タイトル <span class="required">*</span></label>
-                                <input type="text" id="course-title" class="form-input" placeholder="例：JavaScriptプログラミング基礎" required>
-                            </div>
+        <!-- メインコンテンツ -->
+        <main class="utage-main">
+            <!-- 講座作成メインコンテンツ -->
+            <section class="create-course-main">
+                <div class="container">
+                    <!-- ページヘッダー -->
+                    <div class="page-header">
+                        <h1 class="page-title">📝 新しい講座を作成</h1>
+                        <p class="page-subtitle">受講生向けの学習コンテンツを作成・管理</p>
+                    </div>
 
-                            <div class="form-group">
-                                <label for="course-description" class="form-label">講座説明 <span class="required">*</span></label>
-                                <textarea id="course-description" class="form-textarea" rows="4" placeholder="講座の概要や学習目標を記入してください..." required></textarea>
-                            </div>
+                    <!-- 講座作成フォーム -->
+                    <div class="create-course-container">
+                        <div class="course-form-section">
+                            <form id="course-form" class="course-form">
+                                <!-- 基本情報セクション -->
+                                <div class="form-section">
+                                    <h3 class="section-title">📋 基本情報</h3>
+                                    
+                                    <div class="form-group">
+                                        <label for="course-title" class="form-label">講座タイトル <span class="required">*</span></label>
+                                        <input type="text" id="course-title" class="form-input" placeholder="例：JavaScriptプログラミング基礎" required>
+                                    </div>
 
-                            <div class="form-group">
-                                <label for="course-subject" class="form-label">科目 <span class="required">*</span></label>
-                                <select id="course-subject" class="form-select" required>
-                                    <option value="">科目を選択してください</option>
-                                    <option value="japanese">国語</option>
-                                    <option value="math">数学</option>
-                                    <option value="english">英語</option>
-                                    <option value="science">理科</option>
-                                    <option value="social">社会</option>
-                                    <option value="programming">プログラミング</option>
-                                    <option value="other">その他</option>
-                                </select>
-                            </div>
-                        </div>
+                                    <div class="form-group">
+                                        <label for="course-description" class="form-label">講座説明 <span class="required">*</span></label>
+                                        <textarea id="course-description" class="form-textarea" rows="4" placeholder="講座の概要や学習目標を記入してください..." required></textarea>
+                                    </div>
 
-                        <!-- コンテンツセクション -->
-                        <div class="form-section">
-                            <h3 class="section-title">📖 講義コンテンツ</h3>
-                            
-                            <div class="form-group">
-                                <label for="course-content" class="form-label">講義本文（HTML対応） <span class="required">*</span></label>
-                                <textarea id="course-content" class="form-textarea html-textarea" rows="12" placeholder="<h3>第1章：はじめに</h3>&#10;<p>この講座では...</p>&#10;&#10;HTMLタグを使って講義内容を記述できます。" required></textarea>
-                                <div class="form-help">HTMLタグを使用して文章の装飾や構造化が可能です</div>
-                            </div>
-                        </div>
-
-                        <!-- 動画セクション -->
-                        <div class="form-section">
-                            <h3 class="section-title">🎥 講義動画</h3>
-                            
-                            <div class="video-upload-options">
-                                <div class="upload-option">
-                                    <input type="radio" id="video-file" name="video-type" value="file" checked>
-                                    <label for="video-file" class="radio-label">動画ファイルをアップロード</label>
+                                    <div class="form-group">
+                                        <label for="course-subject" class="form-label">科目 <span class="required">*</span></label>
+                                        <select id="course-subject" class="form-select" required>
+                                            <option value="">科目を選択してください</option>
+                                            <option value="japanese">国語</option>
+                                            <option value="math">数学</option>
+                                            <option value="english">英語</option>
+                                            <option value="science">理科</option>
+                                            <option value="social">社会</option>
+                                            <option value="programming">プログラミング</option>
+                                            <option value="other">その他</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="upload-option">
-                                    <input type="radio" id="video-url" name="video-type" value="url">
-                                    <label for="video-url" class="radio-label">YouTube/Vimeo URL</label>
-                                </div>
-                            </div>
 
-                            <div id="video-file-section" class="video-section">
-                                <div class="form-group">
-                                    <label for="video-upload" class="form-label">動画ファイル</label>
-                                    <div class="file-upload-area" id="video-upload-area">
-                                        <input type="file" id="video-upload" accept="video/*" class="file-input">
-                                        <div class="upload-placeholder">
-                                            <div class="upload-icon">🎬</div>
-                                            <p>動画ファイルをドラッグ＆ドロップまたはクリックして選択</p>
-                                            <small>対応形式: MP4, WebM, AVI, MOV</small>
+                                <!-- コンテンツセクション -->
+                                <div class="form-section">
+                                    <h3 class="section-title">📖 講義コンテンツ</h3>
+                                    
+                                    <div class="form-group">
+                                        <label for="course-content" class="form-label">講義本文（HTML対応） <span class="required">*</span></label>
+                                        <textarea id="course-content" class="form-textarea html-textarea" rows="12" placeholder="<h3>第1章：はじめに</h3>&#10;<p>この講座では...</p>&#10;&#10;HTMLタグを使って講義内容を記述できます。" required></textarea>
+                                        <div class="form-help">HTMLタグを使用して文章の装飾や構造化が可能です</div>
+                                    </div>
+                                </div>
+
+                                <!-- 動画セクション -->
+                                <div class="form-section">
+                                    <h3 class="section-title">🎥 講義動画</h3>
+                                    
+                                    <div class="video-upload-options">
+                                        <div class="upload-option">
+                                            <input type="radio" id="video-file" name="video-type" value="file" checked>
+                                            <label for="video-file" class="radio-label">動画ファイルをアップロード</label>
                                         </div>
-                                        <div class="file-preview" id="video-preview" style="display: none;"></div>
+                                        <div class="upload-option">
+                                            <input type="radio" id="video-url" name="video-type" value="url">
+                                            <label for="video-url" class="radio-label">YouTube/Vimeo URL</label>
+                                        </div>
+                                    </div>
+
+                                    <div id="video-file-section" class="video-section">
+                                        <div class="form-group">
+                                            <label for="video-upload" class="form-label">動画ファイル</label>
+                                            <div class="file-upload-area" id="video-upload-area">
+                                                <input type="file" id="video-upload" accept="video/*" class="file-input">
+                                                <div class="upload-placeholder">
+                                                    <div class="upload-icon">🎬</div>
+                                                    <p>動画ファイルをドラッグ＆ドロップまたはクリックして選択</p>
+                                                    <small>対応形式: MP4, WebM, AVI, MOV</small>
+                                                </div>
+                                                <div class="file-preview" id="video-preview" style="display: none;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="video-url-section" class="video-section" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="video-link" class="form-label">動画URL</label>
+                                            <input type="url" id="video-link" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
+                                            <div class="form-help">YouTube、Vimeo の共有URLを入力してください</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div id="video-url-section" class="video-section" style="display: none;">
-                                <div class="form-group">
-                                    <label for="video-link" class="form-label">動画URL</label>
-                                    <input type="url" id="video-link" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
-                                    <div class="form-help">YouTube、Vimeo の共有URLを入力してください</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- PDFセクション -->
-                        <div class="form-section">
-                            <h3 class="section-title">📄 講義スライド（PDF）</h3>
-                            
-                            <div class="form-group">
-                                <label for="pdf-upload" class="form-label">PDFファイル</label>
-                                <div class="file-upload-area" id="pdf-upload-area">
-                                    <input type="file" id="pdf-upload" accept=".pdf" class="file-input">
-                                    <div class="upload-placeholder">
-                                        <div class="upload-icon">📄</div>
-                                        <p>PDFファイルをドラッグ＆ドロップまたはクリックして選択</p>
-                                        <small>対応形式: PDF</small>
+                                <!-- PDFセクション -->
+                                <div class="form-section">
+                                    <h3 class="section-title">📄 講義スライド（PDF）</h3>
+                                    
+                                    <div class="form-group">
+                                        <label for="pdf-upload" class="form-label">PDFファイル</label>
+                                        <div class="file-upload-area" id="pdf-upload-area">
+                                            <input type="file" id="pdf-upload" accept=".pdf" class="file-input">
+                                            <div class="upload-placeholder">
+                                                <div class="upload-icon">📄</div>
+                                                <p>PDFファイルをドラッグ＆ドロップまたはクリックして選択</p>
+                                                <small>対応形式: PDF</small>
+                                            </div>
+                                            <div class="file-preview" id="pdf-preview" style="display: none;"></div>
+                                        </div>
                                     </div>
-                                    <div class="file-preview" id="pdf-preview" style="display: none;"></div>
                                 </div>
+
+                                <!-- アクションボタン -->
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-secondary" onclick="showPreview()">👁️ プレビュー</button>
+                                    <button type="button" class="btn btn-outline" onclick="saveDraft()">💾 下書き保存</button>
+                                    <button type="submit" class="btn btn-primary">✅ 講座を作成</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- プレビューセクション -->
+                        <div class="preview-section" id="preview-section">
+                            <div class="preview-header">
+                                <h3>📱 プレビュー</h3>
+                                <button type="button" class="btn-close" onclick="hidePreview()">×</button>
+                            </div>
+                            <div class="preview-content" id="preview-content">
+                                <p class="preview-empty">プレビューボタンを押すと、作成中の講座内容を確認できます</p>
                             </div>
                         </div>
 
-                        <!-- アクションボタン -->
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="showPreview()">👁️ プレビュー</button>
-                            <button type="button" class="btn btn-outline" onclick="saveDraft()">💾 下書き保存</button>
-                            <button type="submit" class="btn btn-primary">✅ 講座を作成</button>
+                        <!-- 既存講座一覧 -->
+                        <div class="courses-list-section" style="margin-top: 48px;">
+                            <h3 class="section-title">📚 作成済み講座</h3>
+                            <div id="courses-list" class="course-list"></div>
                         </div>
-                    </form>
-                </div>
-
-                <!-- プレビューセクション -->
-                <div class="preview-section" id="preview-section">
-                    <div class="preview-header">
-                        <h3>📱 プレビュー</h3>
-                        <button type="button" class="btn-close" onclick="hidePreview()">×</button>
-                    </div>
-                    <div class="preview-content" id="preview-content">
-                        <p class="preview-empty">プレビューボタンを押すと、作成中の講座内容を確認できます</p>
                     </div>
                 </div>
-            </div>
-        </div>
-    </main>
+            </section>
+        </main>
+    </div>
 
     <!-- 作成完了モーダル -->
     <div class="modal-overlay" id="success-modal" style="display: none;">

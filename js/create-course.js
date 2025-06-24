@@ -11,6 +11,7 @@ class CourseCreator {
             videoUrl: '',
             pdf: null
         };
+        this.editingIndex = null; // 追加: 編集中のインデックス
         this.init();
     }
 
@@ -19,6 +20,7 @@ class CourseCreator {
         this.bindEvents();
         this.updateAuthUI();
         this.setupDragAndDrop();
+        this.renderCoursesList(); // 既存講座を表示
     }
 
     // 管理者認証チェック
@@ -411,40 +413,29 @@ class CourseCreator {
 
     // 講座保存
     async saveCourse() {
-        const courseId = 'course_' + Date.now();
-        const courseDataToSave = {
-            id: courseId,
-            title: this.courseData.title,
-            description: this.courseData.description,
-            subject: this.courseData.subject,
-            content: this.courseData.content,
-            videoType: this.courseData.videoType,
-            videoUrl: this.courseData.videoUrl,
-            createdAt: new Date().toISOString(),
-            createdBy: authManager.currentUser.email
-        };
+        // 編集モードのときは更新、そうでなければ新規追加
+        const courses = JSON.parse(localStorage.getItem('adminCourses') || '[]');
 
-        // ファイルデータをBase64で保存（実際のプロダクションでは適さない）
-        if (this.courseData.video) {
-            courseDataToSave.videoData = await this.fileToBase64(this.courseData.video);
-            courseDataToSave.videoName = this.courseData.video.name;
-            courseDataToSave.videoType = this.courseData.video.type;
+        const courseDataToSave = { ...this.courseData, createdAt: Date.now() };
+
+        if (this.editingIndex !== null) {
+            courses[this.editingIndex] = courseDataToSave;
+            this.editingIndex = null;
+            document.querySelector('#course-form .btn-primary').textContent = '✅ 講座を更新';
+        } else {
+            courses.push(courseDataToSave);
         }
 
-        if (this.courseData.pdf) {
-            courseDataToSave.pdfData = await this.fileToBase64(this.courseData.pdf);
-            courseDataToSave.pdfName = this.courseData.pdf.name;
+        localStorage.setItem('adminCourses', JSON.stringify(courses));
+
+        // subjects 統合は新規時のみ実施
+        if (!this.editingIndex) {
+            this.integrateCourseIntoSystem(courseDataToSave);
         }
 
-        // 管理者用の講座データとして保存
-        const existingCourses = JSON.parse(localStorage.getItem('adminCourses') || '[]');
-        existingCourses.push(courseDataToSave);
-        localStorage.setItem('adminCourses', JSON.stringify(existingCourses));
+        this.renderCoursesList();
 
-        // 学習システムのsubjectsデータに統合
-        this.integrateCourseIntoSystem(courseDataToSave);
-
-        console.log('講座が保存され、学習システムに統合されました:', courseDataToSave);
+        this.showSuccessModal();
     }
 
     // 作成した講座を学習システムに統合
@@ -747,10 +738,10 @@ class CourseCreator {
     }
 
     showCreateModal(type, parentId) {
-        switch (type) {
-            case 'subject':
+            switch (type) {
+                case 'subject':
                 success = this.createSubject(name, description);
-                break;
+                    break;
             case 'course':
                 if (!parentId) {
                     alert('コースを作成するには科目を選択してください');
@@ -782,7 +773,80 @@ class CourseCreator {
                 }
                 success = this.createLesson(parentId, name, description);
                 break;
+            }
         }
+
+    /* ======== 講座一覧の管理 ======== */
+
+    // 講座一覧をレンダリング
+    renderCoursesList() {
+        const listEl = document.getElementById('courses-list');
+        if (!listEl) return;
+
+        const courses = JSON.parse(localStorage.getItem('adminCourses') || '[]');
+        if (courses.length === 0) {
+            listEl.innerHTML = '<p style="color:#6b7280;">まだ講座がありません</p>';
+            return;
+        }
+
+        listEl.innerHTML = courses.map((c, idx) => this.generateCourseCard(c, idx)).join('');
+    }
+
+    // カード HTML 生成
+    generateCourseCard(course, index) {
+        const subjectName = this.getSubjectDisplayName(course.subject);
+        return `
+            <div class="course-card" style="height: auto;">
+                <div class="course-card-content">
+                    <h4 class="course-card-title">${course.title}</h4>
+                    <p class="course-card-description">${course.description}</p>
+                    <div class="course-card-footer" style="margin-top:12px;">
+                        <span class="course-progress">${subjectName}</span>
+                        <div>
+                            <button class="course-button" style="background:#6b7280;margin-right:6px;" onclick="courseCreator.loadCourseToForm(${index})">編集</button>
+                            <button class="course-button" style="background:#dc2626;" onclick="courseCreator.deleteCourse(${index})">削除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // 講座をフォームに読み込む
+    loadCourseToForm(index) {
+        const courses = JSON.parse(localStorage.getItem('adminCourses') || '[]');
+        const course = courses[index];
+        if (!course) return;
+
+        // フォームへ値反映
+        document.getElementById('course-title').value = course.title;
+        document.getElementById('course-description').value = course.description;
+        document.getElementById('course-subject').value = course.subject;
+        document.getElementById('course-content').value = course.content;
+
+        if (course.videoType === 'url') {
+            document.getElementById('video-url').checked = true;
+            this.toggleVideoSection('url');
+            document.getElementById('video-link').value = course.videoUrl;
+        } else {
+            document.getElementById('video-file').checked = true;
+            this.toggleVideoSection('file');
+            // ファイルは再設定できないので無視
+        }
+
+        this.editingIndex = index;
+        document.querySelector('#course-form .btn-primary').textContent = '✅ 講座を更新';
+        this.updateCourseData();
+    }
+
+    // 講座を削除
+    deleteCourse(index) {
+        if (!confirm('この講座を削除しますか？')) return;
+        const courses = JSON.parse(localStorage.getItem('adminCourses') || '[]');
+        courses.splice(index, 1);
+        localStorage.setItem('adminCourses', JSON.stringify(courses));
+        this.renderCoursesList();
+        alert('削除しました');
     }
 }
 
@@ -814,7 +878,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         if (typeof authManager !== 'undefined' && authManager) {
             if (authManager.requireAdminAuth()) {
-                courseCreator = new CourseCreator();
+                    courseCreator = new CourseCreator();
                 window.courseCreator = courseCreator; // グローバルアクセス用
             }
         } else {
