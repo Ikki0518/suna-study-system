@@ -3,346 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理者画面 - Suna Admin</title>
+    <title>スキルアップ講座管理 - Suna Admin</title>
     <link rel="stylesheet" href="../styles/main.css">
     <link rel="stylesheet" href="../styles/admin.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-<body class="admin-body">
-    <!-- 管理者専用ヘッダー -->
-    <header class="admin-header">
-        <div class="container">
-            <div class="admin-header-content">
-                <div class="admin-logo">
-                    <div class="flex items-center relative">
-                        <!-- Admin Sunaロゴ - 管理者専用カラー -->
-                        <svg width="115" height="55" viewBox="0 0 115 55" class="flex-shrink-0">
-                            <!-- 大きな円（右上、管理者ピンク） -->
-                            <circle cx="90" cy="20" r="13" fill="#EC4899" opacity="0.85"/>
+<body class="utage-body">
+    <!-- UTAGE風トップヘッダー -->
+    <header class="utage-header">
+        <div class="utage-header-content">
+            <div class="utage-logo">
+                <svg width="115" height="55" viewBox="0 0 115 55" class="flex-shrink-0">
+                    <!-- 大きな円（右上、明るいターコイズブルー） -->
+                    <circle cx="90" cy="20" r="13" fill="#67E8F9" opacity="0.85"/>
 
-                            <!-- 中くらいの円（左中央、濃いピンク） -->
-                            <circle cx="73" cy="28" r="8" fill="#BE185D" opacity="0.9"/>
+                    <!-- 中くらいの円（左中央、濃いブルー） -->
+                    <circle cx="73" cy="28" r="8" fill="#2563EB" opacity="0.9"/>
 
-                            <!-- 小さな円（右下、薄いピンク） -->
-                            <circle cx="83" cy="35" r="5" fill="#FBCFE8" opacity="0.75"/>
+                    <!-- 小さな円（右下、薄いターコイズ） -->
+                    <circle cx="83" cy="35" r="5" fill="#A7F3D0" opacity="0.75"/>
 
-                            <!-- テキスト "suna" - 太字、濃いネイビー -->
-                            <text x="0" y="42" font-size="26" font-weight="700" fill="#1E293B" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" letter-spacing="-1.2px">
-                                suna
-                            </text>
-                        </svg>
-                        <span class="admin-badge">Admin</span>
-                    </div>
-                </div>
-                <nav class="admin-nav">
-                    <div class="admin-auth-section" id="admin-auth-section">
-                        <!-- 管理者認証情報が動的に生成される -->
-                    </div>
-                </nav>
+                    <!-- テキスト "suna" - 太字、濃いネイビー -->
+                    <text x="0" y="42" font-size="26" font-weight="700" fill="#1E293B" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" letter-spacing="-1.2px">
+                        suna
+                    </text>
+                </svg>
+            </div>
+            <div class="utage-header-right">
+                <span class="admin-user-info" id="admin-user-info">管理者: </span>
+                <button class="utage-logout-btn" onclick="adminApp.logout()">ログアウト</button>
             </div>
         </div>
     </header>
 
-    <!-- 管理者メインコンテンツ -->
-    <main class="admin-main">
-        <div class="container">
-            <!-- ダッシュボードヘッダー -->
-            <div class="dashboard-header">
-                <h1 class="dashboard-title">📊 管理者ダッシュボード</h1>
-                <p class="dashboard-subtitle">受講生の学習状況を管理・監督</p>
+    <div class="utage-layout">
+        <!-- 左サイドバーナビゲーション -->
+        <aside class="utage-sidebar">
+            <div class="utage-sidebar-content">
+                <h2 class="utage-sidebar-title">スキルアップ講座管理</h2>
+                
+                <nav class="utage-nav">
+                    <ul class="utage-nav-list">
+                        <li class="utage-nav-item">
+                            <button class="utage-nav-link active" data-tab="dashboard" onclick="adminApp.switchTab('dashboard')">
+                                <span class="utage-nav-icon">📊</span>
+                                <span>ダッシュボード</span>
+                            </button>
+                        </li>
+                        <li class="utage-nav-item">
+                            <button class="utage-nav-link" data-tab="content" onclick="window.location.href='create-course.html'">
+                                <span class="utage-nav-icon">📁</span>
+                                <span>コンテンツ管理</span>
+                            </button>
+                        </li>
+                        <li class="utage-nav-item">
+                            <button class="utage-nav-link" data-tab="students" onclick="adminApp.switchTab('students')">
+                                <span class="utage-nav-icon">👥</span>
+                                <span>受講生管理</span>
+                            </button>
+                        </li>
+                        <li class="utage-nav-item">
+                            <button class="utage-nav-link" data-tab="lessons" onclick="adminApp.switchTab('lessons')">
+                                <span class="utage-nav-icon">📚</span>
+                                <span>レッスン管理</span>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
             </div>
+        </aside>
 
-            <!-- タブナビゲーション -->
-            <div class="admin-tabs">
-                <button class="tab-btn active" data-tab="students" onclick="adminApp.switchTab('students')">
-                    👥 受講生管理
-                </button>
-                <button class="tab-btn" data-tab="applications" onclick="adminApp.switchTab('applications')">
-                    📝 申請管理
-                    <span class="notification-badge" id="applicationsBadge" style="display: none;">0</span>
-                </button>
-                <button class="tab-btn" data-tab="schools" onclick="adminApp.switchTab('schools')">
-                    🏫 スクール管理
-                </button>
-                <button class="tab-btn" data-tab="invitations" onclick="adminApp.switchTab('invitations')">
-                    👨‍🎓 受講生登録
-                </button>
-            </div>
+        <!-- メインコンテンツエリア -->
+        <main class="utage-main">
+            <!-- ダッシュボードタブ -->
+            <div class="utage-tab-panel active" id="dashboard-panel">
+                <div class="utage-content-header">
+                    <div class="utage-breadcrumb">
+                        <span>ダッシュボード</span>
+                    </div>
+                    <h1 class="utage-page-title">スキルアップ講座管理</h1>
+                </div>
 
-            <!-- 統計カードセクション -->
-            <div class="stats-grid" id="stats-grid">
-                <!-- 統計カードはJavaScriptで生成 -->
-            </div>
+                <div class="utage-content-body">
+                    <!-- 統計カード -->
+                    <div class="utage-stats-grid" id="stats-grid">
+                        <!-- 統計カードはJavaScriptで生成 -->
+                    </div>
 
-            <!-- タブコンテンツ -->
-            <div class="tab-content">
-                <!-- 受講生管理タブ -->
-                <div class="tab-panel active" id="students-panel">
-                    <section class="student-management">
-                        <div class="section-header">
-                            <h2 class="section-title">👥 受講生管理</h2>
-                            <div class="section-actions">
-                                <a href="create-course.html" class="action-btn primary">
-                                    📝 講座作成
-                                </a>
-                                <button class="action-btn secondary" onclick="adminApp.refreshStudentList()">
-                                    🔄 更新
-                                </button>
-                                <button class="action-btn secondary" onclick="adminApp.exportStudentData()">
-                                    📊 データエクスポート
-                                </button>
-                            </div>
+                    <!-- 最近の活動 -->
+                    <div class="utage-section">
+                        <div class="utage-section-header">
+                            <h2 class="utage-section-title">最近の活動</h2>
+                            <button class="utage-btn utage-btn-secondary" onclick="adminApp.refreshActivity()">
+                                🔄 更新
+                            </button>
                         </div>
-                        
-                        <!-- 検索・フィルター -->
-                        <div class="filter-section">
-                            <div class="search-box">
-                                <input type="text" id="student-search" placeholder="受講生を検索..." class="search-input">
-                                <button class="search-btn">🔍</button>
-                            </div>
-                            <div class="filter-options">
-                                <select id="progress-filter" class="filter-select">
-                                    <option value="">進捗で絞り込み</option>
-                                    <option value="high">高進捗 (70%以上)</option>
-                                    <option value="medium">中進捗 (30-70%)</option>
-                                    <option value="low">低進捗 (30%未満)</option>
-                                </select>
-                                <select id="subject-filter" class="filter-select">
-                                    <option value="">科目で絞り込み</option>
-                                    <option value="japanese">国語</option>
-                                    <option value="math">数学</option>
-                                    <option value="english">英語</option>
-                                    <option value="science">理科</option>
-                                    <option value="social">社会</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- 受講生一覧テーブル -->
-                        <div class="student-table-container">
-                            <table class="student-table" id="student-table">
-                                <!-- テーブルヘッダーとデータはJavaScriptで生成 -->
+                        <div class="utage-table-container">
+                            <table class="utage-table" id="recent-activity-table">
+                                <thead>
+                                    <tr>
+                                        <th>時刻</th>
+                                        <th>受講生</th>
+                                        <th>アクション</th>
+                                        <th>詳細</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- データはJavaScriptで生成 -->
+                                </tbody>
                             </table>
                         </div>
-                    </section>
-                </div>
-
-                <!-- 申請管理タブ -->
-                <div class="tab-panel" id="applications-panel">
-                    <section class="applications-management">
-                        <div class="section-header">
-                            <h2 class="section-title">📝 申請管理</h2>
-                            <div class="section-actions">
-                                <button class="action-btn secondary" onclick="adminApp.refreshApplications()">
-                                    🔄 更新
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- 申請一覧 -->
-                        <div class="applications-container" id="applications-container">
-                            <!-- 申請リストはJavaScriptで生成 -->
-                        </div>
-                    </section>
-                </div>
-
-                <!-- スクール管理タブ -->
-                <div class="tab-panel" id="schools-panel">
-                    <section class="schools-management">
-                        <div class="section-header">
-                            <h2 class="section-title">🏫 スクール管理</h2>
-                            <div class="section-actions">
-                                <button class="action-btn primary" onclick="adminApp.showAddSchoolModal()">
-                                    ➕ スクール追加
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- スクール一覧 -->
-                        <div class="schools-container" id="schools-container">
-                            <!-- スクールリストはJavaScriptで生成 -->
-                        </div>
-                    </section>
-                </div>
-
-                <!-- 受講生登録タブ -->
-                <div class="tab-panel" id="invitations-panel">
-                    <section class="registrations-management">
-                        <div class="section-header">
-                            <h2 class="section-title">👨‍🎓 受講生登録</h2>
-                            <div class="section-actions">
-                                <button class="action-btn primary" onclick="adminApp.showRegistrationModal()">
-                                    ➕ 受講生を登録
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- 登録一覧 -->
-                        <div class="invitations-container" id="invitations-container">
-                            <!-- 登録リストはJavaScriptで生成 -->
-                        </div>
-                    </section>
-                </div>
-            </div>
-
-            <!-- 受講生詳細モーダル -->
-            <div class="modal-overlay" id="student-detail-modal" style="display: none;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">受講生詳細</h3>
-                        <button class="modal-close" onclick="adminApp.closeStudentDetail()">&times;</button>
-                    </div>
-                    <div class="modal-body" id="student-detail-content">
-                        <!-- 詳細内容はJavaScriptで生成 -->
                     </div>
                 </div>
             </div>
 
-            <!-- 受講生登録モーダル -->
-            <div class="modal-overlay" id="registration-modal" style="display: none;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">👨‍🎓 受講生を登録</h3>
-                        <button class="modal-close" onclick="adminApp.closeRegistrationModal()">&times;</button>
+            <!-- 受講生管理タブ -->
+            <div class="utage-tab-panel" id="students-panel">
+                <div class="utage-content-header">
+                    <div class="utage-breadcrumb">
+                        <span>受講生管理</span>
                     </div>
-                    <div class="modal-body">
-                        <form id="registration-form" onsubmit="adminApp.registerStudent(event)">
-                            <div class="form-group">
-                                <label for="reg-email">メールアドレス</label>
-                                <input type="email" id="reg-email" required placeholder="student@example.com">
-                                <p class="form-help-text">このメールアドレスでログインします</p>
-                            </div>
-                            <div class="form-group">
-                                <label for="reg-name">受講生名</label>
-                                <input type="text" id="reg-name" required placeholder="山田太郎">
-                            </div>
-                            <div class="form-group">
-                                <label for="reg-grade">学年</label>
-                                <select id="reg-grade" required>
-                                    <option value="">学年を選択</option>
-                                    <option value="小学1年">小学1年</option>
-                                    <option value="小学2年">小学2年</option>
-                                    <option value="小学3年">小学3年</option>
-                                    <option value="小学4年">小学4年</option>
-                                    <option value="小学5年">小学5年</option>
-                                    <option value="小学6年">小学6年</option>
-                                    <option value="中学1年">中学1年</option>
-                                    <option value="中学2年">中学2年</option>
-                                    <option value="中学3年">中学3年</option>
-                                    <option value="高校1年">高校1年</option>
-                                    <option value="高校2年">高校2年</option>
-                                    <option value="高校3年">高校3年</option>
-                                </select>
-                            </div>
-                            <div class="form-info">
-                                <div class="info-box">
-                                    <h4>📝 登録後の流れ</h4>
-                                    <ol>
-                                        <li>自動でパスワードが生成されます</li>
-                                        <li>専用URLが発行されます</li>
-                                        <li>ログイン情報をコピーして受講生にお渡しください</li>
-                                    </ol>
+                    <h1 class="utage-page-title">受講生</h1>
+                </div>
+
+                <div class="utage-content-body">
+                    <div class="utage-section">
+                        <div class="utage-section-header">
+                            <div class="utage-section-left">
+                                <div class="utage-tabs">
+                                    <button class="utage-tab-btn active">未分類</button>
                                 </div>
                             </div>
-                            <div class="form-actions">
-                                <button type="button" class="action-btn secondary" onclick="adminApp.closeRegistrationModal()">
-                                    キャンセル
+                            <div class="utage-section-actions">
+                                <button class="utage-btn utage-btn-primary" onclick="adminApp.showRegistrationModal()">
+                                    ➕ 受講生追加
                                 </button>
-                                <button type="submit" class="action-btn primary">
-                                    👨‍🎓 受講生を登録
-                                </button>
+                                <button class="utage-btn utage-btn-secondary">グループ管理</button>
+                                <button class="utage-btn utage-btn-secondary">並べ替え</button>
+                                <div class="utage-search-box">
+                                    <input type="text" placeholder="受講生・コース名で検索..." class="utage-search-input" id="student-search">
+                                    <button class="utage-search-btn">🔍</button>
+                                </div>
                             </div>
-                        </form>
+                        </div>
+
+                        <div class="utage-table-container">
+                            <table class="utage-table" id="student-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" class="utage-checkbox"></th>
+                                        <th>受講生・コース名</th>
+                                        <th>ステータス</th>
+                                        <th>作成日</th>
+                                        <th>更新日</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- データはJavaScriptで生成 -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 互換性のため古いモーダルIDも残す -->
-            <div class="modal-overlay" id="invite-modal" style="display: none;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">👨‍🎓 受講生を登録</h3>
-                        <button class="modal-close" onclick="adminApp.closeRegistrationModal()">&times;</button>
+            <!-- レッスン管理タブ -->
+            <div class="utage-tab-panel" id="lessons-panel">
+                <div class="utage-content-header">
+                    <div class="utage-breadcrumb">
+                        <span>レッスン管理</span>
                     </div>
-                    <div class="modal-body">
-                        <form id="invite-form" onsubmit="adminApp.registerStudent(event)">
-                            <div class="form-group">
-                                <label for="invite-email">メールアドレス</label>
-                                <input type="email" id="invite-email" required placeholder="student@example.com">
-                                <p class="form-help-text">このメールアドレスでログインします</p>
+                    <h1 class="utage-page-title">レッスン管理</h1>
+                </div>
+
+                <div class="utage-content-body">
+                    <div class="utage-section">
+                        <div class="utage-section-header">
+                            <div class="utage-section-left">
+                                <div class="utage-tabs">
+                                    <button class="utage-tab-btn active">並べ替え</button>
+                                    <button class="utage-tab-btn">レッスングループ</button>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="invite-name">受講生名</label>
-                                <input type="text" id="invite-name" required placeholder="山田太郎">
+                            <div class="utage-section-actions">
+                                <div class="utage-search-box">
+                                    <input type="text" placeholder="レッスン名で検索..." class="utage-search-input">
+                                    <button class="utage-search-btn">🔍</button>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="invite-grade">学年</label>
-                                <select id="invite-grade" required>
-                                    <option value="">学年を選択</option>
-                                    <option value="小学1年">小学1年</option>
-                                    <option value="小学2年">小学2年</option>
-                                    <option value="小学3年">小学3年</option>
-                                    <option value="小学4年">小学4年</option>
-                                    <option value="小学5年">小学5年</option>
-                                    <option value="小学6年">小学6年</option>
-                                    <option value="中学1年">中学1年</option>
-                                    <option value="中学2年">中学2年</option>
-                                    <option value="中学3年">中学3年</option>
-                                    <option value="高校1年">高校1年</option>
-                                    <option value="高校2年">高校2年</option>
-                                    <option value="高校3年">高校3年</option>
-                                </select>
-                            </div>
-                            <div class="form-actions">
-                                <button type="button" class="action-btn secondary" onclick="adminApp.closeRegistrationModal()">
-                                    キャンセル
-                                </button>
-                                <button type="submit" class="action-btn primary">
-                                    👨‍🎓 受講生を登録
-                                </button>
-                            </div>
-                        </form>
+                        </div>
+
+                        <div class="utage-table-container">
+                            <table class="utage-table" id="lessons-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" class="utage-checkbox"></th>
+                                        <th>レッスン名</th>
+                                        <th>ステータス</th>
+                                        <th>作成日</th>
+                                        <th>更新日</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- データはJavaScriptで生成 -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+        </main>
+    </div>
 
-            <!-- スクール追加モーダル -->
-            <div class="modal-overlay" id="add-school-modal" style="display: none;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">🏫 スクール追加</h3>
-                        <button class="modal-close" onclick="adminApp.closeAddSchoolModal()">&times;</button>
+    <!-- 受講生登録モーダル -->
+    <div class="utage-modal-overlay" id="registration-modal" style="display: none;">
+        <div class="utage-modal-content">
+            <div class="utage-modal-header">
+                <h3 class="utage-modal-title">👨‍🎓 受講生を登録</h3>
+                <button class="utage-modal-close" onclick="adminApp.closeRegistrationModal()">&times;</button>
+            </div>
+            <div class="utage-modal-body">
+                <form id="registration-form" onsubmit="adminApp.registerStudent(event)">
+                    <div class="utage-form-group">
+                        <label for="reg-email">メールアドレス</label>
+                        <input type="email" id="reg-email" required placeholder="student@example.com" class="utage-form-input">
+                        <p class="utage-form-help">このメールアドレスでログインします</p>
                     </div>
-                    <div class="modal-body">
-                        <form id="add-school-form" onsubmit="adminApp.addSchool(event)">
-                            <div class="form-group">
-                                <label for="school-name">スクール名</label>
-                                <input type="text" id="school-name" required placeholder="○○学習塾">
-                            </div>
-                            <div class="form-group">
-                                <label for="school-color">テーマカラー</label>
-                                <input type="color" id="school-color" value="#3B82F6">
-                            </div>
-                            <div class="form-group">
-                                <label for="school-description">説明</label>
-                                <textarea id="school-description" rows="3" placeholder="スクールの特徴や方針を入力してください"></textarea>
-                            </div>
-                            <div class="form-actions">
-                                <button type="button" class="action-btn secondary" onclick="adminApp.closeAddSchoolModal()">
-                                    キャンセル
-                                </button>
-                                <button type="submit" class="action-btn primary">
-                                    ➕ スクール追加
-                                </button>
-                            </div>
-                        </form>
+                    <div class="utage-form-group">
+                        <label for="reg-name">受講生名</label>
+                        <input type="text" id="reg-name" required placeholder="山田太郎" class="utage-form-input">
                     </div>
-                </div>
+                    <div class="utage-form-group">
+                        <label for="reg-grade">学年</label>
+                        <select id="reg-grade" required class="utage-form-select">
+                            <option value="">学年を選択</option>
+                            <option value="小学1年">小学1年</option>
+                            <option value="小学2年">小学2年</option>
+                            <option value="小学3年">小学3年</option>
+                            <option value="小学4年">小学4年</option>
+                            <option value="小学5年">小学5年</option>
+                            <option value="小学6年">小学6年</option>
+                            <option value="中学1年">中学1年</option>
+                            <option value="中学2年">中学2年</option>
+                            <option value="中学3年">中学3年</option>
+                            <option value="高校1年">高校1年</option>
+                            <option value="高校2年">高校2年</option>
+                            <option value="高校3年">高校3年</option>
+                        </select>
+                    </div>
+                    <div class="utage-form-info">
+                        <div class="utage-info-box">
+                            <h4>📝 登録後の流れ</h4>
+                            <ol>
+                                <li>自動でパスワードが生成されます</li>
+                                <li>専用URLが発行されます</li>
+                                <li>ログイン情報をコピーして受講生にお渡しください</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="utage-form-actions">
+                        <button type="button" class="utage-btn utage-btn-secondary" onclick="adminApp.closeRegistrationModal()">
+                            キャンセル
+                        </button>
+                        <button type="submit" class="utage-btn utage-btn-primary">
+                            👨‍🎓 受講生を登録
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-    </main>
+    </div>
+
+    <!-- 互換性のため古いモーダルIDも残す -->
+    <div class="utage-modal-overlay" id="invite-modal" style="display: none;">
+        <div class="utage-modal-content">
+            <div class="utage-modal-header">
+                <h3 class="utage-modal-title">👨‍🎓 受講生を登録</h3>
+                <button class="utage-modal-close" onclick="adminApp.closeRegistrationModal()">&times;</button>
+            </div>
+            <div class="utage-modal-body">
+                <form id="invite-form" onsubmit="adminApp.registerStudent(event)">
+                    <div class="utage-form-group">
+                        <label for="invite-email">メールアドレス</label>
+                        <input type="email" id="invite-email" required placeholder="student@example.com" class="utage-form-input">
+                        <p class="utage-form-help">このメールアドレスでログインします</p>
+                    </div>
+                    <div class="utage-form-group">
+                        <label for="invite-name">受講生名</label>
+                        <input type="text" id="invite-name" required placeholder="山田太郎" class="utage-form-input">
+                    </div>
+                    <div class="utage-form-group">
+                        <label for="invite-grade">学年</label>
+                        <select id="invite-grade" required class="utage-form-select">
+                            <option value="">学年を選択</option>
+                            <option value="小学1年">小学1年</option>
+                            <option value="小学2年">小学2年</option>
+                            <option value="小学3年">小学3年</option>
+                            <option value="小学4年">小学4年</option>
+                            <option value="小学5年">小学5年</option>
+                            <option value="小学6年">小学6年</option>
+                            <option value="中学1年">中学1年</option>
+                            <option value="中学2年">中学2年</option>
+                            <option value="中学3年">中学3年</option>
+                            <option value="高校1年">高校1年</option>
+                            <option value="高校2年">高校2年</option>
+                            <option value="高校3年">高校3年</option>
+                        </select>
+                    </div>
+                    <div class="utage-form-actions">
+                        <button type="button" class="utage-btn utage-btn-secondary" onclick="adminApp.closeRegistrationModal()">
+                            キャンセル
+                        </button>
+                        <button type="submit" class="utage-btn utage-btn-primary">
+                            👨‍🎓 受講生を登録
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="../js/main.js"></script>
     <script src="../js/admin.js"></script>

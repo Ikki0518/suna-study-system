@@ -1,12 +1,12 @@
 {
-  "name": "suna-study-system",
+  "name": "learning-management-system",
   "version": "1.0.0",
-  "description": "次世代AIとの革新的な学習体験を提供する学習管理システム",
+  "description": "塾向け学習管理システム - 本番版",
   "main": "index.html",
   "scripts": {
+    "start": "python3 -m http.server 8000",
     "dev": "python3 -m http.server 8001",
-    "build": "echo 'Static site - no build needed'",
-    "start": "python3 -m http.server 8001",
+    "build": "echo 'Static site - no build required'",
     "deploy": "vercel --prod"
   },
   "keywords": [
@@ -14,20 +14,17 @@
     "learning",
     "management",
     "system",
-    "ai",
-    "study"
+    "japanese",
+    "cram-school"
   ],
-  "author": "Ikki Yamamoto",
+  "author": "Your School",
   "license": "MIT",
-  "dependencies": {
-    "@supabase/supabase-js": "^2.38.0"
-  },
-  "devDependencies": {
-    "vercel": "^32.0.0"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ikki0518/suna-study-system.git"
+    "url": "https://github.com/your-school/learning-management-system.git"
   },
-  "homepage": "https://suna-study-system.vercel.app"
+  "homepage": "https://your-school-lms.vercel.app",
+  "engines": {
+    "node": ">=14.0.0"
+  }
 } 

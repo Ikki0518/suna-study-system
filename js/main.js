@@ -1,526 +1,28 @@
-// スクール管理システム
-const schools = {
-    'demo-school': {
-        id: 'demo-school',
-        name: 'デモ学習塾',
-        description: 'システムデモ用の学習塾です',
-        color: '#ec4899',
-        instructors: ['田中先生', '佐藤先生', '山田先生'],
-        isDefault: true
+// スクール管理システム - ローカルストレージから読み込み
+function loadSchools() {
+    const stored = localStorage.getItem('schools');
+    if (stored) {
+        return JSON.parse(stored);
     }
-};
+    // フォールバック用のデフォルトスクール
+    return {
+        'production-school': {
+            id: 'production-school',
+            name: 'あなたの学習塾',
+            description: '質の高い教育を提供する学習塾',
+            color: '#2563eb',
+            instructors: ['塾長', '講師A', '講師B'],
+            isDefault: true
+        }
+    };
+}
 
-// 科目とコースデータの定義（新しい階層構造）
+const schools = loadSchools();
+
+// 科目とコースデータの定義（管理者が作成するまで空の状態）
 // 各スクールで異なるコンテンツを配信可能
 const subjects = {
-    japanese: {
-        id: 'japanese',
-        name: '国語',
-        description: '読解力・文章力・語彙力を総合的に向上',
-        color: '#dc2626',
-        icon: '📚',
-        courses: [
-            {
-                id: 'reading-comprehension',
-                title: '読解力向上コース',
-                description: '文章を正確に読み取る力を身につける',
-                progress: 30,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：基本的な読解技術',
-        lessons: [
-                            { id: 'jp-read-1-1', title: '講義1：文章の構造を理解しよう', completed: true },
-                            { id: 'jp-read-1-2', title: '講義2：キーワードを見つける方法', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'writing-skills',
-                title: '作文・小論文コース',
-                description: '論理的で説得力のある文章を書く',
-                progress: 0,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：文章の基本構成',
-                        lessons: [
-                            { id: 'jp-write-1-1', title: '講義1：起承転結の使い方', completed: false },
-                            { id: 'jp-write-1-2', title: '講義2：段落の組み立て方', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'vocabulary',
-                title: '語彙力強化コース',
-                description: '豊富な語彙で表現力をアップ',
-                progress: 45,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：基本語彙の習得',
-                        lessons: [
-                            { id: 'jp-vocab-1-1', title: '講義1：同義語・類義語の使い分け', completed: true },
-                            { id: 'jp-vocab-1-2', title: '講義2：敬語の正しい使い方', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'classical-japanese',
-                title: '古典・漢文コース',
-                description: '古文・漢文の基礎から応用まで',
-                progress: 20,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：古文の基本',
-                        lessons: [
-                            { id: 'jp-classical-1-1', title: '講義1：歴史的仮名遣い', completed: false },
-                            { id: 'jp-classical-1-2', title: '講義2：古典文法の基礎', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'literature',
-                title: '文学作品研究コース',
-                description: '名作を通して読解力と感性を育む',
-                progress: 10,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：近現代文学',
-                        lessons: [
-                            { id: 'jp-lit-1-1', title: '講義1：夏目漱石の世界', completed: false },
-                            { id: 'jp-lit-1-2', title: '講義2：芥川龍之介の短編', completed: false }
-                        ]
-                    }
-                ]
-            }
-        ]
-    },
-    math: {
-        id: 'math',
-        name: '数学',
-        description: '論理的思考力と問題解決能力を育成',
-        color: '#2563eb',
-        icon: '🔢',
-        courses: [
-            {
-                id: 'algebra',
-                title: '代数コース',
-                description: '方程式・関数の基礎から応用まで',
-                progress: 45,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：一次関数',
-                        lessons: [
-                            { id: 'math-alg-1-1', title: '講義1：一次関数の基本', completed: true },
-                            { id: 'math-alg-1-2', title: '講義2：グラフの描き方', completed: true },
-                            { id: 'math-alg-1-3', title: '講義3：実生活での応用', completed: false }
-                        ]
-                    },
-                    {
-                        id: 'chapter2',
-                        title: '第2章：二次関数',
-                        lessons: [
-                            { id: 'math-alg-2-1', title: '講義1：二次関数の基本形', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'geometry',
-                title: '幾何コース',
-                description: '図形の性質と証明を学ぶ',
-                progress: 20,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：平面図形',
-                        lessons: [
-                            { id: 'math-geo-1-1', title: '講義1：三角形の性質', completed: false },
-                            { id: 'math-geo-1-2', title: '講義2：円の性質', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'probability',
-                title: '確率・統計コース',
-                description: 'データ分析と確率の基礎理論',
-                progress: 30,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：確率の基礎',
-                        lessons: [
-                            { id: 'math-prob-1-1', title: '講義1：場合の数と順列', completed: true },
-                            { id: 'math-prob-1-2', title: '講義2：組み合わせの計算', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'calculus',
-                title: '微分・積分コース',
-                description: '変化率と面積の数学的理解',
-                progress: 10,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：微分の基礎',
-                        lessons: [
-                            { id: 'math-calc-1-1', title: '講義1：導関数の概念', completed: false },
-                            { id: 'math-calc-1-2', title: '講義2：微分の公式', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'number-theory',
-                title: '数論・整数コース',
-                description: '整数の性質と数学的思考力',
-                progress: 0,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：素数と約数',
-                        lessons: [
-                            { id: 'math-num-1-1', title: '講義1：素数の性質', completed: false },
-                            { id: 'math-num-1-2', title: '講義2：最大公約数と最小公倍数', completed: false }
-                        ]
-                    }
-                ]
-            }
-        ]
-    },
-    english: {
-        id: 'english',
-        name: '英語',
-        description: '4技能（読む・書く・聞く・話す）をバランスよく習得',
-        color: '#059669',
-        icon: '🌍',
-        courses: [
-            {
-                id: 'grammar',
-                title: '英文法コース',
-                description: '基礎から応用まで体系的に文法を学習',
-                progress: 60,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：基本文型',
-                        lessons: [
-                            { id: 'eng-gram-1-1', title: '講義1：be動詞の使い方', completed: true },
-                            { id: 'eng-gram-1-2', title: '講義2：一般動詞の使い方', completed: true }
-                        ]
-                    },
-                    {
-                        id: 'chapter2',
-                        title: '第2章：時制',
-                        lessons: [
-                            { id: 'eng-gram-2-1', title: '講義1：現在形と過去形', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'reading',
-                title: '英語読解コース',
-                description: '長文読解力を段階的に向上',
-                progress: 25,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：基本的な読解技術',
-                        lessons: [
-                            { id: 'eng-read-1-1', title: '講義1：スキミング・スキャニング', completed: false },
-                            { id: 'eng-read-1-2', title: '講義2：文脈から意味を推測する', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'speaking',
-                title: '英会話・スピーキングコース',
-                description: '実践的な英会話スキルを習得',
-                progress: 40,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：基本的な会話表現',
-                        lessons: [
-                            { id: 'eng-speak-1-1', title: '講義1：自己紹介の仕方', completed: true },
-                            { id: 'eng-speak-1-2', title: '講義2：日常会話の基本', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'writing',
-                title: '英作文コース',
-                description: '正確で伝わりやすい英文を書く',
-                progress: 15,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：基本的な文章構成',
-                        lessons: [
-                            { id: 'eng-write-1-1', title: '講義1：パラグラフライティング', completed: false },
-                            { id: 'eng-write-1-2', title: '講義2：エッセイの構造', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'listening',
-                title: 'リスニングコース',
-                description: 'ネイティブの英語を聞き取る力を養成',
-                progress: 35,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：基本的な聞き取り技術',
-                        lessons: [
-                            { id: 'eng-listen-1-1', title: '講義1：音の変化を理解する', completed: true },
-                            { id: 'eng-listen-1-2', title: '講義2：会話の流れを掴む', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'vocabulary',
-                title: '英単語・熟語コース',
-                description: '語彙力を系統的に強化',
-                progress: 50,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：基本語彙の習得',
-                        lessons: [
-                            { id: 'eng-vocab-1-1', title: '講義1：品詞別語彙学習法', completed: true },
-                            { id: 'eng-vocab-1-2', title: '講義2：コロケーションの活用', completed: true }
-                        ]
-                    }
-                ]
-            }
-        ]
-    },
-    science: {
-        id: 'science',
-        name: '理科',
-        description: '自然現象の理解と科学的思考力を養成',
-        color: '#7c3aed',
-        icon: '🔬',
-        courses: [
-            {
-                id: 'physics',
-                title: '物理コース',
-                description: '力学・熱力学・電磁気学の基礎',
-                progress: 15,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：力と運動',
-                        lessons: [
-                            { id: 'sci-phy-1-1', title: '講義1：ニュートンの法則', completed: false },
-                            { id: 'sci-phy-1-2', title: '講義2：摩擦力と抵抗', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'chemistry',
-                title: '化学コース',
-                description: '原子・分子から化学反応まで',
-                progress: 35,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：原子の構造',
-                        lessons: [
-                            { id: 'sci-chem-1-1', title: '講義1：原子と電子', completed: true },
-                            { id: 'sci-chem-1-2', title: '講義2：電子配置と周期表', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'biology',
-                title: '生物コース',
-                description: '生命の仕組みと進化のメカニズム',
-                progress: 50,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：細胞の構造と機能',
-                        lessons: [
-                            { id: 'sci-bio-1-1', title: '講義1：細胞の基本構造', completed: true },
-                            { id: 'sci-bio-1-2', title: '講義2：細胞膜の働き', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'earth-science',
-                title: '地学コース',
-                description: '地球の構造と宇宙の仕組み',
-                progress: 20,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：地球の内部構造',
-                        lessons: [
-                            { id: 'sci-earth-1-1', title: '講義1：プレートテクトニクス', completed: false },
-                            { id: 'sci-earth-1-2', title: '講義2：火山と地震のメカニズム', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'experiment',
-                title: '実験・観察コース',
-                description: '科学的手法と実験技術の習得',
-                progress: 10,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：実験の基本',
-                        lessons: [
-                            { id: 'sci-exp-1-1', title: '講義1：実験器具の使い方', completed: false },
-                            { id: 'sci-exp-1-2', title: '講義2：データの記録と分析', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'environmental',
-                title: '環境科学コース',
-                description: '地球環境問題と持続可能な社会',
-                progress: 0,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：環境問題の現状',
-                        lessons: [
-                            { id: 'sci-env-1-1', title: '講義1：地球温暖化のメカニズム', completed: false },
-                            { id: 'sci-env-1-2', title: '講義2：生物多様性の重要性', completed: false }
-                        ]
-                    }
-                ]
-            }
-        ]
-    },
-    social: {
-        id: 'social',
-        name: '社会',
-        description: '歴史・地理・公民の総合的な理解',
-        color: '#ea580c',
-        icon: '🌏',
-        courses: [
-            {
-                id: 'history',
-                title: '日本史コース',
-                description: '古代から現代までの日本の歴史',
-                progress: 40,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：古代日本',
-                        lessons: [
-                            { id: 'soc-hist-1-1', title: '講義1：縄文・弥生時代', completed: true },
-                            { id: 'soc-hist-1-2', title: '講義2：古墳時代と大和政権', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'world-history',
-                title: '世界史コース',
-                description: '世界の歴史と文明の発展',
-                progress: 25,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：古代文明',
-                        lessons: [
-                            { id: 'soc-world-1-1', title: '講義1：メソポタミア文明', completed: true },
-                            { id: 'soc-world-1-2', title: '講義2：エジプト文明', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'geography',
-                title: '地理コース',
-                description: '世界と日本の地理的特徴を学ぶ',
-                progress: 10,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：世界の気候',
-                        lessons: [
-                            { id: 'soc-geo-1-1', title: '講義1：気候区分の基礎', completed: false },
-                            { id: 'soc-geo-1-2', title: '講義2：気候と人間生活', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'civics',
-                title: '公民・政治経済コース',
-                description: '現代社会の仕組みと課題',
-                progress: 30,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：政治制度の基礎',
-                        lessons: [
-                            { id: 'soc-civics-1-1', title: '講義1：民主主義と選挙制度', completed: true },
-                            { id: 'soc-civics-1-2', title: '講義2：三権分立の仕組み', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'economics',
-                title: '経済学入門コース',
-                description: '経済の基本原理と市場の仕組み',
-                progress: 20,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：経済の基本概念',
-                        lessons: [
-                            { id: 'soc-econ-1-1', title: '講義1：需要と供給の法則', completed: false },
-                            { id: 'soc-econ-1-2', title: '講義2：市場経済の特徴', completed: false }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'current-events',
-                title: '現代社会・時事問題コース',
-                description: '今日の社会問題と国際情勢',
-                progress: 15,
-                chapters: [
-                    {
-                        id: 'chapter1',
-                        title: '第1章：グローバル化と国際関係',
-                        lessons: [
-                            { id: 'soc-current-1-1', title: '講義1：国際連合の役割', completed: false },
-                            { id: 'soc-current-1-2', title: '講義2：地球規模の課題', completed: false }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
+    // 管理者がコンテンツ管理システムで作成した科目がここに追加されます
 };
 
 // 旧coursesデータを削除し、新しい構造に対応
@@ -625,7 +127,7 @@ class AuthManager {
             this.currentSchool = JSON.parse(savedSchool);
         } else {
             // デフォルトスクールを設定
-            this.currentSchool = schools['demo-school'];
+            this.currentSchool = schools['production-school'];
             localStorage.setItem('currentSchool', JSON.stringify(this.currentSchool));
         }
         
@@ -653,7 +155,7 @@ class AuthManager {
         if (window.location.pathname.includes('/pages/')) {
             // pagesディレクトリ内からのログアウト
             window.location.href = 'login.html';
-        } else {
+} else {
             // ルートディレクトリからのログアウト
             window.location.href = '/pages/login.html';
         }
@@ -686,6 +188,10 @@ class AuthManager {
 
     // スクール一覧を取得（スーパー管理者は全て、通常管理者は所属スクールのみ）
     getSchools() {
+        // スクールデータを再読み込み
+        const updatedSchools = loadSchools();
+        Object.assign(schools, updatedSchools);
+        
         if (this.isSuperAdmin()) {
             return Object.values(schools);
         }
@@ -699,7 +205,11 @@ class AuthManager {
 
     // 現在のスクール情報を取得
     getCurrentSchool() {
-        return this.currentSchool || schools['demo-school'];
+        // スクールデータを再読み込み
+        const updatedSchools = loadSchools();
+        Object.assign(schools, updatedSchools);
+        
+        return this.currentSchool || Object.values(schools).find(s => s.isDefault) || Object.values(schools)[0];
     }
 
     updateAuthUI() {
@@ -843,7 +353,8 @@ class AuthManager {
             return false;
         }
 
-        if (!this.currentUser.role || this.currentUser.role !== 'admin') {
+        // スーパー管理者または管理者の場合のみ許可
+        if (!this.currentUser.role || (this.currentUser.role !== 'admin' && this.currentUser.role !== 'super_admin')) {
             this.showMessage('管理者権限が必要です', 'error');
             setTimeout(() => {
                 if (window.location.pathname.includes('/pages/')) {
@@ -892,15 +403,84 @@ class StudyApp {
 
     init() {
         console.log('StudyApp initialized');
+        
+        // ローカルストレージから管理者が作成した科目データを読み込み
+        this.loadSubjectsFromStorage();
+        
         this.renderSubjects(); // 科目選択画面を表示
         this.updateSidebar();
         this.bindEvents();
+        
+        // 定期的にローカルストレージをチェック（管理者が新しい科目を追加した場合）
+        this.setupStorageListener();
+    }
+    
+    // ローカルストレージの変更を監視
+    setupStorageListener() {
+        // 他のタブでローカルストレージが変更された場合の処理
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'subjects') {
+                console.log('Subjects data changed in another tab, reloading...');
+                this.loadSubjectsFromStorage();
+                this.renderSubjects();
+            }
+        });
+        
+        // 同一タブ内での変更も監視（5秒間隔）
+        setInterval(() => {
+            const currentKeys = Object.keys(subjects);
+            const storedSubjects = localStorage.getItem('subjects');
+            if (storedSubjects) {
+                const parsedSubjects = JSON.parse(storedSubjects);
+                const storedKeys = Object.keys(parsedSubjects);
+                
+                // キーの数が変わった場合は再読み込み
+                if (currentKeys.length !== storedKeys.length) {
+                    console.log('Subjects count changed, reloading...');
+                    this.loadSubjectsFromStorage();
+                    this.renderSubjects();
+                }
+            }
+        }, 5000);
+    }
+    
+    // ローカルストレージから科目データを読み込む
+    loadSubjectsFromStorage() {
+        try {
+            const storedSubjects = localStorage.getItem('subjects');
+            if (storedSubjects) {
+                const parsedSubjects = JSON.parse(storedSubjects);
+                // グローバルのsubjectsオブジェクトを更新
+                Object.assign(subjects, parsedSubjects);
+                console.log('Loaded subjects from storage:', Object.keys(subjects));
+            } else {
+                console.log('No subjects found in localStorage');
+            }
+        } catch (error) {
+            console.error('Error loading subjects from storage:', error);
+        }
     }
 
     // 科目選択画面を表示
     renderSubjects() {
         const homeView = document.getElementById('home-view');
         if (!homeView) return;
+        
+        // 科目が空の場合の表示
+        const subjectValues = Object.values(subjects);
+        if (subjectValues.length === 0) {
+            homeView.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📚</div>
+                    <h2>科目がまだ作成されていません</h2>
+                    <p>管理者によって科目とコースが作成されるまでお待ちください。</p>
+                    <div class="empty-state-note">
+                        <p>💡 管理者の方は、コンテンツ管理システムから科目やコースを作成してください。</p>
+                    </div>
+                </div>
+            `;
+            return;
+        }
         
         homeView.innerHTML = `
             <div class="subjects-header">
@@ -913,7 +493,7 @@ class StudyApp {
 
         const subjectsGrid = document.getElementById('subjects-grid');
         
-        Object.values(subjects).forEach(subject => {
+        subjectValues.forEach(subject => {
             const subjectCard = document.createElement('div');
             subjectCard.className = 'subject-card';
             subjectCard.innerHTML = `
@@ -923,7 +503,7 @@ class StudyApp {
                 <h3 class="subject-name">${subject.name}</h3>
                 <p class="subject-description">${subject.description}</p>
                 <div class="subject-stats">
-                    <span class="course-count">${subject.courses.length}コース</span>
+                    <span class="course-count">${subject.courses ? subject.courses.length : 0}コース</span>
                     <span class="total-lessons">${this.getTotalLessons(subject)}講義</span>
                 </div>
                 <button class="subject-button" style="background-color: ${subject.color}">
@@ -932,8 +512,15 @@ class StudyApp {
             `;
             
             subjectCard.addEventListener('click', () => {
-                if (authManager.requireAuth()) {
+                console.log('Subject clicked:', subject.name);
+                console.log('AuthManager exists:', !!authManager);
+                console.log('User logged in:', authManager?.isLoggedIn);
+                
+                if (authManager && authManager.requireAuth()) {
+                    console.log('Auth passed, showing subject:', subject.name);
                     this.showSubject(subject);
+                } else {
+                    console.log('Auth failed or authManager not available');
                 }
             });
             
@@ -943,8 +530,31 @@ class StudyApp {
 
     // コース一覧を表示
     renderCourses(subject) {
+        console.log('renderCourses called for subject:', subject.name);
         const homeView = document.getElementById('home-view');
-        if (!homeView) return;
+        if (!homeView) {
+            console.log('home-view element not found');
+            return;
+        }
+        
+        // コースが空の場合の表示
+        if (!subject.courses || subject.courses.length === 0) {
+            homeView.innerHTML = `
+                <div class="courses-header">
+                    <h2>${subject.icon} ${subject.name}のコース一覧</h2>
+                    <p>${subject.description}</p>
+                </div>
+                <div class="empty-state">
+                    <div class="empty-state-icon">📚</div>
+                    <h2>まだコースが作成されていません</h2>
+                    <p>「${subject.name}」のコースが管理者によって作成されるまでお待ちください。</p>
+                    <div class="empty-state-note">
+                        <p>💡 管理者の方は、コンテンツ管理システムから「${subject.name}」にコースを追加してください。</p>
+                    </div>
+                </div>
+            `;
+            return;
+        }
         
         homeView.innerHTML = `
             <div class="courses-header">
@@ -957,7 +567,10 @@ class StudyApp {
 
         const courseList = document.getElementById('course-list');
 
-        subject.courses.forEach(course => {
+        // coursesがオブジェクトの場合は配列に変換
+        const courses = Array.isArray(subject.courses) ? subject.courses : Object.values(subject.courses || {});
+
+        courses.forEach(course => {
             const courseCard = document.createElement('div');
             courseCard.className = 'course-card';
             courseCard.innerHTML = `
@@ -991,8 +604,12 @@ class StudyApp {
             `;
             
             courseCard.addEventListener('click', () => {
-                if (authManager.requireAuth()) {
+                console.log('Course clicked:', course.title);
+                if (authManager && authManager.requireAuth()) {
+                    console.log('Course auth passed, showing course:', course.title);
                 this.showCourse(course);
+                } else {
+                    console.log('Course auth failed');
                 }
             });
             
@@ -1006,6 +623,11 @@ class StudyApp {
         const chapterList = document.getElementById('chapter-list');
         const container = document.querySelector('.main-content .container');
         
+        // 要素が存在しない場合は早期リターン（コンテンツ管理画面など）
+        if (!sidebar || !container) {
+            return;
+        }
+        
         if (this.currentView === 'subjects' || this.currentView === 'courses') {
             sidebar.style.display = 'none';
             container.classList.remove('with-sidebar');
@@ -1016,23 +638,89 @@ class StudyApp {
             if (this.currentCourse && chapterList) {
                 chapterList.innerHTML = '';
                 
-                this.currentCourse.chapters.forEach(chapter => {
-                    const chapterItem = document.createElement('div');
-                    chapterItem.className = 'chapter-item';
-                    chapterItem.innerHTML = chapter.title;
-                    chapterItem.addEventListener('click', () => {
-                        this.showCourse(this.currentCourse);
-                    });
-                    chapterList.appendChild(chapterItem);
+                // コース全体のフォルダを作成
+                const courseFolder = document.createElement('div');
+                courseFolder.className = 'finder-item finder-folder';
+                courseFolder.innerHTML = `
+                    <div class="finder-item-content">
+                        <span class="finder-icon">📁</span>
+                        <span class="finder-name">${this.currentCourse.title}</span>
+                    </div>
+                `;
+                courseFolder.addEventListener('click', () => {
+                    this.showCourse(this.currentCourse);
+                });
+                chapterList.appendChild(courseFolder);
+                
+                // 各章をフォルダとして表示
+                this.currentCourse.chapters.forEach((chapter, chapterIndex) => {
+                    const chapterFolder = document.createElement('div');
+                    chapterFolder.className = 'finder-item finder-folder chapter-folder';
+                    chapterFolder.dataset.chapterIndex = chapterIndex;
                     
-                    chapter.lessons.forEach(lesson => {
-                        const lessonItem = document.createElement('div');
-                        lessonItem.className = 'chapter-item lesson-item-sidebar';
-                        lessonItem.innerHTML = lesson.title;
-                        lessonItem.addEventListener('click', () => {
+                    const isExpanded = chapterIndex === 0; // 最初の章は展開
+                    
+                    chapterFolder.innerHTML = `
+                        <div class="finder-item-content">
+                            <span class="finder-expand-icon">${isExpanded ? '▼' : '▶'}</span>
+                            <span class="finder-icon">📂</span>
+                            <span class="finder-name">${chapter.title}</span>
+                            <span class="finder-count">(${chapter.lessons.length})</span>
+                        </div>
+                    `;
+                    
+                    // 章の展開・折りたたみ
+                    chapterFolder.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const expandIcon = chapterFolder.querySelector('.finder-expand-icon');
+                        const isCurrentlyExpanded = chapterFolder.classList.contains('expanded');
+                        
+                        if (isCurrentlyExpanded) {
+                            chapterFolder.classList.remove('expanded');
+                            expandIcon.textContent = '▶';
+                            // 講義アイテムを非表示
+                            const lessonItems = chapterList.querySelectorAll(`[data-chapter="${chapterIndex}"]`);
+                            lessonItems.forEach(item => item.style.display = 'none');
+                        } else {
+                            chapterFolder.classList.add('expanded');
+                            expandIcon.textContent = '▼';
+                            // 講義アイテムを表示
+                            const lessonItems = chapterList.querySelectorAll(`[data-chapter="${chapterIndex}"]`);
+                            lessonItems.forEach(item => item.style.display = 'block');
+                        }
+                    });
+                    
+                    if (isExpanded) {
+                        chapterFolder.classList.add('expanded');
+                    }
+                    
+                    chapterList.appendChild(chapterFolder);
+                    
+                    // 各講義をファイルとして表示
+                    chapter.lessons.forEach((lesson, lessonIndex) => {
+                        const lessonFile = document.createElement('div');
+                        lessonFile.className = 'finder-item finder-file lesson-file';
+                        lessonFile.dataset.chapter = chapterIndex;
+                        lessonFile.style.display = isExpanded ? 'block' : 'none';
+                        
+                        const isCompleted = this.isLessonCompleted(lesson.id);
+                        const isCurrentLesson = this.currentLesson === lesson.id;
+                        
+                        lessonFile.innerHTML = `
+                            <div class="finder-item-content">
+                                <span class="finder-indent"></span>
+                                <span class="finder-icon">${isCompleted ? '✅' : '📄'}</span>
+                                <span class="finder-name ${isCurrentLesson ? 'current-lesson' : ''}">${lesson.title}</span>
+                                ${isCompleted ? '<span class="finder-badge">完了</span>' : ''}
+                            </div>
+                        `;
+                        
+                        lessonFile.addEventListener('click', (e) => {
+                            e.stopPropagation();
                             this.showLesson(lesson.id);
                         });
-                        chapterList.appendChild(lessonItem);
+                        
+                        chapterList.appendChild(lessonFile);
                     });
                 });
             }
@@ -1090,8 +778,8 @@ class StudyApp {
             <div class="lesson-list">
                         ${chapter.lessons.map(lesson => `
                             <div class="lesson-item" onclick="app.showLesson('${lesson.id}')">
-                                <div class="lesson-checkbox ${lesson.completed ? 'completed' : ''}">
-                                    ${lesson.completed ? '✓' : ''}
+                                <div class="lesson-checkbox ${this.isLessonCompleted(lesson.id) ? 'completed' : ''}">
+                                    ${this.isLessonCompleted(lesson.id) ? '✓' : ''}
                                 </div>
                                 <div class="lesson-content">
                                     <div class="lesson-title">${lesson.title}</div>
@@ -1196,6 +884,14 @@ class StudyApp {
 
     // 特定の科目のコース一覧を表示
     showSubject(subject) {
+        console.log('showSubject called with:', subject.name);
+        console.log('Subject courses:', subject.courses ? subject.courses.length : 0);
+        
+        // coursesプロパティが存在しない場合は初期化
+        if (!subject.courses) {
+            subject.courses = [];
+        }
+        
         this.currentView = 'courses';
         this.currentSubject = subject;
         this.currentCourse = null;
@@ -1207,9 +903,9 @@ class StudyApp {
         
         document.getElementById('home-view').style.display = 'block';
         this.renderCourses(subject);
+        
+        console.log('showSubject completed');
     }
-
-
 
     // 全てのビューを非表示
     hideAllViews() {
@@ -1221,10 +917,22 @@ class StudyApp {
     // 科目の総講義数を取得
     getTotalLessons(subject) {
         let total = 0;
-        subject.courses.forEach(course => {
-            course.chapters.forEach(chapter => {
-                total += chapter.lessons.length;
-            });
+        // coursesが存在しない場合は0を返す
+        if (!subject.courses) {
+            return 0;
+        }
+        
+        // coursesがオブジェクトの場合は配列に変換
+        const courses = Array.isArray(subject.courses) ? subject.courses : Object.values(subject.courses);
+        
+        courses.forEach(course => {
+            if (course.chapters && Array.isArray(course.chapters)) {
+                course.chapters.forEach(chapter => {
+                    if (chapter.lessons && Array.isArray(chapter.lessons)) {
+                        total += chapter.lessons.length;
+                    }
+                });
+            }
         });
         return total;
     }
@@ -1232,7 +940,8 @@ class StudyApp {
     // レッスンIDから講義を検索
     findLessonById(lessonId) {
         for (const subject of Object.values(subjects)) {
-            for (const course of subject.courses) {
+            const courses = Array.isArray(subject.courses) ? subject.courses : Object.values(subject.courses || {});
+            for (const course of courses) {
                 for (const chapter of course.chapters) {
                     const lesson = chapter.lessons.find(l => l.id === lessonId);
                     if (lesson) return lesson;
@@ -1362,14 +1071,46 @@ class StudyApp {
         return total;
     }
 
+    // ユーザー進捗データを取得
+    getUserProgress() {
+        if (!window.authManager || !window.authManager.currentUser) {
+            return {};
+        }
+        const userId = window.authManager.currentUser.email;
+        const progressKey = `user_progress_${userId}`;
+        const saved = localStorage.getItem(progressKey);
+        return saved ? JSON.parse(saved) : {};
+    }
+
+    // ユーザー進捗データを保存
+    saveUserProgress(progress) {
+        if (!window.authManager || !window.authManager.currentUser) {
+            return;
+        }
+        const userId = window.authManager.currentUser.email;
+        const progressKey = `user_progress_${userId}`;
+        localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+
+    // 講義の完了状態を取得
+    isLessonCompleted(lessonId) {
+        const progress = this.getUserProgress();
+        return progress[lessonId] === true;
+    }
+
     // 講義を完了状態にマーク
     markLessonCompleted(lessonId) {
+        const progress = this.getUserProgress();
+        progress[lessonId] = true;
+        this.saveUserProgress(progress);
+        
+        // コース進捗を更新
         for (const subject of Object.values(subjects)) {
-            for (const course of subject.courses) {
+            const courses = Array.isArray(subject.courses) ? subject.courses : Object.values(subject.courses || {});
+            for (const course of courses) {
                 for (const chapter of course.chapters) {
                     const lesson = chapter.lessons.find(l => l.id === lessonId);
                     if (lesson) {
-                        lesson.completed = true;
                         this.updateCourseProgress(course);
                         return;
                     }
@@ -1386,7 +1127,7 @@ class StudyApp {
         course.chapters.forEach(chapter => {
             chapter.lessons.forEach(lesson => {
                 totalLessons++;
-                if (lesson.completed) {
+                if (this.isLessonCompleted(lesson.id)) {
                     completedLessons++;
                 }
             });
@@ -1438,9 +1179,18 @@ let app;
 let authManager;
 document.addEventListener('DOMContentLoaded', () => {
     authManager = new AuthManager();
-    app = new StudyApp();
-    window.app = app; // グローバルアクセス用
     window.authManager = authManager; // グローバルアクセス用
+    
+    // 学習関連ページ（index.html、student.html）でのみStudyAppを初期化
+    const isStudyPage = window.location.pathname.includes('index.html') || 
+                       window.location.pathname.includes('student.html') ||
+                       window.location.pathname === '/' ||
+                       window.location.pathname.endsWith('/');
+    
+    if (isStudyPage) {
+    app = new StudyApp();
+        window.app = app; // グローバルアクセス用
+    }
 });
 
 // アニメーションCSS

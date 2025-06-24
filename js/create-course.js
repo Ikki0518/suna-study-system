@@ -729,6 +729,61 @@ class CourseCreator {
             alert(message);
         }
     }
+
+    // 各項目の追加・編集・削除
+    addCourse(subjectId) {
+        this.showCreateModal('course', subjectId);
+    }
+
+    addChapter(subjectId) {
+        console.log('🔥 addChapter called with subjectId:', subjectId);
+        console.log('🔥 Available subjects before modal:', Object.keys(this.subjects));
+        console.log('🔥 Subject exists:', !!this.subjects[subjectId]);
+        this.showCreateModal('chapter', subjectId);
+    }
+
+    addLesson(chapterId) {
+        this.showCreateModal('lesson', chapterId);
+    }
+
+    showCreateModal(type, parentId) {
+        switch (type) {
+            case 'subject':
+                success = this.createSubject(name, description);
+                break;
+            case 'course':
+                if (!parentId) {
+                    alert('コースを作成するには科目を選択してください');
+                    return;
+                }
+                success = this.createCourse(parentId, name, description);
+                break;
+            case 'chapter':
+                console.log('Creating chapter with parentId:', parentId);
+                console.log('Available subjects:', Object.keys(this.subjects));
+                
+                if (!parentId) {
+                    alert('章を作成するには科目を選択してください');
+                    return;
+                }
+                
+                if (!this.subjects[parentId]) {
+                    console.error('Subject not found for ID:', parentId);
+                    console.log('Available subjects data:', this.subjects);
+                    alert(`科目が見つかりません（ID: ${parentId}）`);
+                    return;
+                }
+                success = this.createChapter(parentId, name, description);
+                break;
+            case 'lesson':
+                if (!parentId) {
+                    alert('講義を作成するには章を選択してください');
+                    return;
+                }
+                success = this.createLesson(parentId, name, description);
+                break;
+        }
+    }
 }
 
 // グローバル関数

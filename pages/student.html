@@ -93,6 +93,53 @@
         </div>
     </main>
 
+    <!-- パスワード変更モーダル -->
+    <div class="modal-overlay" id="student-change-password-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">🔐 パスワード変更</h3>
+                <button class="modal-close" id="student-password-modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="student-change-password-form">
+                    <div class="form-group">
+                        <label for="student-current-password">現在のパスワード</label>
+                        <input type="password" id="student-current-password" required placeholder="現在のパスワードを入力">
+                        <p class="form-help-text">セキュリティのため現在のパスワードを確認します</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="student-new-password">新しいパスワード</label>
+                        <input type="password" id="student-new-password" required placeholder="新しいパスワードを入力" minlength="6">
+                        <p class="form-help-text">6文字以上で入力してください</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="student-confirm-password">パスワード確認</label>
+                        <input type="password" id="student-confirm-password" required placeholder="新しいパスワードを再入力">
+                        <p class="form-help-text">確認のため新しいパスワードを再度入力してください</p>
+                    </div>
+                    <div class="form-info">
+                        <div class="info-box">
+                            <h4>🔒 パスワード要件</h4>
+                            <ul>
+                                <li>6文字以上で設定してください</li>
+                                <li>英数字を組み合わせることを推奨します</li>
+                                <li>他人に推測されにくいものにしてください</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="action-btn secondary" id="student-password-cancel-btn">
+                            キャンセル
+                        </button>
+                        <button type="submit" class="action-btn primary">
+                            🔐 パスワードを変更
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="../js/main.js"></script>
     <script src="../js/student.js"></script>
 </body>

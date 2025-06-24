@@ -85,7 +85,7 @@ async function handleLogin(event) {
                 
                 showLoadingScreen('管理者アカウント作成中...');
                 setTimeout(() => {
-                    window.location.href = '/pages/admin.html';
+                    window.location.href = 'admin.html';
                 }, 2000);
                 return;
             }
@@ -108,9 +108,9 @@ async function handleLogin(event) {
             setTimeout(() => {
                 // roleに基づいてリダイレクト
                 if (result.user.role === 'admin' || result.user.role === 'super_admin') {
-                    window.location.href = '/pages/admin.html';
+                    window.location.href = 'admin.html';
                 } else {
-                    window.location.href = '/pages/student.html';
+                    window.location.href = 'student.html';
                 }
             }, 2000);
         } else {
@@ -148,7 +148,7 @@ async function handleGoogleLogin() {
         // ローディング画面を表示してからメインページにリダイレクト
         showLoadingScreen();
         setTimeout(() => {
-            window.location.href = '/pages/student.html';
+            window.location.href = 'student.html';
         }, 2000);
     } catch (error) {
         console.error('Google login error:', error);

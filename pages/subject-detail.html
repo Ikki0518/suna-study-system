@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科目詳細 - Suna Admin</title>
+    <link rel="stylesheet" href="../styles/main.css?v=20250624112000">
+    <link rel="stylesheet" href="../styles/admin.css?v=20250623220000">
+    <link rel="stylesheet" href="../styles/create-course.css?v=20250623165300">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="utage-admin-body">
+    <!-- UTAGEスタイルのヘッダー -->
+    <header class="utage-header">
+        <div class="utage-header-content">
+            <div class="utage-logo">
+                <svg width="115" height="55" viewBox="0 0 115 55" class="flex-shrink-0">
+                    <!-- 大きな円（右上、明るいターコイズブルー） -->
+                    <circle cx="90" cy="20" r="13" fill="#67E8F9" opacity="0.85"/>
+
+                    <!-- 中くらいの円（左中央、濃いブルー） -->
+                    <circle cx="73" cy="28" r="8" fill="#2563EB" opacity="0.9"/>
+
+                    <!-- 小さな円（右下、薄いターコイズ） -->
+                    <circle cx="83" cy="35" r="5" fill="#A7F3D0" opacity="0.75"/>
+
+                    <!-- テキスト "suna" - 太字、濃いネイビー -->
+                    <text x="0" y="42" font-size="26" font-weight="700" fill="#1E293B" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" letter-spacing="-1.2px">
+                        suna
+                    </text>
+                </svg>
+            </div>
+            <div class="utage-header-right">
+                <span class="admin-user-info" id="admin-user-info">管理者: </span>
+                <button class="utage-logout-btn" onclick="adminApp.logout()">ログアウト</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="utage-layout">
+        <!-- 左サイドバーナビゲーション -->
+        <aside class="utage-sidebar">
+            <div class="utage-sidebar-content">
+                <h2 class="utage-sidebar-title">スキルアップ講座管理</h2>
+                
+                <nav class="utage-nav">
+                    <ul class="utage-nav-list">
+                        <li class="utage-nav-item">
+                            <button class="utage-nav-link" onclick="window.location.href='admin.html'">
+                                <span class="utage-nav-icon">📊</span>
+                    <span>ダッシュボード</span>
+                            </button>
+                        </li>
+                        <li class="utage-nav-item">
+                            <button class="utage-nav-link active" onclick="window.location.href='create-course.html'">
+                                <span class="utage-nav-icon">📁</span>
+                    <span>コンテンツ管理</span>
+                            </button>
+                        </li>
+                        <li class="utage-nav-item">
+                            <button class="utage-nav-link" onclick="window.location.href='admin.html#students'">
+                                <span class="utage-nav-icon">👥</span>
+                                <span>受講生管理</span>
+                            </button>
+                        </li>
+                        <li class="utage-nav-item">
+                            <div class="utage-nav-group">
+                                <button class="utage-nav-link">
+                                    <span class="utage-nav-icon">📚</span>
+                        <span>レッスン管理</span>
+                                </button>
+                    <div class="utage-nav-submenu">
+                                    <button class="utage-nav-sublink" onclick="if(window.subjectDetail) subjectDetail.sortLessons(); else console.error('subjectDetail not found');">並べ替え</button>
+                                    <button class="utage-nav-sublink" onclick="if(window.subjectDetail) subjectDetail.manageLessonGroups(); else console.error('subjectDetail not found');">レッスングループ</button>
+                    </div>
+                </div>
+                        </li>
+                    </ul>
+            </nav>
+            </div>
+        </aside>
+
+        <!-- メインコンテンツエリア -->
+        <main class="utage-main">
+            <div class="utage-content">
+                <!-- ページヘッダー -->
+                <div class="utage-page-header">
+                    <div class="utage-breadcrumb">
+                        <a href="create-course.html" style="color: #64748b; text-decoration: none;">コンテンツ管理</a>
+                        <span class="breadcrumb-separator">/</span>
+                        <span id="subject-breadcrumb">科目詳細</span>
+                    </div>
+                    <div class="subject-header">
+                        <div class="subject-title-section">
+                            <span class="subject-icon-large" id="subject-icon">📚</span>
+                            <div>
+                                <h1 class="utage-page-title" id="subject-title">科目名</h1>
+                                <p class="subject-description" id="subject-description">科目の説明</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- コントロールバー -->
+                <div class="utage-control-bar">
+                    <div class="utage-control-left">
+                        <button class="utage-btn utage-btn-primary" id="add-chapter-btn">
+                            ➕ 章追加
+                        </button>
+                        <button class="utage-btn utage-btn-secondary" id="add-course-btn">
+                            📖 コース追加
+                        </button>
+                        <button class="utage-btn utage-btn-secondary" id="edit-subject-btn">
+                            ✏️ 科目編集
+                        </button>
+                        <button class="utage-btn utage-btn-secondary" id="sort-btn">
+                            🔄 並べ替え
+                        </button>
+                    </div>
+                    <div class="utage-control-right">
+                        <div class="utage-search-box">
+                            <input type="text" placeholder="コース・章・講義名で検索..." class="utage-search-input" id="search-input">
+                            <button class="utage-search-btn">🔍</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- コンテンツレイアウト -->
+                <div class="content-layout">
+                    <!-- サイドバー -->
+                    <aside class="content-sidebar">
+                        <div class="content-nav">
+                            <h3 class="nav-title">学習コンテンツ</h3>
+                            <div class="content-tree" id="content-tree">
+                                <!-- コンテンツツリーが動的に挿入される -->
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- メインエリア -->
+                    <main class="content-main">
+                        <div class="content-details" id="content-details">
+                            <div class="welcome-message">
+                                <div class="welcome-icon">✨</div>
+                                <h3>科目の学習コンテンツ</h3>
+                                <p>左側のメニューから章や講義を選択して詳細を確認・編集できます。</p>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+
+                <!-- 空の状態 -->
+                <div class="utage-empty-state" id="empty-state" style="display: none;">
+                    <div class="empty-icon">📖</div>
+                    <h3>コースがありません</h3>
+                    <p>最初のコースを作成して、学習コンテンツの構築を始めましょう。<br>コースの中に章や講義を追加できます。</p>
+                    <button class="utage-btn utage-btn-primary" onclick="subjectDetail.showCreateModal('course')">
+                        ➕ 最初のコースを作成
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 作成・編集モーダル -->
+    <div class="utage-modal-overlay" id="content-modal" style="display: none;">
+        <div class="utage-modal">
+            <div class="utage-modal-header">
+                <h3 class="utage-modal-title" id="modal-title">新規作成</h3>
+                <button class="utage-modal-close" onclick="subjectDetail.closeModal()">×</button>
+            </div>
+            <div class="utage-modal-body">
+                <form id="content-form">
+                    <div id="form-fields">
+                        <!-- フォームフィールドが動的に生成される -->
+                    </div>
+                    <div class="utage-modal-actions">
+                        <button type="button" class="utage-btn utage-btn-secondary" onclick="subjectDetail.closeModal()">キャンセル</button>
+                        <button type="submit" class="utage-btn utage-btn-primary" id="submit-btn">作成</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 削除確認モーダル -->
+    <div class="utage-modal-overlay" id="delete-modal" style="display: none;">
+        <div class="utage-modal utage-modal-danger">
+            <div class="utage-modal-header">
+                <h3 class="utage-modal-title">削除確認</h3>
+            </div>
+            <div class="utage-modal-body">
+                <p id="delete-message">この項目を削除しますか？</p>
+                <div class="utage-modal-actions">
+                    <button type="button" class="utage-btn utage-btn-secondary" onclick="subjectDetail.closeDeleteModal()">キャンセル</button>
+                    <button type="button" class="utage-btn utage-btn-danger" onclick="subjectDetail.confirmDelete()">削除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成功メッセージモーダル -->
+    <div class="utage-modal-overlay" id="success-modal" style="display: none;">
+        <div class="utage-modal utage-modal-success">
+            <div class="utage-modal-header">
+                <h3 class="utage-modal-title">✅ 操作完了</h3>
+            </div>
+            <div class="utage-modal-body">
+                <p id="success-message">操作が正常に完了しました！</p>
+                <div class="utage-modal-actions">
+                    <button class="utage-btn utage-btn-primary" onclick="subjectDetail.closeSuccessModal()">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js?v=20250624112000"></script>
+    <script src="../js/subject-detail.js?v=20250624112000"></script>
+</body>
+</html> 
