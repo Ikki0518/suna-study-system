@@ -35,6 +35,9 @@ class CourseCreator {
         this.updateChapterSelect();
         this.renderCoursesList(); // 既存講座を表示
         this.renderCoursesManager();
+
+        // Finder 風ツリーを描画
+        this.renderFinderTree();
     }
 
     // 管理者認証チェック
@@ -838,7 +841,8 @@ class CourseCreator {
                             </div>
                         </div>
                     </div>
-                    </div>
+                </div>
+            </div>
         `;
     }
 
@@ -1124,6 +1128,113 @@ class CourseCreator {
                 this.updateCourseData();
             };
         });
+    }
+
+    /* ========= Finder-style Tree ========= */
+    renderFinderTree() {
+        const treeEl = document.getElementById('course-tree');
+        if (!treeEl) return;
+
+        let html = '';
+        this.hierarchy.subjects.forEach(subject => {
+            subject.courses.forEach(course => {
+                html += this.generateCourseTreeItem(course, subject);
+            });
+        });
+
+        treeEl.innerHTML = html || '<p style="color:#6b7280; font-size:13px;">コースがありません</p>';
+
+        // イベントバインディング
+        this.bindTreeEvents();
+    }
+
+    generateCourseTreeItem(course, subject) {
+        const chapterItems = course.chapters.map(ch => this.generateChapterTreeItem(ch, course)).join('');
+        return `
+        <div class="tree-item">
+            <div class="tree-node finder-item finder-folder course-node" data-id="${course.id}">
+                <span class="expand-arrow">▶</span>
+                <span class="tree-icon">📁</span>
+                <span class="tree-name">${course.name}</span>
+                <span class="lesson-count">${course.chapters.length}</span>
+            </div>
+            <div class="tree-children" id="course-${course.id}-children">
+                ${chapterItems}
+            </div>
+        </div>`;
+    }
+
+    generateChapterTreeItem(chapter, course) {
+        const lessonItems = (chapter.lessons || []).map(lesson => this.generateLessonTreeItem(lesson, chapter)).join('');
+        return `
+        <div class="tree-item">
+            <div class="tree-node finder-item finder-folder chapter-node" data-id="${chapter.id}" data-course="${course.id}">
+                <span class="expand-arrow">▶</span>
+                <span class="tree-icon">📂</span>
+                <span class="tree-name">${chapter.name}</span>
+                <span class="lesson-count">${(chapter.lessons || []).length}</span>
+            </div>
+            <div class="tree-children" id="chapter-${chapter.id}-children">
+                ${lessonItems}
+            </div>
+        </div>`;
+    }
+
+    generateLessonTreeItem(lesson, chapter) {
+        return `
+            <div class="tree-item">
+                <div class="tree-node lesson-node finder-item finder-file" data-id="${lesson.id}" data-chapter="${chapter.id}">
+                    <span class="tree-icon">📄</span>
+                    <span class="tree-name">${lesson.title || lesson.name}</span>
+                </div>
+            </div>`;
+    }
+
+    bindTreeEvents() {
+        // フォルダ展開
+        document.querySelectorAll('.course-node, .chapter-node').forEach(node => {
+            node.addEventListener('click', (e) => {
+                // クリックがアクションボタンでない場合のみ展開
+                if (e.target.closest('.tree-action-btn')) return;
+                const item = node.parentElement;
+                const children = item.querySelector('.tree-children');
+                if (children) {
+                    children.classList.toggle('expanded');
+                    node.classList.toggle('expanded');
+                }
+
+                if (node.classList.contains('chapter-node')) {
+                    this.selectedCourseId = node.dataset.course;
+                    this.selectedChapterId = node.dataset.id;
+                    // フォーム表示など
+                    document.getElementById('lesson-editor-block').style.display = 'block';
+                    document.getElementById('course-course').value = this.selectedCourseId;
+                    this.updateChapterSelect();
+                    document.getElementById('course-chapter').value = this.selectedChapterId;
+                    this.updateCourseData();
+                }
+            });
+        });
+
+        // レッスン選択
+        document.querySelectorAll('.lesson-node').forEach(node => {
+            node.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // TODO: レッスン編集ロジック
+            });
+        });
+
+        // ＋ コース追加ボタン
+        const addBtn = document.getElementById('tree-add-course-btn');
+        if (addBtn) {
+            addBtn.onclick = () => {
+                const name = prompt('新しいコース名');
+                if (!name) return;
+                const subjId = this.hierarchy.subjects[0]?.id || this.createSubject('未分類');
+                this.createCourse(subjId, name);
+                this.renderFinderTree();
+            };
+        }
     }
 }
 

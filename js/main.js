@@ -34,24 +34,30 @@ const subjects = {
                 id: 'japanese-modern',
                 title: '現代文基礎',
                 description: '読解力と表現力を身につける',
-                lessons: [
+                chapters: [
                     {
-                        id: 'japanese1-1',
-                        title: '文章の構成と要約',
-                        duration: '25分',
-                        completed: false
-                    },
-                    {
-                        id: 'japanese1-2',
-                        title: '論説文の読み方',
-                        duration: '30分',
-                        completed: false
-                    },
-                    {
-                        id: 'japanese1-3',
-                        title: '小説の読解技法',
-                        duration: '28分',
-                        completed: false
+                        id: 'japanese-ch1',
+                        title: '第1章：文章読解の基本',
+                        lessons: [
+                            {
+                                id: 'japanese1-1',
+                                title: '文章の構成と要約',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'japanese1-2',
+                                title: '論説文の読み方',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'japanese1-3',
+                                title: '小説の読解技法',
+                                duration: '28分',
+                                completed: false
+                            }
+                        ]
                     }
                 ]
             }
@@ -69,30 +75,36 @@ const subjects = {
                 id: 'math-algebra',
                 title: '代数基礎',
                 description: '方程式と関数の基本',
-                lessons: [
+                chapters: [
                     {
-                        id: 'math1-1',
-                        title: '一次方程式',
-                        duration: '20分',
-                        completed: false
-                    },
-                    {
-                        id: 'math1-2',
-                        title: '連立方程式',
-                        duration: '25分',
-                        completed: false
-                    },
-                    {
-                        id: 'math1-3',
-                        title: '一次関数',
-                        duration: '30分',
-                        completed: false
-                    },
-                    {
-                        id: 'math1-4',
-                        title: '二次方程式',
-                        duration: '35分',
-                        completed: false
+                        id: 'math-ch1',
+                        title: '第1章：方程式の基礎',
+                        lessons: [
+                            {
+                                id: 'math1-1',
+                                title: '一次方程式',
+                                duration: '20分',
+                                completed: false
+                            },
+                            {
+                                id: 'math1-2',
+                                title: '連立方程式',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'math1-3',
+                                title: '一次関数',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'math1-4',
+                                title: '二次方程式',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
                     }
                 ]
             }
@@ -110,24 +122,30 @@ const subjects = {
                 id: 'science-physics',
                 title: '物理基礎',
                 description: '力学と電気の基本原理',
-                lessons: [
+                chapters: [
                     {
-                        id: 'physics1-1',
-                        title: '運動の法則',
-                        duration: '30分',
-                        completed: false
-                    },
-                    {
-                        id: 'physics1-2',
-                        title: '力とつりあい',
-                        duration: '25分',
-                        completed: false
-                    },
-                    {
-                        id: 'physics1-3',
-                        title: '電流と電圧',
-                        duration: '28分',
-                        completed: false
+                        id: 'physics-ch1',
+                        title: '第1章：力学の基本',
+                        lessons: [
+                            {
+                                id: 'physics1-1',
+                                title: '運動の法則',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'physics1-2',
+                                title: '力とつりあい',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'physics1-3',
+                                title: '電流と電圧',
+                                duration: '28分',
+                                completed: false
+                            }
+                        ]
                     }
                 ]
             }
@@ -145,24 +163,30 @@ const subjects = {
                 id: 'social-geography',
                 title: '地理基礎',
                 description: '日本と世界の地理',
-                lessons: [
+                chapters: [
                     {
-                        id: 'geo1-1',
-                        title: '日本の地形と気候',
-                        duration: '25分',
-                        completed: false
-                    },
-                    {
-                        id: 'geo1-2',
-                        title: '世界の気候区分',
-                        duration: '30分',
-                        completed: false
-                    },
-                    {
-                        id: 'geo1-3',
-                        title: '産業と貿易',
-                        duration: '28分',
-                        completed: false
+                        id: 'geography-ch1',
+                        title: '第1章：日本の自然環境',
+                        lessons: [
+                            {
+                                id: 'geo1-1',
+                                title: '日本の地形と気候',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'geo1-2',
+                                title: '世界の気候区分',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'geo1-3',
+                                title: '産業と貿易',
+                                duration: '28分',
+                                completed: false
+                            }
+                        ]
                     }
                 ]
             }
@@ -180,24 +204,30 @@ const subjects = {
                 id: 'jhistory-ancient',
                 title: '古代・中世の日本',
                 description: '奈良時代から鎌倉・室町時代まで',
-                lessons: [
+                chapters: [
                     {
-                        id: 'jhistory1-1',
-                        title: '奈良時代と平安時代',
-                        duration: '30分',
-                        completed: false
-                    },
-                    {
-                        id: 'jhistory1-2',
-                        title: '鎌倉幕府の成立',
-                        duration: '25分',
-                        completed: false
-                    },
-                    {
-                        id: 'jhistory1-3',
-                        title: '室町時代と戦国時代',
-                        duration: '35分',
-                        completed: false
+                        id: 'jhistory-ch1',
+                        title: '第1章：古代国家の成立',
+                        lessons: [
+                            {
+                                id: 'jhistory1-1',
+                                title: '奈良時代と平安時代',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'jhistory1-2',
+                                title: '鎌倉幕府の成立',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'jhistory1-3',
+                                title: '室町時代と戦国時代',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
                     }
                 ]
             }
@@ -215,24 +245,30 @@ const subjects = {
                 id: 'whistory-ancient',
                 title: '古代文明',
                 description: '四大文明と古代帝国',
-                lessons: [
+                chapters: [
                     {
-                        id: 'whistory1-1',
-                        title: '四大文明の特徴',
-                        duration: '30分',
-                        completed: false
-                    },
-                    {
-                        id: 'whistory1-2',
-                        title: 'ギリシア・ローマ文明',
-                        duration: '35分',
-                        completed: false
-                    },
-                    {
-                        id: 'whistory1-3',
-                        title: '中国古代王朝',
-                        duration: '28分',
-                        completed: false
+                        id: 'whistory-ch1',
+                        title: '第1章：文明の起源',
+                        lessons: [
+                            {
+                                id: 'whistory1-1',
+                                title: '四大文明の特徴',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory1-2',
+                                title: 'ギリシア・ローマ文明',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory1-3',
+                                title: '中国古代王朝',
+                                duration: '28分',
+                                completed: false
+                            }
+                        ]
                     }
                 ]
             }
