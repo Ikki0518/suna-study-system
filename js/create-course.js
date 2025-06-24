@@ -1,16 +1,23 @@
 // 講座作成ページの機能管理
 class CourseCreator {
     constructor() {
+        // ===== 講座（レッスン）データ構造 =====
         this.courseData = {
             title: '',
             description: '',
-            subject: '',
+            subjectId: '',   // 科目ID
+            courseId: '',    // コースID
+            chapterId: '',   // 章ID
             content: '',
             video: null,
             videoType: 'file', // 'file' or 'url'
             videoUrl: '',
             pdf: null
         };
+
+        // ===== 階層データを保持 =====
+        this.hierarchyKey = 'contentHierarchy';
+        this.hierarchy = this.loadHierarchy();
         this.editingIndex = null; // 追加: 編集中のインデックス
         this.init();
     }
@@ -20,6 +27,10 @@ class CourseCreator {
         this.bindEvents();
         this.updateAuthUI();
         this.setupDragAndDrop();
+        // 階層セレクトを初期化
+        this.updateSubjectSelect();
+        this.updateCourseSelect();
+        this.updateChapterSelect();
         this.renderCoursesList(); // 既存講座を表示
     }
 
@@ -83,11 +94,14 @@ class CourseCreator {
 
         // リアルタイムフォーム更新
         this.bindFormUpdates();
+
+        // 階層関連ボタンイベント
+        this.bindHierarchyButtonEvents();
     }
 
     // フォーム要素の変更を監視
     bindFormUpdates() {
-        const formInputs = ['course-title', 'course-description', 'course-subject', 'course-content', 'video-link'];
+        const formInputs = ['course-title', 'course-description', 'course-subject', 'course-course', 'course-chapter', 'course-content', 'video-link'];
         
         formInputs.forEach(inputId => {
             const element = document.getElementById(inputId);
@@ -101,7 +115,13 @@ class CourseCreator {
     updateCourseData() {
         this.courseData.title = document.getElementById('course-title').value;
         this.courseData.description = document.getElementById('course-description').value;
-        this.courseData.subject = document.getElementById('course-subject').value;
+        const subjSel = document.getElementById('course-subject');
+        const courseSel = document.getElementById('course-course');
+        const chapSel = document.getElementById('course-chapter');
+
+        this.courseData.subjectId = subjSel ? subjSel.value : '';
+        this.courseData.courseId = courseSel ? courseSel.value : '';
+        this.courseData.chapterId = chapSel ? chapSel.value : '';
         this.courseData.content = document.getElementById('course-content').value;
         
         const videoTypeChecked = document.querySelector('input[name="video-type"]:checked');
@@ -380,8 +400,16 @@ class CourseCreator {
             errors.push('講座説明を入力してください');
         }
 
-        if (!this.courseData.subject) {
+        if (!this.courseData.subjectId) {
             errors.push('科目を選択してください');
+        }
+
+        if (!this.courseData.courseId) {
+            errors.push('コースを選択してください');
+        }
+
+        if (!this.courseData.chapterId) {
+            errors.push('章を選択してください');
         }
 
         if (!this.courseData.content.trim()) {
@@ -428,10 +456,8 @@ class CourseCreator {
 
         localStorage.setItem('adminCourses', JSON.stringify(courses));
 
-        // subjects 統合は新規時のみ実施
-        if (!this.editingIndex) {
-            this.integrateCourseIntoSystem(courseDataToSave);
-        }
+        // subjects 統合は新規時のみ実施（旧システム）。
+        // 新しい階層管理では不要のため一旦スキップ。
 
         this.renderCoursesList();
 
@@ -449,13 +475,13 @@ class CourseCreator {
         }
 
         // 講座データを適切な科目に追加
-        const subjectKey = this.mapSubjectToKey(courseData.subject);
+        const subjectKey = this.mapSubjectToKey(courseData.subjectId);
         if (!subjects[subjectKey]) {
             // 科目が存在しない場合は新しく作成
             subjects[subjectKey] = {
-                name: this.getSubjectDisplayName(courseData.subject),
-                color: this.getSubjectColor(courseData.subject),
-                icon: this.getSubjectIcon(courseData.subject),
+                name: this.getSubjectDisplayName(courseData.subjectId),
+                color: this.getSubjectColor(courseData.subjectId),
+                icon: this.getSubjectIcon(courseData.subjectId),
                 courses: {}
             };
         }
@@ -794,7 +820,8 @@ class CourseCreator {
 
     // カード HTML 生成
     generateCourseCard(course, index) {
-        const subjectName = this.getSubjectDisplayName(course.subject);
+        const subjObj = this.hierarchy.subjects.find(s => s.id === course.subjectId);
+        const subjectName = subjObj ? subjObj.name : '－';
         return `
             <div class="course-card" style="height: auto;">
                 <div class="course-card-content">
@@ -821,7 +848,7 @@ class CourseCreator {
         // フォームへ値反映
         document.getElementById('course-title').value = course.title;
         document.getElementById('course-description').value = course.description;
-        document.getElementById('course-subject').value = course.subject;
+        document.getElementById('course-subject').value = course.subjectId;
         document.getElementById('course-content').value = course.content;
 
         if (course.videoType === 'url') {
@@ -837,6 +864,12 @@ class CourseCreator {
         this.editingIndex = index;
         document.querySelector('#course-form .btn-primary').textContent = '✅ 講座を更新';
         this.updateCourseData();
+
+        // セレクト連動更新
+        this.updateCourseSelect();
+        document.getElementById('course-course').value = course.courseId || '';
+        this.updateChapterSelect();
+        document.getElementById('course-chapter').value = course.chapterId || '';
     }
 
     // 講座を削除
@@ -847,6 +880,171 @@ class CourseCreator {
         localStorage.setItem('adminCourses', JSON.stringify(courses));
         this.renderCoursesList();
         alert('削除しました');
+    }
+
+    /* ================= 階層データの読み書き ================= */
+
+    loadHierarchy() {
+        const raw = localStorage.getItem(this.hierarchyKey);
+        if (raw) {
+            try {
+                return JSON.parse(raw);
+            } catch (e) {
+                console.error('階層データのパースに失敗', e);
+            }
+        }
+        // デフォルト構造
+        const initial = { subjects: [] };
+        localStorage.setItem(this.hierarchyKey, JSON.stringify(initial));
+        return initial;
+    }
+
+    saveHierarchy() {
+        localStorage.setItem(this.hierarchyKey, JSON.stringify(this.hierarchy));
+    }
+
+    generateId(prefix) {
+        return `${prefix}_${Date.now()}`;
+    }
+
+    /* ===== 追加メソッド ===== */
+
+    createSubject(name, description = '') {
+        const id = this.generateId('sub');
+        this.hierarchy.subjects.push({ id, name, description, courses: [] });
+        this.saveHierarchy();
+        this.updateSubjectSelect();
+        return id;
+    }
+
+    createCourse(subjectId, name, description = '') {
+        const subject = this.hierarchy.subjects.find(s => s.id === subjectId);
+        if (!subject) return null;
+        const id = this.generateId('course');
+        subject.courses.push({ id, name, description, chapters: [] });
+        this.saveHierarchy();
+        this.updateCourseSelect();
+        return id;
+    }
+
+    createChapter(courseId, name, description = '') {
+        for (const subject of this.hierarchy.subjects) {
+            const course = subject.courses.find(c => c.id === courseId);
+            if (course) {
+                const id = this.generateId('chap');
+                course.chapters.push({ id, name, description, lessons: [] });
+                this.saveHierarchy();
+                this.updateChapterSelect();
+                return id;
+            }
+        }
+        return null;
+    }
+
+    /* ================= セレクト更新 ================= */
+
+    updateSubjectSelect() {
+        const select = document.getElementById('course-subject');
+        if (!select) return;
+        // 現在値を保持
+        const current = select.value;
+        select.innerHTML = '<option value="">科目を選択してください</option>' +
+            this.hierarchy.subjects.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+        select.value = current;
+        // コースセレクトを連動
+        this.updateCourseSelect();
+    }
+
+    updateCourseSelect() {
+        const subjectId = document.getElementById('course-subject').value;
+        const courseSelect = document.getElementById('course-course');
+        if (!courseSelect) return;
+        if (!subjectId) {
+            courseSelect.innerHTML = '<option value="">コースを選択してください</option>';
+            courseSelect.disabled = true;
+            this.updateChapterSelect();
+            return;
+        }
+        const subject = this.hierarchy.subjects.find(s => s.id === subjectId);
+        const options = subject ? subject.courses.map(c => `<option value="${c.id}">${c.name}</option>`).join('') : '';
+        courseSelect.innerHTML = '<option value="">コースを選択してください</option>' + options;
+        courseSelect.disabled = false;
+        // chapter update
+        this.updateChapterSelect();
+    }
+
+    updateChapterSelect() {
+        const courseId = document.getElementById('course-course').value;
+        const chapterSelect = document.getElementById('course-chapter');
+        if (!chapterSelect) return;
+        if (!courseId) {
+            chapterSelect.innerHTML = '<option value="">章を選択してください</option>';
+            chapterSelect.disabled = true;
+            return;
+        }
+        let chapters = [];
+        for (const subject of this.hierarchy.subjects) {
+            const course = subject.courses.find(c => c.id === courseId);
+            if (course) { chapters = course.chapters; break; }
+        }
+        const options = chapters.map(ch => `<option value="${ch.id}">${ch.name}</option>`).join('');
+        chapterSelect.innerHTML = '<option value="">章を選択してください</option>' + options;
+        chapterSelect.disabled = false;
+    }
+
+    /* ================= UIイベント ================= */
+
+    bindHierarchyButtonEvents() {
+        const addSubjectBtn = document.getElementById('add-subject-btn');
+        const addCourseBtn = document.getElementById('add-course-btn');
+        const addChapterBtn = document.getElementById('add-chapter-btn');
+
+        if (addSubjectBtn) {
+            addSubjectBtn.addEventListener('click', () => {
+                const name = prompt('新しい科目名を入力');
+                if (name) {
+                    this.createSubject(name);
+                }
+            });
+        }
+
+        if (addCourseBtn) {
+            addCourseBtn.addEventListener('click', () => {
+                const subjectId = document.getElementById('course-subject').value;
+                if (!subjectId) {
+                    alert('先に科目を選択してください');
+                    return;
+                }
+                const name = prompt('新しいコース名を入力');
+                if (name) {
+                    this.createCourse(subjectId, name);
+                }
+            });
+        }
+
+        if (addChapterBtn) {
+            addChapterBtn.addEventListener('click', () => {
+                const courseId = document.getElementById('course-course').value;
+                if (!courseId) {
+                    alert('先にコースを選択してください');
+                    return;
+                }
+                const name = prompt('新しい章のタイトルを入力');
+                if (name) {
+                    this.createChapter(courseId, name);
+                }
+            });
+        }
+
+        // セレクト連動
+        const subjectSelect = document.getElementById('course-subject');
+        if (subjectSelect) {
+            subjectSelect.addEventListener('change', () => this.updateCourseSelect());
+        }
+        const courseSelect = document.getElementById('course-course');
+        if (courseSelect) {
+            courseSelect.addEventListener('change', () => this.updateChapterSelect());
+        }
     }
 }
 

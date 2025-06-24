@@ -2415,3 +2415,195 @@ body:has([id="subject-icon"]) .lesson-count {
         font-size: 12px;
     }
 }
+/* ========================================
+   Support AI Chat Widget
+======================================== */
+#support-ai-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.support-ai-toggle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.support-ai-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(59, 130, 246, 0.4);
+}
+
+.support-ai-chat {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 350px;
+    height: 500px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.support-ai-chat.hidden {
+    display: none;
+}
+
+.support-ai-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.support-ai-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.support-ai-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.support-ai-messages {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #f9fafb;
+}
+
+.support-ai-message {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.support-ai-message.user {
+    background: #3b82f6;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+.support-ai-message.ai {
+    background: white;
+    color: #374151;
+    align-self: flex-start;
+    border: 1px solid #e5e7eb;
+    border-bottom-left-radius: 4px;
+}
+
+.support-ai-form {
+    display: flex;
+    padding: 16px;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    gap: 8px;
+}
+
+.support-ai-form input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.support-ai-form input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.support-ai-form button {
+    padding: 10px 16px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.support-ai-form button:hover {
+    background: #2563eb;
+}
+
+.support-ai-form button:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    #support-ai-widget {
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .support-ai-toggle {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .support-ai-chat {
+        width: 300px;
+        height: 450px;
+        bottom: 70px;
+    }
+}
+
+@media (max-width: 480px) {
+    #support-ai-widget {
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .support-ai-chat {
+        width: calc(100vw - 20px);
+        right: -150px;
+        height: 400px;
+    }
+}

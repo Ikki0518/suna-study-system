@@ -105,16 +105,34 @@
 
                                     <div class="form-group">
                                         <label for="course-subject" class="form-label">科目 <span class="required">*</span></label>
-                                        <select id="course-subject" class="form-select" required>
-                                            <option value="">科目を選択してください</option>
-                                            <option value="japanese">国語</option>
-                                            <option value="math">数学</option>
-                                            <option value="english">英語</option>
-                                            <option value="science">理科</option>
-                                            <option value="social">社会</option>
-                                            <option value="programming">プログラミング</option>
-                                            <option value="other">その他</option>
-                                        </select>
+                                        <div style="display:flex; gap:8px; align-items:center;">
+                                            <select id="course-subject" class="form-select" required>
+                                                <option value="">科目を選択してください</option>
+                                            </select>
+                                            <button type="button" id="add-subject-btn" class="btn btn-outline" title="科目を追加">＋</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- コース選択 -->
+                                    <div class="form-group">
+                                        <label for="course-course" class="form-label">コース <span class="required">*</span></label>
+                                        <div style="display:flex; gap:8px; align-items:center;">
+                                            <select id="course-course" class="form-select" disabled required>
+                                                <option value="">コースを選択してください</option>
+                                            </select>
+                                            <button type="button" id="add-course-btn" class="btn btn-outline" title="コースを追加">＋</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- 章選択 -->
+                                    <div class="form-group">
+                                        <label for="course-chapter" class="form-label">章 <span class="required">*</span></label>
+                                        <div style="display:flex; gap:8px; align-items:center;">
+                                            <select id="course-chapter" class="form-select" disabled required>
+                                                <option value="">章を選択してください</option>
+                                            </select>
+                                            <button type="button" id="add-chapter-btn" class="btn btn-outline" title="章を追加">＋</button>
+                                        </div>
                                     </div>
                                 </div>
 

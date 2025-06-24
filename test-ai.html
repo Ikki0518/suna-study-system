@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIチャット動作テスト</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <h1>AIチャット動作テスト</h1>
+    <p>右下にチャットボタンが表示されているか確認してください。</p>
+    
+    <script>
+        console.log('テストページ読み込み完了');
+        
+        // 手動でウィジェットを作成してテスト
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM読み込み完了');
+            
+            // テスト用のシンプルなウィジェット
+            const testWidget = document.createElement('div');
+            testWidget.innerHTML = `
+                <div style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+                    <button style="width: 60px; height: 60px; border-radius: 50%; background: #3b82f6; color: white; border: none; font-size: 24px;">💬</button>
+                </div>
+            `;
+            document.body.appendChild(testWidget);
+            console.log('テストウィジェット追加完了');
+        });
+    </script>
+    
+    <script src="js/support-ai.js"></script>
+</body>
+</html>

@@ -26,5 +26,8 @@
   "homepage": "https://your-school-lms.vercel.app",
   "engines": {
     "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "openai": "^4.20.1"
   }
 } 
