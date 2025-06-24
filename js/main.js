@@ -22,7 +22,142 @@ const schools = loadSchools();
 // 科目とコースデータの定義（管理者が作成するまで空の状態）
 // 各スクールで異なるコンテンツを配信可能
 const subjects = {
-    // 管理者がコンテンツ管理システムで作成した科目がここに追加されます
+    'demo-skillplus': {
+        id: 'demo-skillplus',
+        name: 'スキルプラス活用マスター講座',
+        description: 'ビジネススキルを学ぶ実践的な講座',
+        color: '#10b981',
+        instructor: '塾長',
+        schoolId: 'production-school',
+        courses: [
+            {
+                id: 'course-1',
+                title: '成長を最大化するマインドセット',
+                description: '成長思考と学習効率を高める基礎講座',
+                lessons: [
+                    {
+                        id: 'lesson1-1',
+                        title: 'Play your life　〜 Well-being 〜',
+                        duration: '20分',
+                        completed: false
+                    },
+                    {
+                        id: 'lesson1-2',
+                        title: 'Life Time Time (LTT) の考え方',
+                        duration: '15分',
+                        completed: false
+                    },
+                    {
+                        id: 'lesson1-3',
+                        title: 'Giver・Taker の関係性',
+                        duration: '18分',
+                        completed: false
+                    },
+                    {
+                        id: 'lesson1-4',
+                        title: 'ToDo至上主義からの脱却',
+                        duration: '22分',
+                        completed: false
+                    }
+                ]
+            },
+            {
+                id: 'course-2',
+                title: 'Play my life をするために必要なマインドセット',
+                description: '自分らしく生きるための思考法を学ぶ',
+                lessons: [
+                    {
+                        id: 'lesson2-1',
+                        title: '自分で解決「できるもの」と「できないもの」を分けて考えよう',
+                        duration: '16分',
+                        completed: false
+                    },
+                    {
+                        id: 'lesson2-2',
+                        title: '「お金がない」を言い訳にしない',
+                        duration: '19分',
+                        completed: false
+                    },
+                    {
+                        id: 'lesson2-3',
+                        title: '「時間がない」はありえない',
+                        duration: '14分',
+                        completed: false
+                    }
+                ]
+            }
+        ]
+    },
+    'demo-business': {
+        id: 'demo-business',
+        name: 'ビジネス基礎講座',
+        description: 'ビジネスの基本的な知識とスキルを習得',
+        color: '#3b82f6',
+        instructor: '講師A',
+        schoolId: 'production-school',
+        courses: [
+            {
+                id: 'business-course-1',
+                title: 'ビジネスマナー基礎',
+                description: '社会人として必要なマナーと常識',
+                lessons: [
+                    {
+                        id: 'business1-1',
+                        title: '挨拶とコミュニケーション',
+                        duration: '12分',
+                        completed: false
+                    },
+                    {
+                        id: 'business1-2',
+                        title: 'メールの書き方',
+                        duration: '15分',
+                        completed: false
+                    },
+                    {
+                        id: 'business1-3',
+                        title: '会議の進め方',
+                        duration: '18分',
+                        completed: false
+                    }
+                ]
+            }
+        ]
+    },
+    'demo-programming': {
+        id: 'demo-programming',
+        name: 'プログラミング入門',
+        description: 'プログラミングの基礎から実践まで',
+        color: '#8b5cf6',
+        instructor: '講師B',
+        schoolId: 'production-school',
+        courses: [
+            {
+                id: 'programming-course-1',
+                title: 'JavaScript基礎',
+                description: 'JavaScript言語の基本文法を学習',
+                lessons: [
+                    {
+                        id: 'js1-1',
+                        title: '変数とデータ型',
+                        duration: '25分',
+                        completed: false
+                    },
+                    {
+                        id: 'js1-2',
+                        title: '関数とスコープ',
+                        duration: '30分',
+                        completed: false
+                    },
+                    {
+                        id: 'js1-3',
+                        title: 'オブジェクトと配列',
+                        duration: '28分',
+                        completed: false
+                    }
+                ]
+            }
+        ]
+    }
 };
 
 // 旧coursesデータを削除し、新しい構造に対応
@@ -33,7 +168,7 @@ const lessonContents = {
     'lesson1-1': {
         title: 'Play your life　〜 Well-being 〜',
         videoUrl: 'videos/wellbeing.mp4',
-                textContent: `
+        textContent: `
             <div class="lesson-intro">
                 <p>この講義では、人生を主体的に生きるためのきっかけとなるWell-beingの概念について学習します。Well-beingは人間の幸福を意味する
 あらゆる概念の仮訳のことであり、これは記載された決定であることで、より多幸で楽しい人生を送ることができます。</p>
@@ -99,6 +234,102 @@ const lessonContents = {
             <h4>まとめと次のステップ</h4>
             <p>Well-beingは、整う「楽」や「快楽」を経あつたものの、より深いほ心の女受益を表現えず。</p>
             <p>次章は、これら5つの要素をどうことによって、其界对象な方法において学んでいている解す。</p>
+        `
+    },
+    'lesson1-2': {
+        title: 'Life Time Time (LTT) の考え方',
+        videoUrl: 'videos/ltt.mp4',
+        textContent: `
+            <div class="lesson-intro">
+                <p>この講義では、時間の概念を見直し、より充実した人生を送るためのLife Time Time（LTT）について学習します。</p>
+            </div>
+
+            <h4>LTTとは何か</h4>
+            <p>Life Time Time（LTT）とは、自分の人生における時間の使い方を戦略的に考える概念です。単なる時間管理ではなく、人生全体の時間配分を最適化することを目指します。</p>
+
+            <h4>従来の時間管理との違い</h4>
+            <ul>
+                <li><strong>短期的な効率</strong> → <strong>長期的な価値創造</strong></li>
+                <li><strong>タスクの消化</strong> → <strong>人生の充実度向上</strong></li>
+                <li><strong>忙しさの追求</strong> → <strong>意味のある活動の選択</strong></li>
+            </ul>
+
+            <h4>LTTの3つの軸</h4>
+            <div class="ltt-elements">
+                <div class="element">
+                    <h5>1. 投資時間</h5>
+                    <p>将来の自分のための時間投資。学習、スキル向上、人間関係構築など。</p>
+                </div>
+                <div class="element">
+                    <h5>2. 享受時間</h5>
+                    <p>現在の幸福感を得る時間。趣味、娯楽、リラクゼーションなど。</p>
+                </div>
+                <div class="element">
+                    <h5>3. 必要時間</h5>
+                    <p>生活維持に必要な時間。仕事、家事、睡眠など。</p>
+                </div>
+            </div>
+        `
+    },
+    'business1-1': {
+        title: '挨拶とコミュニケーション',
+        videoUrl: 'videos/business-greeting.mp4',
+        textContent: `
+            <div class="lesson-intro">
+                <p>ビジネスシーンにおける適切な挨拶とコミュニケーションの基本を学習します。</p>
+            </div>
+
+            <h4>基本的な挨拶</h4>
+            <ul>
+                <li><strong>おはようございます</strong> - 朝の挨拶（午前中）</li>
+                <li><strong>お疲れ様です</strong> - 日中の挨拶</li>
+                <li><strong>失礼いたします</strong> - 退社時の挨拶</li>
+            </ul>
+
+            <h4>名刺交換のマナー</h4>
+            <ol>
+                <li>両手で相手の名刺を受け取る</li>
+                <li>「お預かりいたします」と言う</li>
+                <li>机の上の左上に置く</li>
+                <li>会議終了まで丁寧に扱う</li>
+            </ol>
+
+            <h4>電話応対の基本</h4>
+            <p>「お忙しい中、お電話いただきありがとうございます。〇〇の△△と申します。」</p>
+        `
+    },
+    'js1-1': {
+        title: '変数とデータ型',
+        videoUrl: 'videos/js-variables.mp4',
+        textContent: `
+            <div class="lesson-intro">
+                <p>JavaScriptにおける変数の宣言方法とデータ型について学習します。</p>
+            </div>
+
+            <h4>変数の宣言</h4>
+            <pre><code>// let - 再代入可能
+let name = "田中";
+let age = 25;
+
+// const - 再代入不可
+const PI = 3.14159;
+
+// var - 古い書き方（非推奨）
+var oldStyle = "使わない方が良い";</code></pre>
+
+            <h4>データ型</h4>
+            <ul>
+                <li><strong>string（文字列）</strong>: "Hello World"</li>
+                <li><strong>number（数値）</strong>: 42, 3.14</li>
+                <li><strong>boolean（真偽値）</strong>: true, false</li>
+                <li><strong>undefined</strong>: 未定義</li>
+                <li><strong>null</strong>: 空の値</li>
+            </ul>
+
+            <h4>型の確認</h4>
+            <pre><code>console.log(typeof "Hello"); // "string"
+console.log(typeof 42);     // "number"
+console.log(typeof true);   // "boolean"</code></pre>
         `
     }
 };
