@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>章管理 - Suna Admin</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/admin.css">
+</head>
+<body class="utage-admin-body">
+    <header class="utage-header">
+        <div class="utage-header-content">
+            <button class="btn btn-outline" style="margin-right:12px;" onclick="history.back()">← 戻る</button>
+            <h2 style="font-size:20px;">章一覧</h2>
+            <div class="flex-1"></div>
+        </div>
+    </header>
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title" id="course-name">Course</h1>
+                <button id="add-chapter-btn" class="btn btn-outline">＋ 章追加</button>
+            </div>
+            <table id="chapters-table" class="manager-table"></table>
+        </div>
+    </main>
+    <script src="../js/content-admin.js"></script>
+</body>
+</html> 

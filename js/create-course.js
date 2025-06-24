@@ -38,6 +38,18 @@ class CourseCreator {
 
         // Finder 風ツリーを描画
         this.renderFinderTree();
+
+        // URL パラメータから直接章を開く
+        const params=new URLSearchParams(location.search);
+        const chapId=params.get('chapterId');
+        const courseId=params.get('courseId');
+        if(chapId&&courseId){
+            this.selectedCourseId=courseId; this.selectedChapterId=chapId;
+            document.getElementById('lesson-editor-block').style.display='block';
+            document.getElementById('course-course').value=courseId;
+            this.updateChapterSelect();
+            document.getElementById('course-chapter').value=chapId;
+        }
     }
 
     // 管理者認証チェック

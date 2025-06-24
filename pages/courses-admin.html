@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コース管理 - Suna Admin</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/admin.css">
+</head>
+<body class="utage-admin-body">
+    <!-- 共通ヘッダー -->
+    <header class="utage-header">
+        <div class="utage-header-content">
+            <div class="utage-logo" onclick="window.location.href='admin.html'" style="cursor:pointer;">suna</div>
+            <div class="utage-header-right" id="admin-auth-section"></div>
+        </div>
+    </header>
+
+    <div class="utage-layout">
+        <aside class="utage-sidebar">
+            <nav class="utage-nav">
+                <ul class="utage-nav-list">
+                    <li class="utage-nav-item"><button class="utage-nav-link" onclick="location.href='admin.html'">📊 ダッシュボード</button></li>
+                    <li class="utage-nav-item"><button class="utage-nav-link active" onclick="location.href='courses-admin.html'">📁 コース管理</button></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="utage-main">
+            <div class="container">
+                <div class="page-header">
+                    <h1 class="page-title">📚 コース一覧</h1>
+                    <button id="add-course-btn" class="btn btn-outline">＋ コース追加</button>
+                </div>
+                <table id="courses-table" class="manager-table"></table>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/content-admin.js"></script>
+</body>
+</html> 
