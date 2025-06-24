@@ -33,8 +33,8 @@ class CourseCreator {
         this.updateSubjectSelect();
         this.updateCourseSelect();
         this.updateChapterSelect();
-        this.renderCoursesList(); // 既存講座を表示
-        this.renderCoursesManager();
+        this.renderCoursesList(); // 既存講座のカード
+        // テーブルUIは廃止し、Finderツリーで管理
 
         // Finder 風ツリーを描画
         this.renderFinderTree();
