@@ -3819,9 +3819,8 @@ class StudyApp {
         this.currentView = 'lesson';
         this.currentLesson = lessonId;
         
-        console.log('📚 Marking lesson completed:', lessonId);
-        // 講義を完了状態にマーク
-        this.markLessonCompleted(lessonId);
+        // 講義を開いただけでは完了状態にマークしない
+        // （完了状態のマークは別途実装する）
         
         console.log('🖥️ Hiding all views');
         this.hideAllViews();
@@ -3940,9 +3939,11 @@ class StudyApp {
 
     // 全てのビューを非表示
     hideAllViews() {
+        console.log('🔒 hideAllViews called, current view:', this.currentView);
         document.getElementById('home-view').style.display = 'none';
         document.getElementById('course-view').style.display = 'none';
         document.getElementById('lesson-view').style.display = 'none';
+        console.log('🔒 All views hidden');
     }
 
     // 科目の総講義数を取得
@@ -4372,7 +4373,8 @@ class StudyApp {
                 </div>
             `;
         } else if (this.currentView === 'lesson' && this.currentSubject && this.currentCourse) {
-            const lesson = this.findLessonById(this.currentLesson);
+            const lessonData = this.findLessonById(this.currentLesson);
+            const lessonTitle = lessonData ? lessonData.title : 'レッスン';
             breadcrumb += `
                 <span class="breadcrumb-separator">›</span>
                 <div class="breadcrumb-item">
@@ -4388,7 +4390,7 @@ class StudyApp {
                 </div>
                 <span class="breadcrumb-separator">›</span>
                 <div class="breadcrumb-item">
-                    <span class="breadcrumb-current">${lesson ? lesson.title : 'レッスン'}</span>
+                    <span class="breadcrumb-current">${lessonTitle}</span>
                 </div>
             `;
         }
