@@ -957,7 +957,13 @@ class AdminApp {
         this.sortAsc = !this.sortAsc;
         console.log('toggleStudentSort: sortAsc =', this.sortAsc);
         this.students.sort((a, b) => {
-// 要注意受講生のレンダリング
+            return this.sortAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+        });
+        this.renderStudentTable();
+        this.showMessage(`受講生リストを名前${this.sortAsc ? '昇順' : '降順'}で並べ替えました`, 'success');
+    }
+
+    // 要注意受講生のレンダリング
     renderAttentionStudents() {
         const container = document.getElementById('attention-students-list');
         if (!container) return;
@@ -1036,11 +1042,6 @@ class AdminApp {
             `;
         }).join('');
     }
-            const res = a.name.localeCompare(b.name, 'ja');
-            return this.sortAsc ? res : -res;
-        });
-        this.renderStudentTable();
-        this.showMessage(`受講生リストを名前${this.sortAsc ? '昇順' : '降順'}で並べ替えました`, 'success');
 // ===== スクール管理機能 =====
     
     // スクール管理の初期化
