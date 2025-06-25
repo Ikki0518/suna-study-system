@@ -3781,7 +3781,7 @@ class StudyApp {
                                     <div class="lesson-title">${lesson.title}</div>
                                     <div class="lesson-subtitle">動画とテキストで学習</div>
                                 </div>
-                                <button class="lesson-button" onclick="event.stopPropagation();">受講する</button>
+                                <button class="lesson-button" onclick="event.stopPropagation(); app.showLesson('${lesson.id}'); return false;">受講する</button>
                         </div>
                     `).join('')}
                 </div>
@@ -3856,7 +3856,7 @@ class StudyApp {
             </div>
             
             <div class="nav-buttons">
-                <button class="nav-btn" onclick="app.showCourse(app.currentCourse)">コース一覧</button>
+                <button class="nav-btn" onclick="app.showCourse(app.currentCourse)">📚 コース詳細に戻る</button>
                 <div class="lesson-navigation">
                     ${this.findPrevLesson(lessonId) ? 
                         `<button class="nav-btn secondary" onclick="app.prevLesson()">← 前の講義</button>` : 
