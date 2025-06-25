@@ -3367,7 +3367,6 @@ class StudyApp {
     // 科目選択画面を表示
     renderSubjects() {
         // ホームビューを表示
-        this.hideAllViews();
         const homeView = document.getElementById('home-view');
         if (homeView) {
             homeView.style.display = 'block';
