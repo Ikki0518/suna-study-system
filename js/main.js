@@ -3285,18 +3285,32 @@ class StudyApp {
     }
 
     init() {
-        console.log('StudyApp initialized');
+        console.log('📚 [STUDYAPP DEBUG] StudyApp initialized');
+        console.log('📚 [STUDYAPP DEBUG] Current user:', window.authManager?.currentUser);
+        console.log('📚 [STUDYAPP DEBUG] Is logged in:', window.authManager?.isLoggedIn);
         
         // ローカルストレージから管理者が作成した科目データを読み込み
+        console.log('📚 [STUDYAPP DEBUG] Loading subjects from storage...');
         this.loadSubjectsFromStorage();
+        console.log('📚 [STUDYAPP DEBUG] Subjects loaded from storage');
         
+        console.log('📚 [STUDYAPP DEBUG] Rendering subjects...');
         this.renderSubjects(); // 科目選択画面を表示
+        console.log('📚 [STUDYAPP DEBUG] Subjects rendered');
+        
         this.updateSidebar();
+        console.log('📚 [STUDYAPP DEBUG] Sidebar updated');
+        
         this.updateNavigation(); // ナビゲーション初期化
+        console.log('📚 [STUDYAPP DEBUG] Navigation updated');
+        
         this.bindEvents();
+        console.log('📚 [STUDYAPP DEBUG] Events bound');
         
         // 定期的にローカルストレージをチェック（管理者が新しい科目を追加した場合）
         this.setupStorageListener();
+        console.log('📚 [STUDYAPP DEBUG] Storage listener setup complete');
+        console.log('📚 [STUDYAPP DEBUG] StudyApp init complete');
     }
     
     // ローカルストレージの変更を監視
@@ -3330,39 +3344,19 @@ class StudyApp {
     
     // ローカルストレージから科目データを読み込む
     loadSubjectsFromStorage() {
-        try {
-            const storedSubjects = localStorage.getItem('subjects');
-            if (storedSubjects) {
-                const parsedSubjects = JSON.parse(storedSubjects);
-                
-                // 既存データにアイコンが含まれているかチェック
-                let needsUpdate = false;
-                for (const [key, storedSubject] of Object.entries(parsedSubjects)) {
-                    if (!storedSubject.icon && subjects[key] && subjects[key].icon) {
-                        storedSubject.icon = subjects[key].icon;
-                        needsUpdate = true;
-                    }
-                }
-                
-                // 更新が必要な場合はローカルストレージを更新
-                if (needsUpdate) {
-                    localStorage.setItem('subjects', JSON.stringify(parsedSubjects));
-                    console.log('Updated subjects with missing icons');
-                }
-                
-                // グローバルのsubjectsオブジェクトを更新
-                Object.assign(subjects, parsedSubjects);
-                console.log('Loaded subjects from storage:', Object.keys(subjects));
-            } else {
-                console.log('No subjects found in localStorage, using default subjects');
-                // デフォルト科目データをローカルストレージに保存
-                localStorage.setItem('subjects', JSON.stringify(subjects));
-                console.log('Saved default subjects to storage:', Object.keys(subjects));
-            }
-        } catch (error) {
-            console.error('Error loading subjects from storage:', error);
-            // エラーの場合もデフォルトデータを使用
-            console.log('Using default subjects due to error');
+        const stored = localStorage.getItem('subjects');
+        if (stored) {
+            try {
+                this.subjectsData = JSON.parse(stored);
+                // マイグレーション: schoolId が無い科目に currentSchool を付与
+                const currentSchoolId = authManager?.getCurrentSchool()?.id || 'default-school';
+                let updated = false;
+                Object.values(this.subjectsData).forEach(sub=>{
+                    if(!sub.schoolId){ sub.schoolId=currentSchoolId; updated=true; }
+                });
+                if(updated){ localStorage.setItem('subjects', JSON.stringify(this.subjectsData)); }
+                return;
+            } catch(e){ console.error(e); }
         }
     }
 
@@ -3597,12 +3591,17 @@ class StudyApp {
             `;
             
             courseCard.addEventListener('click', () => {
-                console.log('Course clicked:', course.title);
+                console.log('🔍 [DEBUG] Course clicked:', course.title);
+                console.log('🔍 [DEBUG] AuthManager exists:', !!authManager);
+                console.log('🔍 [DEBUG] Current user:', authManager?.currentUser);
+                console.log('🔍 [DEBUG] Is logged in:', authManager?.isLoggedIn);
+                
                 if (authManager && authManager.requireAuth()) {
-                    console.log('Course auth passed, showing course:', course.title);
-                this.showCourse(course);
+                    console.log('✅ [DEBUG] Course auth passed, showing course:', course.title);
+                    this.showCourse(course);
                 } else {
-                    console.log('Course auth failed');
+                    console.log('❌ [DEBUG] Course auth failed - redirecting');
+                    console.log('❌ [DEBUG] RequireAuth result:', authManager?.requireAuth());
                 }
             });
             
@@ -4747,18 +4746,26 @@ class StudyApp {
 let app;
 let authManager;
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 [MAIN DEBUG] DOM loaded, initializing...');
+    console.log('🚀 [MAIN DEBUG] Current path:', window.location.pathname);
+    
     authManager = new AuthManager();
     window.authManager = authManager; // グローバルアクセス用
+    console.log('🚀 [MAIN DEBUG] AuthManager initialized');
     
     // 学習関連ページ（index.html、student.html）でのみStudyAppを初期化
-    const isStudyPage = window.location.pathname.includes('index.html') || 
+    const isStudyPage = window.location.pathname.includes('index.html') ||
                        window.location.pathname.includes('student.html') ||
                        window.location.pathname === '/' ||
                        window.location.pathname.endsWith('/');
     
+    console.log('🚀 [MAIN DEBUG] Is study page?', isStudyPage);
+    
     if (isStudyPage) {
-    app = new StudyApp();
+        console.log('🚀 [MAIN DEBUG] Creating StudyApp...');
+        app = new StudyApp();
         window.app = app; // グローバルアクセス用
+        console.log('🚀 [MAIN DEBUG] StudyApp created and set to window.app');
     }
 });
 

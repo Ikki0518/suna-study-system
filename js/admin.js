@@ -433,12 +433,26 @@ class AdminApp {
     // 認証UIの更新
     updateAuthUI() {
         const authInfo = document.getElementById('admin-user-info');
+        const schoolSelect = document.getElementById('admin-school-select');
         if (!authInfo) return;
 
         const currentUser = JSON.parse(localStorage.getItem('sunaUser') || '{}');
         if (currentUser.email) {
             const userName = currentUser.name || currentUser.email.split('@')[0];
             authInfo.textContent = `管理者: ${userName}`;
+
+            // 学校セレクトをセット
+            if (schoolSelect) {
+                const schools = JSON.parse(localStorage.getItem('schools') || '{}');
+                const currentSchoolId = currentUser.schoolId || Object.keys(schools)[0];
+                schoolSelect.innerHTML = Object.values(schools).map(s=>`<option value="${s.id}" ${s.id===currentSchoolId?'selected':''}>${s.name}</option>`).join('');
+                schoolSelect.onchange = () => {
+                    currentUser.schoolId = schoolSelect.value;
+                    localStorage.setItem('sunaUser', JSON.stringify(currentUser));
+                    // 再読み込みで反映
+                    location.reload();
+                };
+            }
         }
     }
 
