@@ -4291,6 +4291,11 @@ class StudyApp {
         
         if (!breadcrumbNav || !breadcrumbPath || !backBtn) return;
 
+        // ログ追加: パンくずリストNav更新前の状態を出力
+        console.log('[DEBUG] updateBreadcrumbNav: before update');
+        console.log('breadcrumbNav.style.display:', breadcrumbNav.style.display);
+        console.log('breadcrumbPath.innerHTML:', breadcrumbPath.innerHTML);
+
         // 科目選択画面の場合はブレッドクラムを隠す
         if (this.currentView === 'subjects') {
             breadcrumbNav.style.display = 'none';
@@ -4347,7 +4352,20 @@ class StudyApp {
             `;
         }
 
+        // パンくずリストの重複DOMを必ずリセット
+        breadcrumbPath.innerHTML = '';
+        // 旧パンくずリスト（.breadcrumb-content）があれば非表示
+        const oldBreadcrumb = document.querySelector('.breadcrumb-content');
+        if (oldBreadcrumb) {
+            oldBreadcrumb.style.display = 'none';
+        }
+
         breadcrumbPath.innerHTML = pathHtml;
+
+        // ログ追加: パンくずリストNav更新後の状態を出力
+        console.log('[DEBUG] updateBreadcrumbNav: after update');
+        console.log('breadcrumbNav.style.display:', breadcrumbNav.style.display);
+        console.log('breadcrumbPath.innerHTML:', breadcrumbPath.innerHTML);
     }
 
     // 戻るボタンの処理
