@@ -1294,3 +1294,13 @@ function registerStudent(event) {
 function switchTab(tabName) {
     if (window.adminApp) window.adminApp.switchTab(tabName);
 }
+
+// スクール変更用グローバル関数
+function testSchoolChange(schoolId, schoolName) {
+    console.log('testSchoolChange called with:', schoolId, schoolName);
+    if (window.adminApp && window.adminApp.handleSchoolChange) {
+        window.adminApp.handleSchoolChange(schoolId, schoolName);
+    } else {
+        console.error('AdminApp not available for school change');
+    }
+}
