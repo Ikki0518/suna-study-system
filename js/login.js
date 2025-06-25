@@ -190,7 +190,9 @@ async function loginUser(userData) {
                     user: {
                         email: userData.email,
                         name: 'デモユーザー',
-                        role: 'student'
+                        role: 'student',
+                        schoolId: 'production-school',
+                        grade: '高校3年'
                     }
                 });
             }
