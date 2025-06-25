@@ -41,6 +41,23 @@
         </div>
     </header>
 
+    <!-- ブレッドクラムナビゲーション -->
+    <nav id="breadcrumb-nav" class="breadcrumb-nav" style="display: none;">
+        <div class="breadcrumb-container">
+            <div class="breadcrumb-content">
+                <button id="back-btn" class="back-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                    </svg>
+                    戻る
+                </button>
+                <div id="breadcrumb-path" class="breadcrumb-path">
+                    <!-- ブレッドクラムパスがJavaScriptで動的に生成されます -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <main class="main-content">
         <!-- ホーム画面 -->
         <div id="home-view" class="home-view">

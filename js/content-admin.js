@@ -1,6 +1,13 @@
 // コース / 章 管理用共通スクリプト
 (function(){
     const hierarchyKey = 'contentHierarchy';
+    const categories=[
+        '未分類',
+        '小学生向け',
+        '中学生向け',
+        '高校生向け',
+        '冬季講習'
+    ];
     function loadHierarchy(){
         try{ return JSON.parse(localStorage.getItem(hierarchyKey)||'{"subjects":[]}'); }catch(e){return {subjects:[]};}
     }
@@ -80,13 +87,28 @@
     function renderSubjectsPage(){
         const hierarchy=loadHierarchy();
         const table=document.getElementById('subjects-table');
-        table.innerHTML= hierarchy.subjects.map(s=>`<tr data-id="${s.id}"><td>${s.name}</td><td>${s.courses.length}</td></tr>`).join('')||'<tr><td>科目がありません</td></tr>';
+        let html='';
+        categories.forEach(cat=>{
+            html+=`<tr class="category-row"><th colspan="3">${cat}</th></tr>`;
+            const subjectsByCat=hierarchy.subjects.filter(s=> (s.category||'未分類')===cat);
+            if(subjectsByCat.length){
+                html+=subjectsByCat.map(s=>`<tr data-id="${s.id}"><td>${s.name}</td><td>${s.courses.length}</td></tr>`).join('');
+            }else{
+                html+='<tr><td colspan="3" style="color:#6b7280;">（なし）</td></tr>';
+            }
+        });
+        table.innerHTML=html;
         table.querySelectorAll('tr[data-id]').forEach(row=>{
             row.onclick=()=>location.href=`courses-admin.html?subjectId=${row.dataset.id}`;
         });
+
         document.getElementById('add-subject-btn').onclick=()=>{
-            const name=prompt('科目名'); if(!name) return;
-            hierarchy.subjects.push({id:generateId('subj'),name,courses:[]});
+            const name=prompt('科目名を入力'); if(!name) return;
+            let catPrompt='カテゴリーを選択:\n'+categories.map((c,i)=>`${i+1}: ${c}`).join('\n');
+            let idx=parseInt(prompt(catPrompt,'1')||'1',10)-1;
+            if(idx<0||idx>=categories.length) idx=0;
+            const category=categories[idx];
+            hierarchy.subjects.push({id:generateId('subj'),name,category,courses:[]});
             saveHierarchy(hierarchy);
             renderSubjectsPage();
         };

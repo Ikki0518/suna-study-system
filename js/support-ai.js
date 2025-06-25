@@ -229,7 +229,14 @@ console.log('🤖 Support AI script loaded!');
                 const data = await response.json();
                 const replyText = data.reply || 'すみません、うまく応答できませんでした。';
 
-                aiMsgEl.textContent = replyText;
+                // 改行文字を<br>タグに変換して見やすくする
+                const formattedReply = replyText
+                    .replace(/\n\n/g, '<br><br>')  // 段落区切り
+                    .replace(/\n/g, '<br>')        // 改行
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // 太字
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>');  // イタリック
+                
+                aiMsgEl.innerHTML = formattedReply;
                 conversationHistory.push({ role: 'assistant', content: replyText });
                 
                 // デバッグ情報をコンソールに出力

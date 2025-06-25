@@ -158,6 +158,198 @@ const subjects = {
                         ]
                     }
                 ]
+            },
+            {
+                id: 'japanese-reading',
+                title: '読解応用',
+                description: '入試レベルの読解力を養成',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'reading-ch1',
+                        title: '第1章：応用読解技法',
+                        lessons: [
+                            {
+                                id: 'reading1-1',
+                                title: '評論文の読解',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'reading1-2',
+                                title: '随筆文の読解',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'reading1-3',
+                                title: '詩歌の鑑賞',
+                                duration: '25分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'japanese-grammar',
+                title: '現代文法',
+                description: '文法の基礎から応用まで',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'grammar-ch1',
+                        title: '第1章：品詞と活用',
+                        lessons: [
+                            {
+                                id: 'grammar1-1',
+                                title: '動詞の活用',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'grammar1-2',
+                                title: '形容詞・形容動詞',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'grammar1-3',
+                                title: '助詞・助動詞',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'japanese-creative',
+                title: '創作文学',
+                description: '文学作品の創作技法を学ぶ',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'creative-ch1',
+                        title: '第1章：創作の基本',
+                        lessons: [
+                            {
+                                id: 'creative1-1',
+                                title: '短編小説の書き方',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'creative1-2',
+                                title: '詩の創作技法',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'creative1-3',
+                                title: 'エッセイの書き方',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'japanese-history',
+                title: '文学史',
+                description: '日本文学の歴史と変遷',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'history-ch1',
+                        title: '第1章：古代から中世',
+                        lessons: [
+                            {
+                                id: 'history1-1',
+                                title: '万葉集と古今和歌集',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'history1-2',
+                                title: '平安文学の世界',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'history1-3',
+                                title: '鎌倉・室町の文学',
+                                duration: '30分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'japanese-modern-lit',
+                title: '近現代文学',
+                description: '明治以降の文学作品を読む',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'modern-ch1',
+                        title: '第1章：明治・大正文学',
+                        lessons: [
+                            {
+                                id: 'modern1-1',
+                                title: '夏目漱石の作品',
+                                duration: '45分',
+                                completed: false
+                            },
+                            {
+                                id: 'modern1-2',
+                                title: '森鴎外の文学',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'modern1-3',
+                                title: '芥川龍之介の短編',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'japanese-exam',
+                title: '入試対策',
+                description: '大学入試に向けた総合対策',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'exam-ch1',
+                        title: '第1章：入試問題演習',
+                        lessons: [
+                            {
+                                id: 'exam1-1',
+                                title: '共通テスト対策',
+                                duration: '60分',
+                                completed: false
+                            },
+                            {
+                                id: 'exam1-2',
+                                title: '記述問題の解き方',
+                                duration: '50分',
+                                completed: false
+                            },
+                            {
+                                id: 'exam1-3',
+                                title: '時間配分のコツ',
+                                duration: '30分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     },
@@ -303,6 +495,294 @@ const subjects = {
                         ]
                     }
                 ]
+            },
+            {
+                id: 'math-trigonometry',
+                title: '三角関数',
+                description: '三角関数の性質と応用',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'trig-ch1',
+                        title: '第1章：三角比の基礎',
+                        lessons: [
+                            {
+                                id: 'trig1-1',
+                                title: 'sin・cos・tanの定義',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'trig1-2',
+                                title: '三角関数のグラフ',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'trig1-3',
+                                title: '加法定理',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'math-vectors',
+                title: 'ベクトル',
+                description: 'ベクトルの概念と計算',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'vectors-ch1',
+                        title: '第1章：平面ベクトル',
+                        lessons: [
+                            {
+                                id: 'vectors1-1',
+                                title: 'ベクトルの基本',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'vectors1-2',
+                                title: '内積と外積',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'vectors1-3',
+                                title: '空間ベクトル',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'math-sequences',
+                title: '数列',
+                description: '等差・等比数列と漸化式',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'sequences-ch1',
+                        title: '第1章：数列の基本',
+                        lessons: [
+                            {
+                                id: 'sequences1-1',
+                                title: '等差数列',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'sequences1-2',
+                                title: '等比数列',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'sequences1-3',
+                                title: '漸化式',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'math-matrices',
+                title: '行列',
+                description: '行列の計算と応用',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'matrices-ch1',
+                        title: '第1章：行列の基本',
+                        lessons: [
+                            {
+                                id: 'matrices1-1',
+                                title: '行列の計算',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'matrices1-2',
+                                title: '逆行列',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'matrices1-3',
+                                title: '連立方程式への応用',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'math-complex',
+                title: '複素数',
+                description: '複素数の概念と計算',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'complex-ch1',
+                        title: '第1章：複素数の基本',
+                        lessons: [
+                            {
+                                id: 'complex1-1',
+                                title: '複素数の定義',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'complex1-2',
+                                title: '複素数平面',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'complex1-3',
+                                title: 'ド・モアブルの定理',
+                                duration: '30分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'math-exponential',
+                title: '指数・対数関数',
+                description: '指数関数と対数関数の性質',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'exponential-ch1',
+                        title: '第1章：指数関数',
+                        lessons: [
+                            {
+                                id: 'exponential1-1',
+                                title: '指数法則',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'exponential1-2',
+                                title: '指数関数のグラフ',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'exponential1-3',
+                                title: '対数関数',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'math-analytic-geometry',
+                title: '解析幾何',
+                description: '座標平面と図形の方程式',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'analytic-ch1',
+                        title: '第1章：図形と方程式',
+                        lessons: [
+                            {
+                                id: 'analytic1-1',
+                                title: '直線の方程式',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'analytic1-2',
+                                title: '円の方程式',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'analytic1-3',
+                                title: '楕円・双曲線・放物線',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'math-integration',
+                title: '積分法',
+                description: '積分の計算と応用',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'integration-ch1',
+                        title: '第1章：不定積分',
+                        lessons: [
+                            {
+                                id: 'integration1-1',
+                                title: '基本的な積分',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'integration1-2',
+                                title: '置換積分',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'integration1-3',
+                                title: '部分積分',
+                                duration: '45分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'math-exam-prep',
+                title: '数学入試対策',
+                description: '大学入試数学の総合演習',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'exam-prep-ch1',
+                        title: '第1章：入試問題演習',
+                        lessons: [
+                            {
+                                id: 'exam-prep1-1',
+                                title: '数学IA総合演習',
+                                duration: '60分',
+                                completed: false
+                            },
+                            {
+                                id: 'exam-prep1-2',
+                                title: '数学IIB総合演習',
+                                duration: '70分',
+                                completed: false
+                            },
+                            {
+                                id: 'exam-prep1-3',
+                                title: '数学III総合演習',
+                                duration: '80分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     },
@@ -442,6 +922,326 @@ const subjects = {
                         ]
                     }
                 ]
+            },
+            {
+                id: 'science-advanced-physics',
+                title: '物理',
+                description: '力学・電磁気・波動・熱力学',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'advanced-physics-ch1',
+                        title: '第1章：力学の応用',
+                        lessons: [
+                            {
+                                id: 'advanced-physics1-1',
+                                title: '円運動と万有引力',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'advanced-physics1-2',
+                                title: '単振動と波動',
+                                duration: '45分',
+                                completed: false
+                            },
+                            {
+                                id: 'advanced-physics1-3',
+                                title: '電磁気学基礎',
+                                duration: '50分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'science-advanced-chemistry',
+                title: '化学',
+                description: '無機・有機・物理化学の基礎',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'advanced-chemistry-ch1',
+                        title: '第1章：無機化学',
+                        lessons: [
+                            {
+                                id: 'advanced-chemistry1-1',
+                                title: '典型元素の性質',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'advanced-chemistry1-2',
+                                title: '遷移元素と錯体',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'advanced-chemistry1-3',
+                                title: '酸化還元反応',
+                                duration: '45分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'science-organic-chemistry',
+                title: '有機化学',
+                description: '炭素化合物の構造と反応',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'organic-ch1',
+                        title: '第1章：炭化水素',
+                        lessons: [
+                            {
+                                id: 'organic1-1',
+                                title: 'アルカンとアルケン',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'organic1-2',
+                                title: 'ベンゼンと芳香族化合物',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'organic1-3',
+                                title: '官能基の反応',
+                                duration: '45分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'science-advanced-biology',
+                title: '生物',
+                description: '生命現象の詳細なメカニズム',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'advanced-biology-ch1',
+                        title: '第1章：分子生物学',
+                        lessons: [
+                            {
+                                id: 'advanced-biology1-1',
+                                title: 'タンパク質の構造と機能',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'advanced-biology1-2',
+                                title: '遺伝子発現の調節',
+                                duration: '45分',
+                                completed: false
+                            },
+                            {
+                                id: 'advanced-biology1-3',
+                                title: '細胞分裂と減数分裂',
+                                duration: '50分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'science-genetics',
+                title: '遺伝学',
+                description: '遺伝の法則とバイオテクノロジー',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'genetics-ch1',
+                        title: '第1章：メンデルの法則',
+                        lessons: [
+                            {
+                                id: 'genetics1-1',
+                                title: '優性・劣性の法則',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'genetics1-2',
+                                title: '連鎖と組換え',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'genetics1-3',
+                                title: 'PCRとDNA解析',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'science-ecology',
+                title: '生態学',
+                description: '生物と環境の相互作用',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'ecology-ch1',
+                        title: '第1章：個体群と群集',
+                        lessons: [
+                            {
+                                id: 'ecology1-1',
+                                title: '個体群の動態',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'ecology1-2',
+                                title: '食物連鎖と食物網',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'ecology1-3',
+                                title: '生物多様性と保全',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'science-astronomy',
+                title: '天文学',
+                description: '宇宙の構造と進化',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'astronomy-ch1',
+                        title: '第1章：恒星の進化',
+                        lessons: [
+                            {
+                                id: 'astronomy1-1',
+                                title: '星の誕生と死',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'astronomy1-2',
+                                title: '銀河系と銀河',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'astronomy1-3',
+                                title: 'ビッグバン理論',
+                                duration: '45分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'science-geology',
+                title: '地質学',
+                description: '地球の歴史と岩石',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'geology-ch1',
+                        title: '第1章：岩石と鉱物',
+                        lessons: [
+                            {
+                                id: 'geology1-1',
+                                title: '火成岩・堆積岩・変成岩',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'geology1-2',
+                                title: '地層と化石',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'geology1-3',
+                                title: 'プレートテクトニクス',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'science-meteorology',
+                title: '気象学',
+                description: '大気現象と気候変動',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'meteorology-ch1',
+                        title: '第1章：大気の構造',
+                        lessons: [
+                            {
+                                id: 'meteorology1-1',
+                                title: '大気の層構造',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'meteorology1-2',
+                                title: '低気圧と高気圧',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'meteorology1-3',
+                                title: '気候変動の仕組み',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'science-exam-prep',
+                title: '理科入試対策',
+                description: '大学入試理科の総合演習',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'science-exam-ch1',
+                        title: '第1章：入試問題演習',
+                        lessons: [
+                            {
+                                id: 'science-exam1-1',
+                                title: '物理総合演習',
+                                duration: '60分',
+                                completed: false
+                            },
+                            {
+                                id: 'science-exam1-2',
+                                title: '化学総合演習',
+                                duration: '60分',
+                                completed: false
+                            },
+                            {
+                                id: 'science-exam1-3',
+                                title: '生物総合演習',
+                                duration: '60分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     },
@@ -549,6 +1349,326 @@ const subjects = {
                         ]
                     }
                 ]
+            },
+            {
+                id: 'social-world-geography',
+                title: '世界地理',
+                description: '世界各地の自然環境と文化',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'world-geo-ch1',
+                        title: '第1章：アジア・オセアニア',
+                        lessons: [
+                            {
+                                id: 'world-geo1-1',
+                                title: '東アジアの地理',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'world-geo1-2',
+                                title: '東南アジアの地理',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'world-geo1-3',
+                                title: 'オセアニアの地理',
+                                duration: '25分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'social-world-history',
+                title: '世界史',
+                description: '古代から現代までの世界の歴史',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'world-history-ch1',
+                        title: '第1章：古代文明',
+                        lessons: [
+                            {
+                                id: 'world-history1-1',
+                                title: 'メソポタミア文明',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'world-history1-2',
+                                title: 'エジプト文明',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'world-history1-3',
+                                title: 'ギリシャ・ローマ文明',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'social-economics',
+                title: '経済学基礎',
+                description: '市場経済と経済理論の基礎',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'economics-ch1',
+                        title: '第1章：需要と供給',
+                        lessons: [
+                            {
+                                id: 'economics1-1',
+                                title: '市場メカニズム',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'economics1-2',
+                                title: '価格決定理論',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'economics1-3',
+                                title: 'マクロ経済学入門',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'social-law',
+                title: '法学入門',
+                description: '法の基本概念と日本の法制度',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'law-ch1',
+                        title: '第1章：法の基本概念',
+                        lessons: [
+                            {
+                                id: 'law1-1',
+                                title: '法とは何か',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'law1-2',
+                                title: '憲法の基本原理',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'law1-3',
+                                title: '民法と刑法の基礎',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'social-politics',
+                title: '政治学',
+                description: '政治制度と政治思想',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'politics-ch1',
+                        title: '第1章：民主主義理論',
+                        lessons: [
+                            {
+                                id: 'politics1-1',
+                                title: '代議制民主主義',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'politics1-2',
+                                title: '政党政治',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'politics1-3',
+                                title: '国際政治の基礎',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'social-philosophy',
+                title: '倫理・哲学',
+                description: '西洋・東洋思想と現代の倫理問題',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'philosophy-ch1',
+                        title: '第1章：古代ギリシャ哲学',
+                        lessons: [
+                            {
+                                id: 'philosophy1-1',
+                                title: 'ソクラテス・プラトン・アリストテレス',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'philosophy1-2',
+                                title: '東洋思想の基礎',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'philosophy1-3',
+                                title: '現代倫理学',
+                                duration: '30分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'social-anthropology',
+                title: '文化人類学',
+                description: '人間の文化と社会の多様性',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'anthropology-ch1',
+                        title: '第1章：文化の概念',
+                        lessons: [
+                            {
+                                id: 'anthropology1-1',
+                                title: '文化相対主義',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'anthropology1-2',
+                                title: '社会の構造と機能',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'anthropology1-3',
+                                title: 'グローバル化と文化',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'social-sociology',
+                title: '社会学',
+                description: '現代社会の構造と変動',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'sociology-ch1',
+                        title: '第1章：社会学の基礎概念',
+                        lessons: [
+                            {
+                                id: 'sociology1-1',
+                                title: '社会階層と社会移動',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'sociology1-2',
+                                title: '都市化と情報化',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'sociology1-3',
+                                title: '家族と教育の社会学',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'social-international',
+                title: '国際関係論',
+                description: '国際政治と外交の基礎',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'international-ch1',
+                        title: '第1章：国際システム',
+                        lessons: [
+                            {
+                                id: 'international1-1',
+                                title: '主権国家システム',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'international1-2',
+                                title: '国際機構の役割',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'international1-3',
+                                title: '外交と安全保障',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'social-exam-prep',
+                title: '社会科入試対策',
+                description: '大学入試社会科の総合演習',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'social-exam-ch1',
+                        title: '第1章：入試問題演習',
+                        lessons: [
+                            {
+                                id: 'social-exam1-1',
+                                title: '地理総合演習',
+                                duration: '60分',
+                                completed: false
+                            },
+                            {
+                                id: 'social-exam1-2',
+                                title: '歴史総合演習',
+                                duration: '60分',
+                                completed: false
+                            },
+                            {
+                                id: 'social-exam1-3',
+                                title: '公民総合演習',
+                                duration: '60分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     },
@@ -651,6 +1771,230 @@ const subjects = {
                                 id: 'jhistory-modern2-3',
                                 title: '大正デモクラシー',
                                 duration: '30分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'jhistory-cultural',
+                title: '日本文化史',
+                description: '日本の文化と芸術の発展',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'jculture-ch1',
+                        title: '第1章：古代から中世の文化',
+                        lessons: [
+                            {
+                                id: 'jculture1-1',
+                                title: '仏教文化の伝来',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'jculture1-2',
+                                title: '平安時代の国風文化',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'jculture1-3',
+                                title: '鎌倉・室町文化',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'jhistory-economic',
+                title: '日本経済史',
+                description: '日本の経済発展の歩み',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'jeconomic-ch1',
+                        title: '第1章：近世商業の発展',
+                        lessons: [
+                            {
+                                id: 'jeconomic1-1',
+                                title: '商業と手工業の発達',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'jeconomic1-2',
+                                title: '明治維新と資本主義',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'jeconomic1-3',
+                                title: '戦後復興と高度成長',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'jhistory-social',
+                title: '日本社会史',
+                description: '庶民生活と社会構造の変遷',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'jsocial-ch1',
+                        title: '第1章：身分制社会',
+                        lessons: [
+                            {
+                                id: 'jsocial1-1',
+                                title: '律令制と貴族社会',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'jsocial1-2',
+                                title: '武士の台頭',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'jsocial1-3',
+                                title: '江戸時代の身分制',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'jhistory-women',
+                title: '日本女性史',
+                description: '女性の地位と役割の変化',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'jwomen-ch1',
+                        title: '第1章：古代から近世の女性',
+                        lessons: [
+                            {
+                                id: 'jwomen1-1',
+                                title: '古代の女性と権力',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'jwomen1-2',
+                                title: '平安貴族女性の文学',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'jwomen1-3',
+                                title: '近現代女性の社会進出',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'jhistory-diplomacy',
+                title: '日本外交史',
+                description: '日本の対外関係の変遷',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'jdiplomacy-ch1',
+                        title: '第1章：古代から近世の外交',
+                        lessons: [
+                            {
+                                id: 'jdiplomacy1-1',
+                                title: '遣唐使と遣隋使',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'jdiplomacy1-2',
+                                title: '鎖国政策',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'jdiplomacy1-3',
+                                title: '明治外交と不平等条約',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'jhistory-regional',
+                title: '地域史研究',
+                description: '地方の歴史と特色',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'jregional-ch1',
+                        title: '第1章：関東地方の歴史',
+                        lessons: [
+                            {
+                                id: 'jregional1-1',
+                                title: '鎌倉幕府と関東武士',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'jregional1-2',
+                                title: '江戸の発展',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'jregional1-3',
+                                title: '関西の歴史と文化',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'jhistory-exam',
+                title: '日本史入試対策',
+                description: '大学入試日本史の総合演習',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'jhistory-exam-ch1',
+                        title: '第1章：入試問題演習',
+                        lessons: [
+                            {
+                                id: 'jhistory-exam1-1',
+                                title: '古代・中世史演習',
+                                duration: '60分',
+                                completed: false
+                            },
+                            {
+                                id: 'jhistory-exam1-2',
+                                title: '近世史演習',
+                                duration: '60分',
+                                completed: false
+                            },
+                            {
+                                id: 'jhistory-exam1-3',
+                                title: '近現代史演習',
+                                duration: '60分',
                                 completed: false
                             }
                         ]
@@ -790,6 +2134,593 @@ const subjects = {
                                 id: 'whistory-modern1-3',
                                 title: '帝国主義と植民地支配',
                                 duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'whistory-asian',
+                title: 'アジア史',
+                description: '中国・インド・東南アジアの歴史',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'whistory-asian-ch1',
+                        title: '第1章：中国王朝史',
+                        lessons: [
+                            {
+                                id: 'whistory-asian1-1',
+                                title: '秦・漢帝国の統一',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-asian1-2',
+                                title: '唐・宋時代の文化',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-asian1-3',
+                                title: '明・清朝の発展',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'whistory-islamic',
+                title: 'イスラーム史',
+                description: 'イスラーム世界の成立と発展',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'whistory-islamic-ch1',
+                        title: '第1章：イスラーム教の誕生',
+                        lessons: [
+                            {
+                                id: 'whistory-islamic1-1',
+                                title: 'ムハンマドと初期イスラーム',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-islamic1-2',
+                                title: 'ウマイヤ朝とアッバース朝',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-islamic1-3',
+                                title: 'オスマン帝国の隆盛',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'whistory-american',
+                title: 'アメリカ史',
+                description: '新大陸発見から現代アメリカまで',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'whistory-american-ch1',
+                        title: '第1章：植民地時代',
+                        lessons: [
+                            {
+                                id: 'whistory-american1-1',
+                                title: 'ヨーロッパ人の新大陸到達',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-american1-2',
+                                title: 'アメリカ独立革命',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-american1-3',
+                                title: '南北戦争と西部開拓',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'whistory-african',
+                title: 'アフリカ史',
+                description: 'アフリカ大陸の歴史と文明',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'whistory-african-ch1',
+                        title: '第1章：古代アフリカ文明',
+                        lessons: [
+                            {
+                                id: 'whistory-african1-1',
+                                title: 'エジプト文明とヌビア',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-african1-2',
+                                title: 'サハラ交易とマリ王国',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-african1-3',
+                                title: '植民地化と独立運動',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'whistory-wars',
+                title: '戦争史',
+                description: '世界大戦と近現代の戦争',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'whistory-wars-ch1',
+                        title: '第1章：第一次世界大戦',
+                        lessons: [
+                            {
+                                id: 'whistory-wars1-1',
+                                title: '大戦勃発の背景',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-wars1-2',
+                                title: '第二次世界大戦',
+                                duration: '45分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-wars1-3',
+                                title: '冷戦の始まり',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'whistory-economics',
+                title: '世界経済史',
+                description: '資本主義の発展と世界経済',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'whistory-economics-ch1',
+                        title: '第1章：重商主義から自由主義へ',
+                        lessons: [
+                            {
+                                id: 'whistory-economics1-1',
+                                title: '産業革命と資本主義',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-economics1-2',
+                                title: '世界恐慌とニューディール',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-economics1-3',
+                                title: 'グローバル経済の形成',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'whistory-culture',
+                title: '世界文化史',
+                description: '芸術・思想・科学の発展',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'whistory-culture-ch1',
+                        title: '第1章：ルネサンスと啓蒙思想',
+                        lessons: [
+                            {
+                                id: 'whistory-culture1-1',
+                                title: 'ルネサンス芸術',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-culture1-2',
+                                title: '科学革命と啓蒙思想',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-culture1-3',
+                                title: '19世紀の文化と思想',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'whistory-exam',
+                title: '世界史入試対策',
+                description: '大学入試世界史の総合演習',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'whistory-exam-ch1',
+                        title: '第1章：入試問題演習',
+                        lessons: [
+                            {
+                                id: 'whistory-exam1-1',
+                                title: '古代・中世史演習',
+                                duration: '60分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-exam1-2',
+                                title: '近世史演習',
+                                duration: '60分',
+                                completed: false
+                            },
+                            {
+                                id: 'whistory-exam1-3',
+                                title: '近現代史演習',
+                                duration: '60分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    'demo-english': {
+        id: 'demo-english',
+        name: '英語',
+        description: '基礎から応用まで総合的な英語力向上',
+        color: '#dc2626',
+        icon: '🌐',
+        instructor: '英語担当',
+        schoolId: 'production-school',
+        courses: [
+            {
+                id: 'english-grammar',
+                title: '英文法基礎',
+                description: '基本的な英文法の理解',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'grammar-ch1',
+                        title: '第1章：品詞と文型',
+                        lessons: [
+                            {
+                                id: 'grammar1-1',
+                                title: '名詞・代名詞・形容詞',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'grammar1-2',
+                                title: '動詞と時制',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'grammar1-3',
+                                title: '5つの基本文型',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'english-reading',
+                title: '英語読解',
+                description: '英文読解力の向上',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'reading-ch1',
+                        title: '第1章：基本的な読解技法',
+                        lessons: [
+                            {
+                                id: 'reading1-1',
+                                title: 'パラグラフリーディング',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'reading1-2',
+                                title: '速読のコツ',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'reading1-3',
+                                title: '要約と論理展開',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'english-listening',
+                title: 'リスニング',
+                description: '英語聞き取り能力の向上',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'listening-ch1',
+                        title: '第1章：基本的な聞き取り',
+                        lessons: [
+                            {
+                                id: 'listening1-1',
+                                title: '音の変化を理解する',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'listening1-2',
+                                title: '会話の聞き取り',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'listening1-3',
+                                title: '長文の聞き取り',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'english-writing',
+                title: '英作文',
+                description: '英語での表現力向上',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'writing-ch1',
+                        title: '第1章：基本的な英作文',
+                        lessons: [
+                            {
+                                id: 'writing1-1',
+                                title: '和文英訳の基本',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'writing1-2',
+                                title: '自由英作文',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'writing1-3',
+                                title: 'エッセイの書き方',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'english-vocabulary',
+                title: '語彙力強化',
+                description: '効率的な単語学習法',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'vocabulary-ch1',
+                        title: '第1章：基本語彙',
+                        lessons: [
+                            {
+                                id: 'vocabulary1-1',
+                                title: '高校基本単語',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'vocabulary1-2',
+                                title: '語根・接頭辞・接尾辞',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'vocabulary1-3',
+                                title: 'イディオム・熟語',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'english-conversation',
+                title: '英会話',
+                description: '実践的な英語コミュニケーション',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'conversation-ch1',
+                        title: '第1章：日常会話',
+                        lessons: [
+                            {
+                                id: 'conversation1-1',
+                                title: '自己紹介と挨拶',
+                                duration: '20分',
+                                completed: false
+                            },
+                            {
+                                id: 'conversation1-2',
+                                title: '趣味や興味について',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'conversation1-3',
+                                title: '意見を述べる',
+                                duration: '30分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'english-pronunciation',
+                title: '発音・音読',
+                description: '正しい英語の発音',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'pronunciation-ch1',
+                        title: '第1章：発音の基礎',
+                        lessons: [
+                            {
+                                id: 'pronunciation1-1',
+                                title: '母音の発音',
+                                duration: '25分',
+                                completed: false
+                            },
+                            {
+                                id: 'pronunciation1-2',
+                                title: '子音の発音',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'pronunciation1-3',
+                                title: 'アクセントとイントネーション',
+                                duration: '35分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'english-literature',
+                title: '英文学',
+                description: '英語圏の文学作品',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'literature-ch1',
+                        title: '第1章：英文学の基礎',
+                        lessons: [
+                            {
+                                id: 'literature1-1',
+                                title: 'シェイクスピア入門',
+                                duration: '40分',
+                                completed: false
+                            },
+                            {
+                                id: 'literature1-2',
+                                title: '19世紀英文学',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'literature1-3',
+                                title: '現代英文学',
+                                duration: '30分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'english-business',
+                title: 'ビジネス英語',
+                description: '実務で使える英語',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'business-ch1',
+                        title: '第1章：ビジネス基礎',
+                        lessons: [
+                            {
+                                id: 'business1-1',
+                                title: 'ビジネスメール',
+                                duration: '30分',
+                                completed: false
+                            },
+                            {
+                                id: 'business1-2',
+                                title: 'プレゼンテーション',
+                                duration: '35分',
+                                completed: false
+                            },
+                            {
+                                id: 'business1-3',
+                                title: '会議での英語',
+                                duration: '40分',
+                                completed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'english-exam',
+                title: '英語入試対策',
+                description: '大学入試英語の総合演習',
+                progress: 0,
+                chapters: [
+                    {
+                        id: 'english-exam-ch1',
+                        title: '第1章：入試問題演習',
+                        lessons: [
+                            {
+                                id: 'english-exam1-1',
+                                title: '共通テスト対策',
+                                duration: '60分',
+                                completed: false
+                            },
+                            {
+                                id: 'english-exam1-2',
+                                title: '私立大学対策',
+                                duration: '70分',
+                                completed: false
+                            },
+                            {
+                                id: 'english-exam1-3',
+                                title: '国立大学対策',
+                                duration: '80分',
                                 completed: false
                             }
                         ]
@@ -1448,9 +3379,15 @@ class StudyApp {
         const subjectsContainer = document.getElementById('subjects-container');
         if (!subjectsContainer) return;
         
+        // 学校に関連する科目をフィルタリング
+        let filteredSubjects = this.getFilteredSubjects();
+        
+        console.log('Total subjects:', Object.keys(subjects).length);
+        console.log('Filtered subjects:', filteredSubjects.length);
+        console.log('Current user school:', authManager?.getCurrentSchool()?.id);
+        
         // 科目が空の場合の表示
-        const subjectValues = Object.values(subjects);
-        if (subjectValues.length === 0) {
+        if (filteredSubjects.length === 0) {
             subjectsContainer.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-state-icon">📚</div>
@@ -1472,8 +3409,39 @@ class StudyApp {
             `;
 
             const subjectsGrid = document.getElementById('subjects-grid');
-            this.populateSubjectsGrid(subjectsGrid, subjectValues);
+            this.populateSubjectsGrid(subjectsGrid, filteredSubjects);
         }
+    }
+
+    // 学校に関連する科目をフィルタリング
+    getFilteredSubjects() {
+        const allSubjects = Object.values(subjects);
+        
+        // ログインしていない場合はすべて表示
+        if (!authManager || !authManager.isLoggedIn) {
+            return allSubjects;
+        }
+        
+        const currentSchool = authManager.getCurrentSchool();
+        if (!currentSchool) {
+            console.log('No current school found, showing all subjects');
+            return allSubjects;
+        }
+        
+        console.log('Filtering subjects for school:', currentSchool.id);
+        
+        // 学校IDが一致する科目をフィルタリング
+        const filtered = allSubjects.filter(subject => {
+            // デモ用：production-schoolの科目は全ての学校で利用可能にする
+            if (subject.schoolId === 'production-school') {
+                return true;
+            }
+            // 通常の学校フィルタリング
+            return subject.schoolId === currentSchool.id;
+        });
+        
+        console.log('Filtered subjects count:', filtered.length);
+        return filtered;
     }
 
     // 科目グリッドに科目を追加
@@ -2162,6 +4130,9 @@ class StudyApp {
 
     // ナビゲーション機能
     updateNavigation() {
+        // 新しいブレッドクラムナビゲーションを更新
+        this.updateBreadcrumbNav();
+        
         const homeView = document.getElementById('home-view');
         if (!homeView) return;
 
@@ -2191,6 +4162,82 @@ class StudyApp {
         if (navigationHtml) {
             homeView.insertAdjacentHTML('afterbegin', navigationHtml);
             this.bindNavigationEvents();
+        }
+    }
+
+    // 新しいブレッドクラムナビゲーションを更新
+    updateBreadcrumbNav() {
+        const breadcrumbNav = document.getElementById('breadcrumb-nav');
+        const breadcrumbPath = document.getElementById('breadcrumb-path');
+        const backBtn = document.getElementById('back-btn');
+        
+        if (!breadcrumbNav || !breadcrumbPath || !backBtn) return;
+
+        // 科目選択画面の場合はブレッドクラムを隠す
+        if (this.currentView === 'subjects') {
+            breadcrumbNav.style.display = 'none';
+            return;
+        }
+
+        // ブレッドクラムを表示
+        breadcrumbNav.style.display = 'block';
+
+        // 戻るボタンのイベントを設定
+        backBtn.onclick = () => this.handleBackNavigation();
+
+        // パスを生成
+        let pathHtml = `
+            <div class="breadcrumb-item">
+                <a href="#" onclick="app.showSubjects(); return false;">科目一覧</a>
+            </div>
+        `;
+
+        if (this.currentView === 'courses' && this.currentSubject) {
+            pathHtml += `
+                <span class="breadcrumb-separator">></span>
+                <div class="breadcrumb-item">
+                    <span class="breadcrumb-current">${this.currentSubject.name}</span>
+                </div>
+            `;
+        } else if (this.currentView === 'course' && this.currentSubject && this.currentCourse) {
+            pathHtml += `
+                <span class="breadcrumb-separator">></span>
+                <div class="breadcrumb-item">
+                    <a href="#" onclick="app.showSubject(app.currentSubject); return false;">${this.currentSubject.name}</a>
+                </div>
+                <span class="breadcrumb-separator">></span>
+                <div class="breadcrumb-item">
+                    <span class="breadcrumb-current">${this.currentCourse.title}</span>
+                </div>
+            `;
+        } else if (this.currentView === 'lesson' && this.currentSubject && this.currentCourse && this.currentLesson) {
+            pathHtml += `
+                <span class="breadcrumb-separator">></span>
+                <div class="breadcrumb-item">
+                    <a href="#" onclick="app.showSubject(app.currentSubject); return false;">${this.currentSubject.name}</a>
+                </div>
+                <span class="breadcrumb-separator">></span>
+                <div class="breadcrumb-item">
+                    <a href="#" onclick="app.showCourse(app.currentSubject, app.currentCourse); return false;">${this.currentCourse.title}</a>
+                </div>
+                <span class="breadcrumb-separator">></span>
+                <div class="breadcrumb-item">
+                    <span class="breadcrumb-current">${this.currentLesson.title}</span>
+                </div>
+            `;
+        }
+
+        breadcrumbPath.innerHTML = pathHtml;
+    }
+
+    // 戻るボタンの処理
+    handleBackNavigation() {
+        if (this.currentView === 'lesson') {
+            this.showCourse(this.currentSubject, this.currentCourse);
+        } else if (this.currentView === 'course') {
+            this.showSubject(this.currentSubject);
+        } else if (this.currentView === 'courses') {
+            this.showSubjects();
         }
     }
 

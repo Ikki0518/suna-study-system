@@ -1212,10 +1212,10 @@ class CourseCreator {
                 <span class="tree-icon">📂</span>
                 <span class="tree-name">${chapter.name}</span>
                 <span class="lesson-count">${(chapter.lessons || []).length}</span>
-            </div>
+                </div>
             <div class="tree-children" id="chapter-${chapter.id}-children">
                 ${lessonItems}
-            </div>
+                </div>
         </div>`;
     }
 
@@ -1279,7 +1279,7 @@ class CourseCreator {
             const crs=subj.courses.find(c=>c.id===courseId);
             if(crs){
                 subject=subj; course=crs; chapter=crs.chapters.find(ch=>ch.id===chapterId);
-                break;
+                    break;
             }
         }
         if(!subject||!course) return;
