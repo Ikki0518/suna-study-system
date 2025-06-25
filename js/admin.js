@@ -28,7 +28,7 @@ class AdminApp {
         this.bindEvents();
         this.updateAuthUI();
         this.checkUrlHash();
-        this.initSchoolSelector();
+        this.initSchoolManagement();
     }
 
     // 受講生データの読み込み
