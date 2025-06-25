@@ -1223,7 +1223,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    window.adminApp = new AdminApp();
+    adminApp = new AdminApp();
+    window.adminApp = adminApp;
 });
 
 // 互換性のため古い関数名も残す
