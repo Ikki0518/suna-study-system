@@ -3797,15 +3797,22 @@ class StudyApp {
         console.log('Current course before find:', this.currentCourse?.title);
         console.log('Current view before:', this.currentView);
         
-        const lesson = this.findLessonById(lessonId);
-        console.log('Found lesson:', lesson);
-        console.log('Current course after find:', this.currentCourse?.title);
-        console.log('Current subject after find:', this.currentSubject?.name);
+        const lessonData = this.findLessonById(lessonId);
+        console.log('Found lesson data:', lessonData);
         
-        if (!lesson) {
+        if (!lessonData) {
             console.log('❌ Lesson not found, returning to previous view');
             console.log('Previous view was:', this.currentView);
             return;
+        }
+
+        // レッスンが異なるコースから呼ばれた場合のみ、コース/科目情報を更新
+        if (lessonData._course && lessonData._subject) {
+            console.log('📌 Setting course context from lesson data');
+            this.currentCourse = lessonData._course;
+            this.currentSubject = lessonData._subject;
+            console.log('Current course after update:', this.currentCourse?.title);
+            console.log('Current subject after update:', this.currentSubject?.name);
         }
 
         console.log('✅ Setting currentView to lesson');
@@ -3829,7 +3836,7 @@ class StudyApp {
         console.log('✅ Lesson view displayed');
         
         const content = lessonContents[lessonId] || {
-            title: lesson.title,
+            title: lessonData.title,
             videoUrl: 'videos/sample.mp4',
             textContent: '<p>コンテンツを準備中です。</p>'
         };
@@ -3961,7 +3968,7 @@ class StudyApp {
         return total;
     }
 
-    // レッスンIDから講義を検索し、コース情報も設定
+    // レッスンIDから講義を検索（状態は変更しない）
     findLessonById(lessonId) {
         console.log('Searching for lesson ID:', lessonId);
         console.log('Available subjects:', Object.keys(subjects));
@@ -3975,12 +3982,12 @@ class StudyApp {
                             const lesson = chapter.lessons.find(l => l.id === lessonId);
                             if (lesson) {
                                 console.log('Found lesson:', lesson, 'in course:', course.title);
-                                // レッスンが見つかった場合、現在のコースと科目を設定
-                                this.currentCourse = course;
-                                this.currentSubject = subject;
-                                console.log('Set currentCourse to:', course.title);
-                                console.log('Set currentSubject to:', subject.name);
-                                return lesson;
+                                // レッスンオブジェクトにコース情報と科目情報を付加して返す
+                                return {
+                                    ...lesson,
+                                    _course: course,
+                                    _subject: subject
+                                };
                             }
                         }
                     }
@@ -4302,8 +4309,8 @@ class StudyApp {
                 </div>
             `;
         } else if (this.currentView === 'lesson' && this.currentSubject && this.currentCourse && this.currentLesson) {
-            const currentLessonObj = this.findLessonById(this.currentLesson);
-            const lessonTitle = currentLessonObj ? currentLessonObj.title : 'レッスン';
+            const currentLessonData = this.findLessonById(this.currentLesson);
+            const lessonTitle = currentLessonData ? currentLessonData.title : 'レッスン';
             pathHtml += `
                 <span class="breadcrumb-separator">></span>
                 <div class="breadcrumb-item">
