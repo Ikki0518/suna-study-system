@@ -54,6 +54,10 @@ class CourseCreator {
             document.getElementById('course-course').value=courseId;
             this.updateChapterSelect();
             document.getElementById('course-chapter').value=chapId;
+            // 対応する科目を検索して各セレクトに反映
+            const subjectId=this.findSubjectIdByCourse(courseId);
+            this.setFormSelections(subjectId, courseId, chapId);
+            this.updateBreadcrumbs(courseId, chapId);
         }else{
             // 編集対象がない場合はエディタを非表示のまま
             document.getElementById('lesson-editor-block').style.display='none';
@@ -1224,14 +1228,9 @@ class CourseCreator {
                 }
 
                 if (node.classList.contains('chapter-node')) {
-                    this.selectedCourseId = node.dataset.course;
-                    this.selectedChapterId = node.dataset.id;
-                    // フォーム表示など
-                    document.getElementById('lesson-editor-block').style.display = 'block';
-                    document.getElementById('course-course').value = this.selectedCourseId;
-                    this.updateChapterSelect();
-                    document.getElementById('course-chapter').value = this.selectedChapterId;
-                    this.updateCourseData();
+                    const subjId=this.findSubjectIdByCourse(this.selectedCourseId);
+                    this.setFormSelections(subjId, this.selectedCourseId, this.selectedChapterId);
+                    this.updateBreadcrumbs(this.selectedCourseId, this.selectedChapterId);
                 }
             });
         });
@@ -1255,6 +1254,72 @@ class CourseCreator {
                 this.renderFinderTree();
             };
         }
+    }
+
+    /* ================= パンくずリスト更新 ================= */
+    updateBreadcrumbs(courseId, chapterId){
+        if(!document.getElementById('breadcrumb-subject')) return;
+        let subject=null, course=null, chapter=null;
+        for(const subj of this.hierarchy.subjects){
+            const crs=subj.courses.find(c=>c.id===courseId);
+            if(crs){
+                subject=subj; course=crs; chapter=crs.chapters.find(ch=>ch.id===chapterId);
+                break;
+            }
+        }
+        if(!subject||!course) return;
+        const subjEl=document.getElementById('breadcrumb-subject');
+        subjEl.textContent=subject.name;
+        subjEl.href=`courses-admin.html?subjectId=${subject.id}`;
+
+        const courseEl=document.getElementById('breadcrumb-course');
+        if(courseEl){
+            courseEl.textContent=course.name;
+            courseEl.href=`chapters-admin.html?subjectId=${subject.id}&courseId=${course.id}`;
+        }
+
+        const chapEl=document.getElementById('breadcrumb-chapter');
+        if(chapEl && chapter){
+            chapEl.textContent=chapter.name;
+            chapEl.href=`lessons-admin.html?courseId=${course.id}&chapterId=${chapter.id}`;
+        }
+    }
+
+    /* ================= 参照ユーティリティ ================= */
+    findSubjectIdByCourse(courseId){
+        for(const subj of this.hierarchy.subjects){
+            if(subj.courses.some(c=>c.id===courseId)) return subj.id;
+        }
+        return '';
+    }
+
+    /* ================= フォーム初期選択を反映 ================= */
+    setFormSelections(subjectId, courseId, chapterId){
+        const subjectSel=document.getElementById('course-subject');
+        const courseSel=document.getElementById('course-course');
+        const chapSel=document.getElementById('course-chapter');
+        if(subjectSel){
+            if(subjectId){ subjectSel.value=subjectId; }
+            subjectSel.disabled=true;
+        }
+        if(courseSel){
+            // course select might be repopulated later; ensure options exist
+            this.updateCourseSelect();
+            if(courseId) courseSel.value=courseId;
+            courseSel.disabled=true;
+        }
+        if(chapSel){
+            this.updateChapterSelect();
+            if(chapterId) chapSel.value=chapterId;
+            chapSel.disabled=true;
+        }
+        // 章・コース追加ボタンも無効化しておく
+        const addCourseBtn=document.getElementById('add-course-btn');
+        const addChapterBtn=document.getElementById('add-chapter-btn');
+        if(addCourseBtn) addCourseBtn.disabled=true;
+        if(addChapterBtn) addChapterBtn.disabled=true;
+        // 必須の courseData も同期
+        this.updateCourseData();
     }
 }
 
