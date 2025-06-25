@@ -3792,29 +3792,41 @@ class StudyApp {
 
     // 特定の講義を表示
     showLesson(lessonId) {
+        console.log('=== showLesson START ===');
         console.log('showLesson called with:', lessonId);
-        console.log('Current course:', this.currentCourse);
+        console.log('Current course before find:', this.currentCourse?.title);
+        console.log('Current view before:', this.currentView);
         
         const lesson = this.findLessonById(lessonId);
         console.log('Found lesson:', lesson);
+        console.log('Current course after find:', this.currentCourse?.title);
+        console.log('Current subject after find:', this.currentSubject?.name);
         
         if (!lesson) {
-            console.log('Lesson not found, returning');
+            console.log('❌ Lesson not found, returning to previous view');
+            console.log('Previous view was:', this.currentView);
             return;
         }
 
+        console.log('✅ Setting currentView to lesson');
         this.currentView = 'lesson';
         this.currentLesson = lessonId;
         
+        console.log('📚 Marking lesson completed:', lessonId);
         // 講義を完了状態にマーク
         this.markLessonCompleted(lessonId);
         
+        console.log('🖥️ Hiding all views');
         this.hideAllViews();
+        console.log('📋 Updating sidebar');
         this.updateSidebar();
+        console.log('🧭 Updating navigation');
         this.updateNavigation();
 
         const lessonView = document.getElementById('lesson-view');
+        console.log('📖 Lesson view element:', lessonView);
         lessonView.style.display = 'block';
+        console.log('✅ Lesson view displayed');
         
         const content = lessonContents[lessonId] || {
             title: lesson.title,
@@ -4290,6 +4302,8 @@ class StudyApp {
                 </div>
             `;
         } else if (this.currentView === 'lesson' && this.currentSubject && this.currentCourse && this.currentLesson) {
+            const currentLessonObj = this.findLessonById(this.currentLesson);
+            const lessonTitle = currentLessonObj ? currentLessonObj.title : 'レッスン';
             pathHtml += `
                 <span class="breadcrumb-separator">></span>
                 <div class="breadcrumb-item">
@@ -4301,7 +4315,7 @@ class StudyApp {
                 </div>
                 <span class="breadcrumb-separator">></span>
                 <div class="breadcrumb-item">
-                    <span class="breadcrumb-current">${this.currentLesson.title}</span>
+                    <span class="breadcrumb-current">${lessonTitle}</span>
                 </div>
             `;
         }
