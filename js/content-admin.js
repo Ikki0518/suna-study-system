@@ -36,6 +36,83 @@
         if(error) console.error('Supabase カテゴリ追加失敗', error);
     }
 
+    async function deleteCategoryFromSupabase(name){
+        if(!window.supabaseManager) return;
+        const { error } = await window.supabaseManager.supabase
+            .from(CATEGORY_TABLE)
+            .delete()
+            .eq('name', name);
+        if(error) console.error('Supabase カテゴリ削除失敗', error);
+    }
+
+    /**
+     * カテゴリ選択モーダルを表示
+     * @param {Object} opts
+     * @param {(cat:string)=>void} opts.onSelect 選択時コールバック
+     * @param {boolean} [opts.allowNew=true] 新規カテゴリ追加ボタンを表示
+     */
+    function showCategoryModal({onSelect,allowNew=true}={}){
+        // 既に開いていればスキップ
+        if(document.querySelector('.modal-overlay')) return;
+
+        const overlay=document.createElement('div');
+        overlay.className='modal-overlay';
+
+        const content=document.createElement('div');
+        content.className='modal-content';
+
+        const header=document.createElement('div');
+        header.className='modal-header';
+        header.innerHTML='<h3 class="modal-title">枠（カテゴリ）を選択</h3>';
+        const closeBtn=document.createElement('button');
+        closeBtn.className='modal-close';
+        closeBtn.innerHTML='×';
+        closeBtn.onclick=()=>overlay.remove();
+        header.appendChild(closeBtn);
+
+        const body=document.createElement('div');
+        body.className='modal-body';
+
+        const list=document.createElement('div');
+        list.style.display='flex';
+        list.style.flexWrap='wrap';
+        list.style.gap='8px';
+
+        categories.forEach(cat=>{
+            const btn=document.createElement('button');
+            btn.textContent=cat;
+            btn.className='filter-btn';
+            btn.onclick=()=>{
+                onSelect && onSelect(cat);
+                overlay.remove();
+            };
+            list.appendChild(btn);
+        });
+
+        if(allowNew){
+            const newBtn=document.createElement('button');
+            newBtn.textContent='＋ 新しい枠';
+            newBtn.className='filter-btn active';
+            newBtn.onclick=async()=>{
+                const newName=prompt('新しい枠（カテゴリ）名');
+                if(!newName) return;
+                categories.push(newName);
+                saveCategoriesLocal(categories);
+                await addCategoryToSupabase(newName);
+                // 再描画
+                overlay.remove();
+                showCategoryModal({onSelect,allowNew});
+            };
+            list.appendChild(newBtn);
+        }
+
+        body.appendChild(list);
+        content.appendChild(header);
+        content.appendChild(body);
+        overlay.appendChild(content);
+        document.body.appendChild(overlay);
+    }
+
     // -------  共通 -------
     let categories = loadCategoriesLocal();
 
@@ -138,52 +215,64 @@
 
         const table=document.getElementById('subjects-table');
         let html='';
+        const actionTh='<th style="width:100px;">アクション</th>';
         categories.forEach(cat=>{
-            html+=`<tr class="category-row"><th colspan="3">${cat}</th></tr>`;
+            html+=`<tr class="category-row"><th colspan="3">${cat} <button class="tree-action-btn" data-delete-cat="${cat}" title="削除">✖</button></th></tr>`;
             const subjectsByCat=hierarchy.subjects.filter(s=> (s.category||'未分類')===cat);
             if(subjectsByCat.length){
-                html+=subjectsByCat.map(s=>`<tr data-id="${s.id}"><td>${s.name}</td><td>${s.courses.length}</td></tr>`).join('');
+                html+=subjectsByCat.map(s=>`<tr data-id="${s.id}"><td>${s.name}</td><td>${s.courses.length}</td><td><button class="tree-action-btn" data-move="${s.id}" title="枠変更">↔</button></td></tr>`).join('');
             }else{
                 html+='<tr><td colspan="3" style="color:#6b7280;">（なし）</td></tr>';
             }
         });
         table.innerHTML=html;
         table.querySelectorAll('tr[data-id]').forEach(row=>{
-            row.onclick=()=>location.href=`courses-admin.html?subjectId=${row.dataset.id}`;
+            // クリックで詳細ページ
+            row.querySelector('td').onclick=()=>location.href=`courses-admin.html?subjectId=${row.dataset.id}`;
+        });
+
+        // 枠削除
+        table.querySelectorAll('[data-delete-cat]').forEach(btn=>{
+            btn.onclick=async(e)=>{
+                e.stopPropagation();
+                const cat=btn.dataset.deleteCat;
+                if(!confirm(`${cat} を削除しますか？`)) return;
+                categories=categories.filter(c=>c!==cat);
+                saveCategoriesLocal(categories);
+                await deleteCategoryFromSupabase(cat);
+                // 対象科目を未分類へ
+                hierarchy.subjects.forEach(s=>{
+                    if((s.category||'未分類')===cat){
+                        s.category='未分類';
+                    }
+                });
+                saveHierarchy(hierarchy);
+                renderSubjectsPage();
+            };
+        });
+
+        // 枠移動
+        table.querySelectorAll('[data-move]').forEach(btn=>{
+            btn.onclick=(e)=>{
+                e.stopPropagation();
+                const subjId=btn.dataset.move;
+                const subj=hierarchy.subjects.find(s=>s.id===subjId);
+                showCategoryModal({onSelect:(cat)=>{
+                    subj.category=cat;
+                    saveHierarchy(hierarchy);
+                    renderSubjectsPage();
+                },allowNew:true});
+            };
         });
 
         document.getElementById('add-subject-btn').onclick=()=>{
-            // --- 1) カテゴリ選択 ---
-            categories = loadCategoriesLocal();
-            const catPromptLines = categories.map((c,i)=>`${i+1}: ${c}`).join('\n');
-            const catChoiceRaw = prompt(`追加する枠（カテゴリ）を選択してください:\n${catPromptLines}\n0: 新しい枠を作成`,`1`);
-            if(catChoiceRaw===null) return; // キャンセル
-            let selectedCategory = '';
-
-            const catIdx = parseInt(catChoiceRaw,10);
-            if(Number.isNaN(catIdx)) return alert('番号で入力してください');
-
-            if(catIdx === 0){
-                // 新規カテゴリ
-                const newCat = prompt('新しい枠（カテゴリ）名を入力してください');
-                if(!newCat) return;
-                categories.push(newCat);
-                saveCategoriesLocal(categories);
-                addCategoryToSupabase(newCat);
-                selectedCategory = newCat;
-            }else if(catIdx > 0 && catIdx <= categories.length){
-                selectedCategory = categories[catIdx-1];
-            }else{
-                return alert('無効な番号です');
-            }
-
-            // --- 2) 科目名入力 ---
-            const name = prompt('追加する科目名を入力してください');
-            if(!name) return;
-
-            hierarchy.subjects.push({id:generateId('subj'),name,category:selectedCategory,courses:[]});
-            saveHierarchy(hierarchy);
-            renderSubjectsPage();
+            showCategoryModal({onSelect:(cat)=>{
+                const name=prompt('科目名を入力してください');
+                if(!name) return;
+                hierarchy.subjects.push({id:generateId('subj'),name,category:cat,courses:[]});
+                saveHierarchy(hierarchy);
+                renderSubjectsPage();
+            }});
         };
     }
 

@@ -3513,17 +3513,15 @@ class StudyApp {
         
         homeView.innerHTML = `
             <div class="courses-header">
-                <div class="courses-header-content">
-                    <div class="courses-header-main">
-                        <h2>${subject.icon} ${subject.name}のコース一覧</h2>
-                        <p>${subject.description}</p>
-                    </div>
-                    <button class="back-to-subjects-btn" onclick="app.showSubjects()">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
-                        </svg>
-                        科目一覧に戻る
-                    </button>
+                <button class="back-to-subjects-btn" onclick="app.showSubjects(); return false;">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                    </svg>
+                    科目一覧に戻る
+                </button>
+                <div class="courses-header-main">
+                    <h2>${subject.icon} ${subject.name}のコース一覧</h2>
+                    <p>${subject.description}</p>
                 </div>
             </div>
             <div class="course-list" id="course-list">

@@ -3204,15 +3204,14 @@ body:has([id="subject-icon"]) .lesson-count {
 /* ========================================
    Course Header Back Button
 ======================================== */
-.courses-header-content {
+.courses-header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 20px;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .courses-header-main {
-    flex: 1;
+    margin-left: 0;
 }
 
 .back-to-subjects-btn {
