@@ -3375,7 +3375,10 @@ class StudyApp {
         
         // 科目コンテナを取得
         const subjectsContainer = document.getElementById('subjects-container');
-        if (!subjectsContainer) return;
+        if (!subjectsContainer) {
+            console.warn('[DEBUG] subjectsContainer not found in renderSubjects!');
+            return;
+        }
         
         // 学校に関連する科目をフィルタリング
         let filteredSubjects = this.getFilteredSubjects();
@@ -4739,6 +4742,10 @@ class StudyApp {
 
     // 既存メソッドでナビゲーション更新を呼び出す
     showSubject(subject) {
+        if (!subject) {
+            console.warn('[DEBUG] showSubject called with null subject, skipping.');
+            return;
+        }
         this.currentView = 'courses';
         this.currentSubject = subject;
         this.renderCourses(subject);
