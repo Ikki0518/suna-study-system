@@ -3528,16 +3528,35 @@ class StudyApp {
             </div>
         `;
 
-        // 戻るボタンのイベントリスナーを設定
-        const backBtn = document.getElementById('back-to-subjects-btn');
-        if (backBtn) {
-            backBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Back to subjects button clicked');
-                this.showSubjects();
-            });
-        }
+        // 戻るボタンのイベントリスナーを設定（複数の方法で確実に）
+        setTimeout(() => {
+            const backBtn = document.getElementById('back-to-subjects-btn');
+            console.log('Looking for back button:', backBtn);
+            if (backBtn) {
+                // 既存のイベントリスナーをクリア
+                backBtn.replaceWith(backBtn.cloneNode(true));
+                const newBackBtn = document.getElementById('back-to-subjects-btn');
+                
+                newBackBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Back to subjects button clicked via addEventListener');
+                    this.showSubjects();
+                });
+                
+                // onclick属性でも設定（フォールバック）
+                newBackBtn.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Back to subjects button clicked via onclick');
+                    this.showSubjects();
+                };
+                
+                console.log('Back button event listeners set');
+            } else {
+                console.log('Back button not found');
+            }
+        }, 100);
 
         const courseList = document.getElementById('course-list');
 

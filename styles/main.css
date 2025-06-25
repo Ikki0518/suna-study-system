@@ -3205,60 +3205,64 @@ body:has([id="subject-icon"]) .lesson-count {
    Course Header Back Button
 ======================================== */
 .courses-header {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.courses-header-main {
-    margin-left: 0;
+    display: block;
+    margin-bottom: 24px;
 }
 
 .back-to-subjects-btn {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    color: #475569;
-    padding: 10px 16px;
+    background: #3b82f6;
+    border: none;
+    color: white;
+    padding: 12px 20px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     transition: all 0.2s ease;
     text-decoration: none;
     white-space: nowrap;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
 }
 
 .back-to-subjects-btn:hover {
-    background: #f1f5f9;
-    border-color: #cbd5e1;
-    color: #334155;
+    background: #2563eb;
     transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
 }
 
 .back-to-subjects-btn:active {
     transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
 }
 
 .back-to-subjects-btn svg {
     transition: transform 0.2s ease;
+    fill: currentColor;
 }
 
 .back-to-subjects-btn:hover svg {
     transform: translateX(-2px);
 }
 
-@media (max-width: 768px) {
-    .courses-header-content {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .back-to-subjects-btn {
-        align-self: flex-start;
-    }
+.courses-header-main {
+    margin-top: 8px;
+}
+
+.courses-header-main h2 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.courses-header-main p {
+    margin: 0;
+    color: #64748b;
+    font-size: 16px;
 }
 
 .nav-actions {
