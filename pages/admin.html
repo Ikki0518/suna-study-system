@@ -99,6 +99,69 @@
                         <!-- 統計カードはJavaScriptで生成 -->
                     </div>
 
+                    <!-- クイック管理セクション -->
+                    <div class="utage-section">
+                        <div class="utage-section-header">
+                            <h2 class="utage-section-title">クイック管理</h2>
+                        </div>
+                        <div class="quick-actions-grid">
+                            <div class="quick-action-card" onclick="adminApp.switchTab('students')">
+                                <div class="quick-action-icon">👥</div>
+                                <div class="quick-action-content">
+                                    <h3>受講生管理</h3>
+                                    <p>受講生の追加・編集・削除</p>
+                                </div>
+                            </div>
+                            <div class="quick-action-card" onclick="adminApp.switchTab('lessons')">
+                                <div class="quick-action-icon">📚</div>
+                                <div class="quick-action-content">
+                                    <h3>レッスン管理</h3>
+                                    <p>レッスンの管理・編集</p>
+                                </div>
+                            </div>
+                            <div class="quick-action-card" onclick="adminApp.showRegistrationModal()">
+                                <div class="quick-action-icon">➕</div>
+                                <div class="quick-action-content">
+                                    <h3>新規登録</h3>
+                                    <p>新しい受講生を追加</p>
+                                </div>
+                            </div>
+                            <div class="quick-action-card" onclick="window.location.href='subjects-admin.html'">
+                                <div class="quick-action-icon">📁</div>
+                                <div class="quick-action-content">
+                                    <h3>コンテンツ管理</h3>
+                                    <p>科目・コース管理</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 要注意受講生 -->
+                    <div class="utage-section">
+                        <div class="utage-section-header">
+                            <h2 class="utage-section-title">要注意受講生</h2>
+                            <button class="utage-btn utage-btn-secondary" onclick="adminApp.switchTab('students')">
+                                すべて表示
+                            </button>
+                        </div>
+                        <div class="attention-students-list" id="attention-students-list">
+                            <!-- データはJavaScriptで生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 進捗トップ受講生 -->
+                    <div class="utage-section">
+                        <div class="utage-section-header">
+                            <h2 class="utage-section-title">進捗優秀者</h2>
+                            <button class="utage-btn utage-btn-secondary" onclick="adminApp.switchTab('students')">
+                                すべて表示
+                            </button>
+                        </div>
+                        <div class="top-students-list" id="top-students-list">
+                            <!-- データはJavaScriptで生成 -->
+                        </div>
+                    </div>
+
                     <!-- 最近の活動 -->
                     <div class="utage-section">
                         <div class="utage-section-header">

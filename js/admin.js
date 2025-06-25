@@ -93,6 +93,25 @@ class AdminApp {
             return sum + (subject.courses ? Object.keys(subject.courses).length : 0);
         }, 0);
 
+        // 追加の統計計算
+        const recentlyActive = this.students.filter(s => {
+            if (!s.lastAccess) return false;
+            const lastAccess = new Date(s.lastAccess);
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            return lastAccess > weekAgo;
+        }).length;
+
+        const needsAttention = this.students.filter(s => {
+            // 進捗が30%未満または2週間以上未ログイン
+            if (s.totalProgress < 30) return true;
+            if (!s.lastAccess) return true;
+            const lastAccess = new Date(s.lastAccess);
+            const twoWeeksAgo = new Date();
+            twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+            return lastAccess < twoWeeksAgo;
+        }).length;
+
         const stats = [
             {
                 title: '総受講生数',
@@ -102,25 +121,25 @@ class AdminApp {
                 changeType: 'positive'
             },
             {
-                title: '科目数',
-                value: totalSubjects,
-                icon: '📚',
-                change: `${totalCourses}コース`,
-                changeType: 'neutral'
+                title: '週間アクティブ',
+                value: recentlyActive,
+                icon: '🔥',
+                change: totalStudents > 0 ? `${Math.round((recentlyActive/totalStudents)*100)}%` : '0%',
+                changeType: recentlyActive > totalStudents * 0.5 ? 'positive' : 'negative'
             },
             {
                 title: '平均進捗率',
                 value: `${avgProgress}%`,
-                icon: '📊',
-                change: totalStudents > 0 ? '順調' : '未開始',
-                changeType: totalStudents > 0 ? 'positive' : 'neutral'
+                icon: '📈',
+                change: `${highPerformers}名が70%以上`,
+                changeType: avgProgress >= 60 ? 'positive' : 'negative'
             },
             {
-                title: '優秀者数',
-                value: `${highPerformers}名`,
-                icon: '🏆',
-                change: totalStudents > 0 ? `${Math.round((highPerformers/totalStudents)*100)}%` : '0%',
-                changeType: 'positive'
+                title: '要注意受講生',
+                value: needsAttention,
+                icon: '⚠️',
+                change: totalStudents > 0 ? `${Math.round((needsAttention/totalStudents)*100)}%` : '0%',
+                changeType: needsAttention === 0 ? 'positive' : 'negative'
             }
         ];
 
@@ -390,6 +409,8 @@ class AdminApp {
         if (tabName === 'dashboard') {
             this.renderStatsCards();
             this.renderRecentActivity();
+            this.renderAttentionStudents();
+            this.renderTopStudents();
         } else if (tabName === 'students') {
             this.loadStudentData();
             this.renderStudentTable();
@@ -936,6 +957,85 @@ class AdminApp {
         this.sortAsc = !this.sortAsc;
         console.log('toggleStudentSort: sortAsc =', this.sortAsc);
         this.students.sort((a, b) => {
+// 要注意受講生のレンダリング
+    renderAttentionStudents() {
+        const container = document.getElementById('attention-students-list');
+        if (!container) return;
+
+        const attentionStudents = this.students.filter(s => {
+            // 進捗が30%未満または2週間以上未ログイン
+            if (s.totalProgress < 30) return true;
+            if (!s.lastAccess) return true;
+            const lastAccess = new Date(s.lastAccess);
+            const twoWeeksAgo = new Date();
+            twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+            return lastAccess < twoWeeksAgo;
+        }).slice(0, 5); // 最大5名表示
+
+        if (attentionStudents.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20px;">すべての受講生が順調に進行中です 🎉</p>';
+            return;
+        }
+
+        container.innerHTML = attentionStudents.map(student => {
+            const initial = student.name.charAt(0);
+            const reason = student.totalProgress < 30 ? '進捗不足' : '長期未ログイン';
+            const progressClass = student.totalProgress < 15 ? 'attention' : 'low';
+            
+            return `
+                <div class="student-item">
+                    <div class="student-info">
+                        <div class="student-avatar">${initial}</div>
+                        <div class="student-details">
+                            <h4>${student.name}</h4>
+                            <p>${student.grade} • ${reason}</p>
+                        </div>
+                    </div>
+                    <div class="student-progress">
+                        <div class="progress-circle ${progressClass}">${student.totalProgress}%</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // 優秀受講生のレンダリング
+    renderTopStudents() {
+        const container = document.getElementById('top-students-list');
+        if (!container) return;
+
+        const topStudents = this.students
+            .filter(s => s.totalProgress >= 70)
+            .sort((a, b) => b.totalProgress - a.totalProgress)
+            .slice(0, 5); // 最大5名表示
+
+        if (topStudents.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20px;">まだ優秀者はいません。頑張りましょう！ 💪</p>';
+            return;
+        }
+
+        container.innerHTML = topStudents.map((student, index) => {
+            const initial = student.name.charAt(0);
+            const rank = index + 1;
+            const progressClass = student.totalProgress >= 90 ? 'high' : 'medium';
+            const medalIcon = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '🏆';
+            
+            return `
+                <div class="student-item">
+                    <div class="student-info">
+                        <div class="student-avatar">${initial}</div>
+                        <div class="student-details">
+                            <h4>${medalIcon} ${student.name}</h4>
+                            <p>${student.grade} • 第${rank}位</p>
+                        </div>
+                    </div>
+                    <div class="student-progress">
+                        <div class="progress-circle ${progressClass}">${student.totalProgress}%</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
             const res = a.name.localeCompare(b.name, 'ja');
             return this.sortAsc ? res : -res;
         });
