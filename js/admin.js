@@ -1147,21 +1147,11 @@ class AdminApp {
         this.showMessage(`${schoolName}に切り替えました`, 'success');
     }
     
-    // スクールセレクターの表示を更新
+    // スクールセレクターの表示を更新（現在はselectタグを使用しているため無効化）
     updateSchoolSelectorDisplay() {
-        const icon = document.getElementById('selected-school-icon');
-        const text = document.getElementById('selected-school-text');
-        
-        if (!icon || !text) return;
-        
-        const school = this.schools[this.currentSchool];
-        if (school) {
-            icon.textContent = school.icon;
-            text.textContent = school.name;
-        } else {
-            icon.textContent = '🏫';
-            text.textContent = 'スクール選択';
-        }
+        // select要素は直接HTMLで表示されているため、追加の表示更新は不要
+        console.log('School selector display updated for:', this.currentSchool);
+        return;
     }
     
     
