@@ -988,9 +988,11 @@
 /* ヘッダーのスクールセレクター */
 .school-selector {
     margin-right: 16px;
-    display: block;
+    display: flex;
+    align-items: center;
     position: relative;
     min-width: 140px;
+    flex-shrink: 0;
 }
 
 .school-selector select {
