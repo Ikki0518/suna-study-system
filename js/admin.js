@@ -955,10 +955,7 @@ class AdminApp {
     // スクール管理の初期化
     initSchoolManagement() {
         this.updateSelectedSchoolDisplay();
-        this.updateSchoolNavigation();
-        
-        // 初期状態では小学部を選択
-        this.selectSchool(this.currentSchool, this.schools[this.currentSchool].name);
+        this.updateActiveSchoolItem(this.currentSchool);
     }
     
     // スクールメニューの開閉切り替え
@@ -984,9 +981,6 @@ class AdminApp {
     
     // スクール選択
     selectSchool(schoolId, schoolName) {
-        // 既に選択されている場合は何もしない
-        if (this.currentSchool === schoolId) return;
-        
         this.currentSchool = schoolId;
         
         // ローカルストレージに保存
@@ -994,9 +988,6 @@ class AdminApp {
         
         // 選択されたスクールの表示を更新
         this.updateSelectedSchoolDisplay();
-        
-        // ナビゲーションの状態を更新
-        this.updateSchoolNavigation();
         
         // アクティブなスクールアイテムを更新
         this.updateActiveSchoolItem(schoolId);
@@ -1018,27 +1009,18 @@ class AdminApp {
     
     // 選択されたスクールの表示を更新
     updateSelectedSchoolDisplay() {
-        const selectedSection = document.getElementById('selected-school-section');
-        const selectedIcon = document.getElementById('selected-school-icon');
-        const selectedName = document.getElementById('selected-school-name');
+        const mainIcon = document.getElementById('main-school-icon');
+        const mainTitle = document.getElementById('main-school-title');
         
-        if (!selectedSection || !selectedIcon || !selectedName) return;
+        if (!mainIcon || !mainTitle) return;
         
         const school = this.schools[this.currentSchool];
         if (!school) return;
         
-        selectedIcon.textContent = school.icon;
-        selectedName.textContent = school.name;
-        selectedSection.classList.add('active');
+        mainIcon.textContent = school.icon;
+        mainTitle.textContent = school.name;
     }
     
-    // スクール別ナビゲーションの状態を更新
-    updateSchoolNavigation() {
-        const schoolNav = document.getElementById('school-nav');
-        if (!schoolNav) return;
-        
-        schoolNav.classList.add('active');
-    }
     
     // アクティブなスクールアイテムを更新
     updateActiveSchoolItem(schoolId) {
@@ -1091,7 +1073,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    adminApp = new AdminApp();
+    window.adminApp = new AdminApp();
 });
 
 // 互換性のため古い関数名も残す
@@ -1105,4 +1087,16 @@ function closeRegistrationModal() {
 
 function registerStudent(event) {
     if (adminApp) adminApp.registerStudent(event);
+}
+// グローバル関数（HTMLのonclickから呼び出し可能）
+function toggleSchoolMenu() {
+    if (window.adminApp) window.adminApp.toggleSchoolMenu();
+}
+
+function selectSchool(schoolId, schoolName) {
+    if (window.adminApp) window.adminApp.selectSchool(schoolId, schoolName);
+}
+
+function switchTab(tabName) {
+    if (window.adminApp) window.adminApp.switchTab(tabName);
 }
