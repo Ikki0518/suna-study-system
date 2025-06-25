@@ -233,6 +233,36 @@ class StudentApp extends StudyApp {
             }
         }
     }
+
+    // 学年→タグ
+    getGradeCategory(gradeStr = '') {
+        if (gradeStr.startsWith('小学')) return '小学';
+        if (gradeStr.startsWith('中学')) return '中学';
+        if (gradeStr.startsWith('高校')) return '高校';
+        return 'その他';
+    }
+
+    // StudyApp のコース描画をオーバーライドし、学年タグでフィルタ
+    renderCourses(subject) {
+        const student = window.authManager?.currentUser || {};
+        const gradeTag = this.getGradeCategory(student.grade);
+
+        const allCourses = Array.isArray(subject.courses) ? subject.courses : Object.values(subject.courses || {});
+
+        // コースの targetGrades (例: ["小学", "冬季講習"]) があり、かつ学年タグが含まれていない場合は除外
+        const filteredCourses = allCourses.filter(c => {
+            if (c.targetGrades && Array.isArray(c.targetGrades) && c.targetGrades.length > 0) {
+                return c.targetGrades.includes(gradeTag);
+            }
+            return true; // タグ未設定なら全員閲覧可
+        });
+
+        // フィルタ後の subject コピーを作成
+        const subjectCopy = { ...subject, courses: filteredCourses };
+
+        // 基底クラスのメソッドを呼び出し
+        super.renderCourses(subjectCopy);
+    }
 }
 
 // 受講生アプリケーションの初期化

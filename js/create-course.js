@@ -13,7 +13,8 @@ class CourseCreator {
             videoType: 'file', // 'file' or 'url' or 'embed'
             videoUrl: '',
             pdf: null,
-            embedCode: ''
+            embedCode: '',
+            targetGrades: [] // 追加: 対象学年タグ
         };
 
         // ===== 階層データを保持 =====
@@ -140,6 +141,10 @@ class CourseCreator {
                 element.addEventListener('input', () => this.updateCourseData());
             }
         });
+
+        // 対象学年チェックボックス
+        const gradeCheckboxes = document.querySelectorAll('#grade-tags input[type="checkbox"]');
+        gradeCheckboxes.forEach(cb => cb.addEventListener('change', ()=> this.updateCourseData()));
     }
 
     // 講座データ更新
@@ -165,6 +170,10 @@ class CourseCreator {
         } else if (this.courseData.videoType === 'embed') {
             this.courseData.embedCode = document.getElementById('embed-code').value;
         }
+
+        // タグ取得
+        const selectedTags = Array.from(document.querySelectorAll('#grade-tags input:checked')).map(cb=>cb.value);
+        this.courseData.targetGrades = selectedTags;
     }
 
     // 動画セクション切り替え
@@ -531,6 +540,7 @@ class CourseCreator {
             title: courseData.title,
             description: courseData.description,
             color: subjects[subjectKey].color,
+            targetGrades: courseData.targetGrades || [],
             chapters: {
                 "chapter1": {
                     title: "第1章",
@@ -906,6 +916,12 @@ class CourseCreator {
             this.toggleVideoSection('file');
             // ファイルは再設定できないので無視
         }
+
+        // 学年タグ
+        const gradeCheckboxes = document.querySelectorAll('#grade-tags input[type="checkbox"]');
+        gradeCheckboxes.forEach(cb=>{
+            cb.checked = (course.targetGrades || []).includes(cb.value);
+        });
 
         this.editingIndex = index;
         document.querySelector('#course-form .btn-primary').textContent = '✅ 講座を更新';

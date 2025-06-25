@@ -126,6 +126,17 @@
                                         <textarea id="course-description" class="form-textarea" rows="4" placeholder="講座の概要や学習目標を記入してください..." required></textarea>
                                     </div>
 
+                                    <!-- 対象学年タグ -->
+                                    <div class="form-group">
+                                        <label class="form-label">対象学年タグ</label>
+                                        <div id="grade-tags" class="checkbox-group" style="display:flex; gap:12px; flex-wrap:wrap;">
+                                            <label><input type="checkbox" value="小学"> 小学生向け</label>
+                                            <label><input type="checkbox" value="中学"> 中学生向け</label>
+                                            <label><input type="checkbox" value="高校"> 高校生向け</label>
+                                        </div>
+                                        <div class="form-help">チェックした学年のみ閲覧可能になります（未選択の場合は全学年閲覧可）</div>
+                                    </div>
+
                                     <div class="form-group">
                                         <label for="course-subject" class="form-label">科目 <span class="required">*</span></label>
                                         <div style="display:flex; gap:8px; align-items:center;">
