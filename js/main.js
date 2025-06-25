@@ -3513,7 +3513,7 @@ class StudyApp {
         
         homeView.innerHTML = `
             <div class="courses-header">
-                <button class="back-to-subjects-btn" onclick="app.showSubjects(); return false;">
+                <button class="back-to-subjects-btn" id="back-to-subjects-btn">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                         <path d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
                     </svg>
@@ -3527,6 +3527,17 @@ class StudyApp {
             <div class="course-list" id="course-list">
             </div>
         `;
+
+        // 戻るボタンのイベントリスナーを設定
+        const backBtn = document.getElementById('back-to-subjects-btn');
+        if (backBtn) {
+            backBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Back to subjects button clicked');
+                this.showSubjects();
+            });
+        }
 
         const courseList = document.getElementById('course-list');
 
@@ -3843,6 +3854,7 @@ class StudyApp {
 
     // 科目選択画面を表示
     showSubjects() {
+        console.log('showSubjects called');
         this.currentView = 'subjects';
         this.currentSubject = null;
         this.currentCourse = null;
@@ -3852,8 +3864,15 @@ class StudyApp {
         this.updateSidebar();
         this.updateNavigation();
         
-        document.getElementById('home-view').style.display = 'block';
+        const homeView = document.getElementById('home-view');
+        if (homeView) {
+            homeView.style.display = 'block';
+            console.log('Home view displayed');
+        } else {
+            console.log('Home view element not found');
+        }
         this.renderSubjects();
+        console.log('showSubjects completed');
     }
 
     // 特定の科目のコース一覧を表示
