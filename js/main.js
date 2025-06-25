@@ -3751,8 +3751,16 @@ class StudyApp {
 
     // 特定の講義を表示
     showLesson(lessonId) {
+        console.log('showLesson called with:', lessonId);
+        console.log('Current course:', this.currentCourse);
+        
         const lesson = this.findLessonById(lessonId);
-        if (!lesson) return;
+        console.log('Found lesson:', lesson);
+        
+        if (!lesson) {
+            console.log('Lesson not found, returning');
+            return;
+        }
 
         this.currentView = 'lesson';
         this.currentLesson = lessonId;
@@ -3894,15 +3902,26 @@ class StudyApp {
 
     // レッスンIDから講義を検索
     findLessonById(lessonId) {
+        console.log('Searching for lesson ID:', lessonId);
+        console.log('Available subjects:', Object.keys(subjects));
+        
         for (const subject of Object.values(subjects)) {
             const courses = Array.isArray(subject.courses) ? subject.courses : Object.values(subject.courses || {});
             for (const course of courses) {
-                for (const chapter of course.chapters) {
-                    const lesson = chapter.lessons.find(l => l.id === lessonId);
-                    if (lesson) return lesson;
+                if (course.chapters) {
+                    for (const chapter of course.chapters) {
+                        if (chapter.lessons) {
+                            const lesson = chapter.lessons.find(l => l.id === lessonId);
+                            if (lesson) {
+                                console.log('Found lesson:', lesson, 'in course:', course.title);
+                                return lesson;
+                            }
+                        }
+                    }
                 }
             }
         }
+        console.log('Lesson not found:', lessonId);
         return null;
     }
 
@@ -4218,7 +4237,7 @@ class StudyApp {
                 </div>
                 <span class="breadcrumb-separator">></span>
                 <div class="breadcrumb-item">
-                    <a href="#" onclick="app.showCourse(app.currentSubject, app.currentCourse); return false;">${this.currentCourse.title}</a>
+                    <a href="#" onclick="app.showCourse(app.currentCourse); return false;">${this.currentCourse.title}</a>
                 </div>
                 <span class="breadcrumb-separator">></span>
                 <div class="breadcrumb-item">
@@ -4233,7 +4252,7 @@ class StudyApp {
     // 戻るボタンの処理
     handleBackNavigation() {
         if (this.currentView === 'lesson') {
-            this.showCourse(this.currentSubject, this.currentCourse);
+            this.showCourse(this.currentCourse);
         } else if (this.currentView === 'course') {
             this.showSubject(this.currentSubject);
         } else if (this.currentView === 'courses') {
