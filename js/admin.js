@@ -1075,6 +1075,12 @@ class AdminApp {
         this.currentSchool = schoolId;
         localStorage.setItem('selectedSchool', schoolId);
         
+        // select要素の値も更新
+        const schoolSelect = document.getElementById('admin-school-select');
+        if (schoolSelect) {
+            schoolSelect.value = schoolId;
+        }
+        
         // データを再読み込み（選択されたスクールに基づいて）
         this.loadStudentData();
         this.renderStatsCards();
