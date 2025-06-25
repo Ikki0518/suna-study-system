@@ -32,6 +32,13 @@
                 </svg>
             </div>
             <div class="utage-header-right">
+                <div class="school-selector">
+                    <select id="admin-school-select">
+                        <option value="elementary">🎒 小学部</option>
+                        <option value="junior">📖 中学部</option>
+                        <option value="senior">🎓 高校部</option>
+                    </select>
+                </div>
                 <span class="admin-user-info" id="admin-user-info">管理者: </span>
                 <button class="utage-logout-btn" onclick="adminApp.logout()">ログアウト</button>
             </div>
@@ -42,41 +49,12 @@
         <!-- 左サイドバーナビゲーション -->
         <aside class="utage-sidebar">
             <div class="utage-sidebar-content">
-                <h2 class="utage-sidebar-title">管理システム</h2>
+                <h2 class="utage-sidebar-title">スキルアップ講座管理</h2>
                 
-                <!-- スクール選択セクション -->
-                <div class="school-selection-section">
-                    <div class="school-selector-button" onclick="toggleSchoolMenu()">
-                        <span class="school-selector-icon" id="selected-school-icon">🏫</span>
-                        <span class="school-selector-text" id="selected-school-text">スクール選択</span>
-                        <span class="dropdown-arrow" id="school-dropdown-arrow">▼</span>
-                    </div>
-                    
-                    <div class="school-dropdown" id="school-dropdown">
-                        <div class="school-option" data-school="elementary" onclick="selectSchool('elementary', '小学部', '🎒')">
-                            <span class="school-option-icon">🎒</span>
-                            <span>小学部</span>
-                        </div>
-                        <div class="school-option" data-school="junior" onclick="selectSchool('junior', '中学部', '📖')">
-                            <span class="school-option-icon">📖</span>
-                            <span>中学部</span>
-                        </div>
-                        <div class="school-option" data-school="senior" onclick="selectSchool('senior', '高校部', '🎓')">
-                            <span class="school-option-icon">🎓</span>
-                            <span>高校部</span>
-                        </div>
-                        <div class="school-option add-school" onclick="addNewSchool()">
-                            <span class="school-option-icon">➕</span>
-                            <span>スクール追加</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- スクール別ナビゲーション -->
-                <nav class="utage-nav" id="school-nav">
+                <nav class="utage-nav">
                     <ul class="utage-nav-list">
                         <li class="utage-nav-item">
-                            <button class="utage-nav-link active" data-tab="dashboard" onclick="switchTab('dashboard')">
+                            <button class="utage-nav-link active" data-tab="dashboard" onclick="adminApp.switchTab('dashboard')">
                                 <span class="utage-nav-icon">📊</span>
                                 <span>ダッシュボード</span>
                             </button>
@@ -88,13 +66,13 @@
                             </button>
                         </li>
                         <li class="utage-nav-item">
-                            <button class="utage-nav-link" data-tab="students" onclick="switchTab('students')">
+                            <button class="utage-nav-link" data-tab="students" onclick="adminApp.switchTab('students')">
                                 <span class="utage-nav-icon">👥</span>
                                 <span>受講生管理</span>
                             </button>
                         </li>
                         <li class="utage-nav-item">
-                            <button class="utage-nav-link" data-tab="lessons" onclick="switchTab('lessons')">
+                            <button class="utage-nav-link" data-tab="lessons" onclick="adminApp.switchTab('lessons')">
                                 <span class="utage-nav-icon">📚</span>
                                 <span>レッスン管理</span>
                             </button>

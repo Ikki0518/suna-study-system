@@ -985,158 +985,29 @@
         border-color: #475569;
     }
 }
-/* スクール選択セクション */
-.school-selection-section {
-    margin-bottom: 24px;
-    position: relative;
+/* ヘッダーのスクールセレクター */
+.school-selector {
+    margin-right: 16px;
 }
 
-.school-selector-button {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
+.school-selector select {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #475569;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-weight: 500;
-    color: #475569;
-    user-select: none;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.school-selector-button:hover {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+.school-selector select:hover {
+    background: rgba(255, 255, 255, 1);
     border-color: #cbd5e1;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.school-selector-button.active {
+.school-selector select:focus {
+    outline: none;
     border-color: #3b82f6;
-    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-    color: #1e40af;
-}
-
-.school-selector-icon {
-    font-size: 18px;
-    min-width: 20px;
-    text-align: center;
-}
-
-.school-selector-text {
-    flex: 1;
-    font-weight: 600;
-}
-
-.dropdown-arrow {
-    font-size: 12px;
-    transition: transform 0.3s ease;
-    color: #9ca3af;
-}
-
-.dropdown-arrow.rotated {
-    transform: rotate(180deg);
-}
-
-.school-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: #ffffff;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    margin-top: 4px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease, opacity 0.3s ease;
-    opacity: 0;
-}
-
-.school-dropdown.open {
-    max-height: 300px;
-    opacity: 1;
-}
-
-.school-option {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: 500;
-    color: #475569;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.school-option:last-child {
-    border-bottom: none;
-}
-
-.school-option:hover {
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-    color: #0891b2;
-}
-
-.school-option.add-school {
-    border-top: 2px solid #e2e8f0;
-    color: #059669;
-    font-weight: 600;
-}
-
-.school-option.add-school:hover {
-    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-    color: #047857;
-}
-
-.school-option-icon {
-    font-size: 16px;
-    min-width: 20px;
-    text-align: center;
-}
-
-.school-option.selected {
-    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-    color: #1e40af;
-    font-weight: 600;
-}
-
-/* スクール別ナビゲーション */
-#school-nav {
-    margin-top: 24px;
-}
-
-/* ダークモード対応 */
-@media (prefers-color-scheme: dark) {
-    .school-selector-button {
-        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-        border-color: #475569;
-        color: #e2e8f0;
-    }
-    
-    .school-selector-button:hover {
-        background: linear-gradient(135deg, #334155 0%, #475569 100%);
-        border-color: #64748b;
-    }
-    
-    .school-dropdown {
-        background: #1e293b;
-        border-color: #475569;
-    }
-    
-    .school-option {
-        color: #cbd5e1;
-        border-bottom-color: #334155;
-    }
-    
-    .school-option:hover {
-        background: linear-gradient(135deg, #334155 0%, #475569 100%);
-        color: #67e8f9;
-    }
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }

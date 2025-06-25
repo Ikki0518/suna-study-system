@@ -13,24 +13,13 @@ class AdminApp {
         this.sortAsc = true; // 受講生並べ替え用フラグ
         
         // スクール管理関連
-        // ローカルストレージからスクール情報を読み込み、デフォルト値をマージ
-        const defaultSchools = {
-            elementary: { name: '小学部', icon: '🎒' },
-            junior: { name: '中学部', icon: '📖' },
-            senior: { name: '高校部', icon: '🎓' }
-        };
-        const savedSchools = JSON.parse(localStorage.getItem('schools') || '{}');
-        this.schools = { ...defaultSchools, ...savedSchools };
-        
-        this.currentSchool = localStorage.getItem('selectedSchool') || 'elementary';
-        this.schoolMenuExpanded = false;
+        this.currentSchool = 'elementary';
         
         this.init();
     }
 
     init() {
         console.log('AdminApp initialized');
-        this.initSchoolManagement();
         this.loadStudentData();
         this.renderStatsCards();
         this.renderStudentTable();
@@ -39,13 +28,14 @@ class AdminApp {
         this.bindEvents();
         this.updateAuthUI();
         this.checkUrlHash();
+        this.initSchoolSelector();
     }
 
     // 受講生データの読み込み
     loadStudentData() {
         // 実際の登録済み受講生データを読み込み
         const registrations = JSON.parse(localStorage.getItem('studentRegistrations') || '[]');
-        let allStudents = registrations.map(reg => ({
+        this.students = registrations.map(reg => ({
             id: reg.id,
             name: reg.name,
             email: reg.email,
@@ -56,9 +46,6 @@ class AdminApp {
             totalProgress: this.calculateTotalProgress(reg.email),
             subjects: this.getStudentSubjects(reg.email)
         }));
-        
-        // 現在選択されているスクールに基づいてフィルタリング
-        this.students = this.filterDataBySchool(allStudents);
     }
 
     // 受講生の総合進捗を計算
@@ -1152,18 +1139,6 @@ function registerStudent(event) {
     if (adminApp) adminApp.registerStudent(event);
 }
 // グローバル関数（HTMLのonclickから呼び出し可能）
-function toggleSchoolMenu() {
-    if (window.adminApp) window.adminApp.toggleSchoolMenu();
-}
-
-function selectSchool(schoolId, schoolName, schoolIcon) {
-    if (window.adminApp) window.adminApp.selectSchool(schoolId, schoolName, schoolIcon || '🏫');
-}
-
-function addNewSchool() {
-    if (window.adminApp) window.adminApp.addNewSchool();
-}
-
 function switchTab(tabName) {
     if (window.adminApp) window.adminApp.switchTab(tabName);
 }
