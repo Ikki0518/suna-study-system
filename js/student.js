@@ -244,18 +244,28 @@ class StudentApp extends StudyApp {
 
     // StudyApp のコース描画をオーバーライドし、学年タグでフィルタ
     renderCourses(subject) {
+        console.log('🎓 [STUDENT DEBUG] renderCourses called for:', subject.name);
         const student = window.authManager?.currentUser || {};
         const gradeTag = this.getGradeCategory(student.grade);
+        console.log('🎓 [STUDENT DEBUG] Student grade:', student.grade);
+        console.log('🎓 [STUDENT DEBUG] Grade tag:', gradeTag);
 
         const allCourses = Array.isArray(subject.courses) ? subject.courses : Object.values(subject.courses || {});
+        console.log('🎓 [STUDENT DEBUG] All courses count:', allCourses.length);
 
         // コースの targetGrades (例: ["小学", "冬季講習"]) があり、かつ学年タグが含まれていない場合は除外
         const filteredCourses = allCourses.filter(c => {
+            console.log('🎓 [STUDENT DEBUG] Checking course:', c.title, 'targetGrades:', c.targetGrades);
             if (c.targetGrades && Array.isArray(c.targetGrades) && c.targetGrades.length > 0) {
-                return c.targetGrades.includes(gradeTag);
+                const isIncluded = c.targetGrades.includes(gradeTag);
+                console.log('🎓 [STUDENT DEBUG] Course', c.title, 'includes grade?', isIncluded);
+                return isIncluded;
             }
+            console.log('🎓 [STUDENT DEBUG] Course', c.title, 'has no targetGrades - including');
             return true; // タグ未設定なら全員閲覧可
         });
+
+        console.log('🎓 [STUDENT DEBUG] Filtered courses count:', filteredCourses.length);
 
         // フィルタ後の subject コピーを作成
         const subjectCopy = { ...subject, courses: filteredCourses };
@@ -267,29 +277,38 @@ class StudentApp extends StudyApp {
 
 // 受講生アプリケーションの初期化
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Student page DOM loaded');
+    console.log('🎓 [STUDENT INIT] Student page DOM loaded');
     
     // main.jsで既にStudyAppが初期化されている場合は、StudentAppに置き換える
     setTimeout(() => {
+        console.log('🎓 [STUDENT INIT] Checking for StudyApp and AuthManager...');
+        console.log('🎓 [STUDENT INIT] window.app exists?', !!window.app);
+        console.log('🎓 [STUDENT INIT] window.authManager exists?', !!window.authManager);
+        
         if (window.app && window.authManager) {
-            console.log('Replacing StudyApp with StudentApp...');
-            console.log('Current user:', window.authManager.currentUser);
-            console.log('Is logged in:', window.authManager.isLoggedIn);
+            console.log('🎓 [STUDENT INIT] Replacing StudyApp with StudentApp...');
+            console.log('🎓 [STUDENT INIT] Current user:', window.authManager.currentUser);
+            console.log('🎓 [STUDENT INIT] Is logged in:', window.authManager.isLoggedIn);
             
             // StudentAppを初期化（既存のStudyAppを置き換え）
             window.app = new StudentApp();
             window.studentApp = window.app; // グローバルアクセス用
+            console.log('🎓 [STUDENT INIT] StudentApp created and set to window.app');
         } else {
-            console.log('StudyApp or AuthManager not found, cannot initialize StudentApp');
+            console.log('🎓 [STUDENT INIT] StudyApp or AuthManager not found, cannot initialize StudentApp');
+            console.log('🎓 [STUDENT INIT] window.app:', window.app);
+            console.log('🎓 [STUDENT INIT] window.authManager:', window.authManager);
         }
     }, 200); // main.jsの初期化完了を待つ
     
     // 確実にstudentAppを設定するための追加処理
     setTimeout(() => {
+        console.log('🎓 [STUDENT INIT] Final check for StudentApp reference...');
         if (window.app && !window.studentApp) {
             window.studentApp = window.app;
-            console.log('StudentApp global reference set');
+            console.log('🎓 [STUDENT INIT] StudentApp global reference set');
         }
+        console.log('🎓 [STUDENT INIT] Final window.studentApp:', !!window.studentApp);
     }, 500);
 });
 
