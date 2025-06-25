@@ -10,6 +10,7 @@ class AdminApp {
             progress: '',
             subject: ''
         };
+        this.sortAsc = true; // 受講生並べ替え用フラグ
         this.init();
     }
 
@@ -403,6 +404,22 @@ class AdminApp {
             });
         }
 
+        // グループ管理ボタン
+        const groupBtn = document.getElementById('group-management-btn');
+        if (groupBtn) {
+            groupBtn.addEventListener('click', () => {
+                this.showGroupManagementModal();
+            });
+        }
+
+        // 並べ替えボタン
+        const sortBtn = document.getElementById('sort-students-btn');
+        if (sortBtn) {
+            sortBtn.addEventListener('click', () => {
+                this.toggleStudentSort();
+            });
+        }
+
         // 進捗フィルター
         const progressFilter = document.getElementById('progress-filter');
         if (progressFilter) {
@@ -468,16 +485,33 @@ class AdminApp {
     showRegistrationModal() {
         const modal = document.getElementById('registration-modal');
         if (modal) {
+            // 表示してフェードイン
             modal.style.display = 'flex';
+            requestAnimationFrame(() => {
+                modal.classList.add('active');
+            });
         }
     }
 
     closeRegistrationModal() {
         const modal = document.getElementById('registration-modal');
         if (modal) {
-            modal.style.display = 'none';
+            // フェードアウト
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
         }
-        
+
+        // 互換用 invite-modal も閉じる
+        const inviteModal = document.getElementById('invite-modal');
+        if (inviteModal) {
+            inviteModal.classList.remove('active');
+            setTimeout(() => {
+                inviteModal.style.display = 'none';
+            }, 300);
+        }
+
         // フォームをリセット
         const form = document.getElementById('registration-form');
         if (form) {
@@ -733,13 +767,21 @@ class AdminApp {
         `;
 
         document.body.appendChild(modal);
+        // 追加: 少し遅延して active クラスを付与しフェードインさせる
+        requestAnimationFrame(() => {
+            modal.classList.add('active');
+        });
     }
 
     // 受講生編集モーダルを閉じる
     closeEditStudentModal() {
         const modal = document.getElementById('edit-student-modal');
         if (modal) {
-            modal.remove();
+            // フェードアウト用に active クラスを外し、アニメーション後に削除
+            modal.classList.remove('active');
+            setTimeout(() => {
+                if (modal.parentNode) modal.remove();
+            }, 300); // CSS の transition と同期
         }
     }
 
@@ -861,6 +903,25 @@ class AdminApp {
             // テーブル再描画
             this.renderLessonsTable();
         }
+    }
+
+    // グループ管理（簡易）
+    showGroupManagementModal() {
+        console.log('showGroupManagementModal clicked');
+        this.showMessage('グループ管理機能は現在準備中です 🛠️', 'info');
+    }
+
+    // 並べ替えトグル
+    toggleStudentSort() {
+        // 名前で昇順 / 降順を切り替え
+        this.sortAsc = !this.sortAsc;
+        console.log('toggleStudentSort: sortAsc =', this.sortAsc);
+        this.students.sort((a, b) => {
+            const res = a.name.localeCompare(b.name, 'ja');
+            return this.sortAsc ? res : -res;
+        });
+        this.renderStudentTable();
+        this.showMessage(`受講生リストを名前${this.sortAsc ? '昇順' : '降順'}で並べ替えました`, 'success');
     }
 }
 
