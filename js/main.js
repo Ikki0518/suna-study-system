@@ -3612,19 +3612,23 @@ class StudyApp {
 
     // サイドバーの更新
     updateSidebar() {
+        console.log('🔧 updateSidebar called, current view:', this.currentView);
         const sidebar = document.getElementById('sidebar');
         const chapterList = document.getElementById('chapter-list');
         const container = document.querySelector('.main-content .container');
         
         // 要素が存在しない場合は早期リターン（コンテンツ管理画面など）
         if (!sidebar || !container) {
+            console.log('🔧 Sidebar or container not found, returning');
             return;
         }
         
         if (this.currentView === 'subjects' || this.currentView === 'courses') {
+            console.log('🔧 Hiding sidebar for subjects/courses view');
             sidebar.style.display = 'none';
             container.classList.remove('with-sidebar');
         } else {
+            console.log('🔧 Showing sidebar for current view');
             sidebar.style.display = 'block';
             container.classList.add('with-sidebar');
             
@@ -3831,8 +3835,24 @@ class StudyApp {
 
         const lessonView = document.getElementById('lesson-view');
         console.log('📖 Lesson view element:', lessonView);
+        
+        if (!lessonView) {
+            console.error('❌ Lesson view element not found!');
+            return;
+        }
+        
+        console.log('📺 Setting lesson view display to block');
         lessonView.style.display = 'block';
-        console.log('✅ Lesson view displayed');
+        console.log('📺 Lesson view display set to:', lessonView.style.display);
+        
+        // 他のビューが隠れているか確認
+        const homeView = document.getElementById('home-view');
+        const courseView = document.getElementById('course-view');
+        console.log('🏠 Home view display:', homeView?.style.display);
+        console.log('📚 Course view display:', courseView?.style.display);
+        console.log('📖 Lesson view display after set:', lessonView.style.display);
+        
+        console.log('✅ showLesson completed - current view should be lesson');
         
         const content = lessonContents[lessonId] || {
             title: lessonData.title,
