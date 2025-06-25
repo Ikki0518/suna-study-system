@@ -1046,8 +1046,50 @@ class AdminApp {
     
     // スクール管理の初期化
     initSchoolManagement() {
+        // ヘッダーのスクール選択機能を初期化
+        const schoolSelect = document.getElementById('admin-school-select');
+        if (schoolSelect) {
+            // 現在の選択状態を復元
+            const savedSchool = localStorage.getItem('selectedSchool') || 'elementary';
+            this.currentSchool = savedSchool;
+            schoolSelect.value = savedSchool;
+            
+            // イベントリスナーを追加
+            schoolSelect.addEventListener('change', (e) => {
+                const schoolId = e.target.value;
+                const schoolName = e.target.options[e.target.selectedIndex].text;
+                this.handleSchoolChange(schoolId, schoolName);
+            });
+            
+            console.log('School selector initialized with:', this.currentSchool);
+        }
+        
         this.updateSchoolSelectorDisplay();
         this.updateActiveSchoolOption(this.currentSchool);
+    }
+    
+    // スクール変更処理
+    handleSchoolChange(schoolId, schoolName) {
+        console.log('School changed to:', schoolId, schoolName);
+        
+        this.currentSchool = schoolId;
+        localStorage.setItem('selectedSchool', schoolId);
+        
+        // データを再読み込み（選択されたスクールに基づいて）
+        this.loadStudentData();
+        this.renderStatsCards();
+        this.renderStudentTable();
+        this.renderRecentActivity();
+        this.renderLessonsTable();
+        
+        // ダッシュボードの場合は特別な要素も更新
+        if (this.currentTab === 'dashboard') {
+            this.renderAttentionStudents();
+            this.renderTopStudents();
+        }
+        
+        // 成功メッセージを表示
+        this.showMessage(`${schoolName}に切り替えました`, 'success');
     }
     
     // スクールメニューの開閉切り替え
