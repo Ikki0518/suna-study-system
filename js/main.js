@@ -3315,6 +3315,9 @@ class StudyApp {
     
     // ローカルストレージの変更を監視
     setupStorageListener() {
+        // 監視一時停止用フラグ
+        this._suspendStorageListener = false;
+
         // 他のタブでローカルストレージが変更された場合の処理
         window.addEventListener('storage', (e) => {
             if (e.key === 'subjects') {
@@ -3326,6 +3329,7 @@ class StudyApp {
         
         // 同一タブ内での変更も監視（5秒間隔）
         setInterval(() => {
+            if (this._suspendStorageListener) return;
             const currentKeys = Object.keys(subjects);
             const storedSubjects = localStorage.getItem('subjects');
             if (storedSubjects) {
@@ -3877,11 +3881,14 @@ class StudyApp {
     // 科目選択画面を表示
     showSubjects() {
         console.log('showSubjects called');
+        // 監視一時停止
+        this._suspendStorageListener = true;
+
         this.currentView = 'subjects';
         this.currentSubject = null;
         this.currentCourse = null;
         this.currentLesson = null;
-
+    
         this.hideAllViews();
         this.updateSidebar();
         this.updateNavigation();
@@ -3895,6 +3902,11 @@ class StudyApp {
         }
         this.renderSubjects();
         console.log('showSubjects completed');
+
+        // 監視再開
+        setTimeout(() => {
+            this._suspendStorageListener = false;
+        }, 500);
     }
 
     // 特定の科目のコース一覧を表示
