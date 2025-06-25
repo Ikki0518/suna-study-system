@@ -10,9 +10,10 @@ class CourseCreator {
             chapterId: '',   // 章ID
             content: '',
             video: null,
-            videoType: 'file', // 'file' or 'url'
+            videoType: 'file', // 'file' or 'url' or 'embed'
             videoUrl: '',
-            pdf: null
+            pdf: null,
+            embedCode: ''
         };
 
         // ===== 階層データを保持 =====
@@ -161,6 +162,8 @@ class CourseCreator {
         
         if (this.courseData.videoType === 'url') {
             this.courseData.videoUrl = document.getElementById('video-link').value;
+        } else if (this.courseData.videoType === 'embed') {
+            this.courseData.embedCode = document.getElementById('embed-code').value;
         }
     }
 
@@ -172,9 +175,16 @@ class CourseCreator {
         if (type === 'file') {
             fileSection.style.display = 'block';
             urlSection.style.display = 'none';
+            document.getElementById('video-embed-section').style.display='none';
         } else {
             fileSection.style.display = 'none';
-            urlSection.style.display = 'block';
+            if(type==='url'){
+                urlSection.style.display='block';
+                document.getElementById('video-embed-section').style.display='none';
+            }else if(type==='embed'){
+                urlSection.style.display='none';
+                document.getElementById('video-embed-section').style.display='block';
+            }
         }
 
         this.courseData.videoType = type;
@@ -681,9 +691,7 @@ class CourseCreator {
         if (!previewContent) return;
 
         let videoHtml = '';
-        if (this.courseData.videoType === 'url' && this.courseData.videoUrl) {
-            videoHtml = this.generateVideoEmbed(this.courseData.videoUrl);
-        } else if (this.courseData.video) {
+        if (this.courseData.videoType === 'file' && this.courseData.video) {
             const videoUrl = URL.createObjectURL(this.courseData.video);
             videoHtml = `
                 <div class="video-container">
@@ -693,6 +701,10 @@ class CourseCreator {
                     </video>
                 </div>
             `;
+        } else if (this.courseData.videoType === 'url' && this.courseData.videoUrl) {
+            videoHtml = this.generateVideoEmbed(this.courseData.videoUrl);
+        } else if (this.courseData.videoType === 'embed' && this.courseData.embedCode) {
+            videoHtml = `<div class="video-container">${this.courseData.embedCode}</div>`;
         }
 
         let pdfHtml = '';
@@ -717,9 +729,12 @@ class CourseCreator {
     }
 
     // 動画埋め込みHTML生成
-    generateVideoEmbed(url) {
+    generateVideoEmbed(urlOrCode) {
+        if(urlOrCode.trim().startsWith('<')){
+            return `<div class="video-container">${urlOrCode}</div>`;
+        }
         // YouTube URL の変換
-        const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+        const youtubeMatch = urlOrCode.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
         if (youtubeMatch) {
             return `
                 <div class="video-container">
@@ -730,7 +745,7 @@ class CourseCreator {
         }
 
         // Vimeo URL の変換
-        const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+        const vimeoMatch = urlOrCode.match(/vimeo\.com\/(\d+)/);
         if (vimeoMatch) {
             return `
                 <div class="video-container">
@@ -740,7 +755,7 @@ class CourseCreator {
             `;
         }
 
-        return `<p>対応していない動画URLです: ${url}</p>`;
+        return `<p>対応していない動画URLです: ${urlOrCode}</p>`;
     }
 
     // プレビュー非表示
@@ -1301,23 +1316,31 @@ class CourseCreator {
         if(subjectSel){
             if(subjectId){ subjectSel.value=subjectId; }
             subjectSel.disabled=true;
+            const grp=subjectSel.closest('.form-group'); if(grp) grp.style.display='none';
         }
         if(courseSel){
-            // course select might be repopulated later; ensure options exist
             this.updateCourseSelect();
             if(courseId) courseSel.value=courseId;
             courseSel.disabled=true;
+            const grp=courseSel.closest('.form-group'); if(grp) grp.style.display='none';
         }
         if(chapSel){
             this.updateChapterSelect();
             if(chapterId) chapSel.value=chapterId;
             chapSel.disabled=true;
+            const grp=chapSel.closest('.form-group'); if(grp) grp.style.display='none';
         }
         // 章・コース追加ボタンも無効化しておく
+        const addSubjectBtn=document.getElementById('add-subject-btn');
         const addCourseBtn=document.getElementById('add-course-btn');
         const addChapterBtn=document.getElementById('add-chapter-btn');
-        if(addCourseBtn) addCourseBtn.disabled=true;
-        if(addChapterBtn) addChapterBtn.disabled=true;
+
+        [addSubjectBtn, addCourseBtn, addChapterBtn].forEach(btn=>{
+            if(btn){
+                btn.disabled=true;
+                btn.style.display='none'; // UI から完全に非表示
+            }
+        });
         // 必須の courseData も同期
         this.updateCourseData();
     }

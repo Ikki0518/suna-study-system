@@ -183,6 +183,10 @@
                                             <input type="radio" id="video-url" name="video-type" value="url">
                                             <label for="video-url" class="radio-label">YouTube/Vimeo URL</label>
                                         </div>
+                                        <div class="upload-option">
+                                            <input type="radio" id="video-embed" name="video-type" value="embed">
+                                            <label for="video-embed" class="radio-label">埋め込みコード</label>
+                                        </div>
                                     </div>
 
                                     <div id="video-file-section" class="video-section">
@@ -205,6 +209,14 @@
                                             <label for="video-link" class="form-label">動画URL</label>
                                             <input type="url" id="video-link" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
                                             <div class="form-help">YouTube、Vimeo の共有URLを入力してください</div>
+                                        </div>
+                                    </div>
+
+                                    <div id="video-embed-section" class="video-section" style="display:none;">
+                                        <div class="form-group">
+                                            <label for="embed-code" class="form-label">埋め込み用HTML</label>
+                                            <textarea id="embed-code" class="form-textarea" rows="4" placeholder="&lt;iframe …&gt;&lt;/iframe&gt;"></textarea>
+                                            <div class="form-help">Loom などの iframe 埋め込みコードをそのまま貼り付けてください</div>
                                         </div>
                                     </div>
                                 </div>
