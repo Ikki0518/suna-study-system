@@ -3911,7 +3911,7 @@ class StudyApp {
         return total;
     }
 
-    // レッスンIDから講義を検索
+    // レッスンIDから講義を検索し、コース情報も設定
     findLessonById(lessonId) {
         console.log('Searching for lesson ID:', lessonId);
         console.log('Available subjects:', Object.keys(subjects));
@@ -3925,6 +3925,11 @@ class StudyApp {
                             const lesson = chapter.lessons.find(l => l.id === lessonId);
                             if (lesson) {
                                 console.log('Found lesson:', lesson, 'in course:', course.title);
+                                // レッスンが見つかった場合、現在のコースと科目を設定
+                                this.currentCourse = course;
+                                this.currentSubject = subject;
+                                console.log('Set currentCourse to:', course.title);
+                                console.log('Set currentSubject to:', subject.name);
                                 return lesson;
                             }
                         }
@@ -4126,6 +4131,12 @@ class StudyApp {
         let position = 0;
         let total = 0;
         let found = false;
+        
+        // currentCourseがnullでないことを確認
+        if (!this.currentCourse || !this.currentCourse.chapters) {
+            console.log('currentCourse or chapters not available:', this.currentCourse);
+            return { position: 1, total: 1 };
+        }
         
         for (const chapter of this.currentCourse.chapters) {
             for (const lesson of chapter.lessons) {
