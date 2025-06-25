@@ -3,12 +3,13 @@ class AdminApp {
     constructor() {
         this.students = [];
         this.applications = [];
+        this.currentTab = 'dashboard'; // 'dashboard', 'students', 'lessons'
+        this.currentSubjectFilter = null; // 追加: レッスン表示用科目フィルタ
         this.currentFilter = {
             search: '',
             progress: '',
             subject: ''
         };
-        this.currentTab = 'dashboard'; // 'dashboard', 'students', 'lessons'
         this.init();
     }
 
@@ -216,6 +217,28 @@ class AdminApp {
 
     // レッスンテーブルのレンダリング
     renderLessonsTable() {
+        // タブエリア生成
+        const tabsContainer = document.querySelector('#lessons-panel .utage-tabs');
+        if (tabsContainer) {
+            // subjects list
+            const subjectsData = JSON.parse(localStorage.getItem('subjects') || '{}');
+            const allSubjectNames = Object.values(subjectsData).map(s => s.name || '無題科目');
+            // 初期選択
+            if (!this.currentSubjectFilter && allSubjectNames.length) this.currentSubjectFilter = allSubjectNames[0];
+
+            tabsContainer.innerHTML = allSubjectNames.map(n => `<button class="utage-tab-btn ${this.currentSubjectFilter===n?'active':''}" data-subject-filter="${n}">${n}</button>`).join('');
+
+            tabsContainer.querySelectorAll('[data-subject-filter]').forEach(btn => {
+                btn.onclick = () => {
+                    this.currentSubjectFilter = btn.dataset.subjectFilter;
+                    // ボタン active 切替
+                    tabsContainer.querySelectorAll('.utage-tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    this.renderLessonsTable();
+                };
+            });
+        }
+
         const table = document.getElementById('lessons-table');
         if (!table) return;
 
@@ -227,6 +250,7 @@ class AdminApp {
         const lessons = [];
 
         Object.entries(subjects).forEach(([subjectId, subject]) => {
+            if (this.currentSubjectFilter && subject.name !== this.currentSubjectFilter) return; // フィルタ適用
             if (subject.courses) {
                 Object.entries(subject.courses).forEach(([courseId, course]) => {
                     if (course.chapters) {
@@ -237,8 +261,8 @@ class AdminApp {
                                         id: lessonId,
                                         name: lesson.title || lesson.name || 'Untitled Lesson',
                                         subject: subject.name,
-                                        course: course.name,
-                                        chapter: chapter.name,
+                                        course: course.title || course.name || '無題コース',
+                                        chapter: chapter.title || chapter.name || '無題章',
                                         status: lesson.status || 'draft',
                                         createdDate: lesson.created_at || '2025/6/22',
                                         updatedDate: lesson.updated_at || '2025/6/22'
@@ -264,35 +288,36 @@ class AdminApp {
             return;
         }
 
-        tbody.innerHTML = lessons.slice(0, 10).map(lesson => `
-            <tr data-lesson-id="${lesson.id}">
-                <td><input type="checkbox" class="utage-checkbox"></td>
-                <td>
-                    <div style="font-weight: 500;">${lesson.name}</div>
-                    <div style="color: #64748b; font-size: 12px;">${lesson.subject} > ${lesson.course} > ${lesson.chapter}</div>
-                </td>
-                <td>
-                    <select class="lesson-status-select utage-select" data-lesson-id="${lesson.id}">
-                        <option value="published" ${lesson.status==='published'?'selected':''}>公開</option>
-                        <option value="draft" ${lesson.status!=='published'?'selected':''}>下書き</option>
-                    </select>
-                </td>
-                <td>${lesson.createdDate}</td>
-                <td>${lesson.updatedDate}</td>
-                <td>
-                    <div class="utage-action-buttons">
-                        <button class="utage-action-btn edit" data-edit="${lesson.id}">✏️</button>
-                        <button class="utage-action-btn delete" data-delete="${lesson.id}">🗑️</button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
+        tbody.innerHTML = lessons.map(lesson => {
+            const badgeClass = lesson.status === 'published' ? 'active' : 'pending';
+            const badgeLabel = lesson.status === 'published' ? '公開' : '下書き';
+            return `
+                <tr data-lesson-id="${lesson.id}">
+                    <td><input type="checkbox" class="utage-checkbox"></td>
+                    <td>
+                        <div style="font-weight: 500;">${lesson.name}</div>
+                        <div style="color: #64748b; font-size: 12px;">${lesson.subject} > ${lesson.course} > ${lesson.chapter}</div>
+                    </td>
+                    <td><span class="utage-status-badge ${badgeClass}" data-toggle-status="${lesson.id}">${badgeLabel}</span></td>
+                    <td>${lesson.createdDate}</td>
+                    <td>${lesson.updatedDate}</td>
+                    <td>
+                        <div class="utage-action-buttons">
+                            <button class="utage-action-btn edit" data-edit="${lesson.id}">✏️</button>
+                            <button class="utage-action-btn delete" data-delete="${lesson.id}">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
 
-        // ステータス変更イベント
-        tbody.querySelectorAll('.lesson-status-select').forEach(sel=>{
-            sel.onchange=(e)=>{
-                const id=e.target.dataset.lessonId;
-                this.updateLessonStatus(id,e.target.value);
+        // バッジクリックでトグル
+        tbody.querySelectorAll('[data-toggle-status]').forEach(badge => {
+            badge.onclick = () => {
+                const id = badge.dataset.toggleStatus;
+                const current = badge.textContent.trim() === '公開' ? 'published' : 'draft';
+                const next = current === 'published' ? 'draft' : 'published';
+                this.updateLessonStatus(id, next);
             };
         });
 
