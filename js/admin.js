@@ -13,11 +13,15 @@ class AdminApp {
         this.sortAsc = true; // 受講生並べ替え用フラグ
         
         // スクール管理関連
-        this.schools = {
+        // ローカルストレージからスクール情報を読み込み、デフォルト値をマージ
+        const defaultSchools = {
             elementary: { name: '小学部', icon: '🎒' },
             junior: { name: '中学部', icon: '📖' },
             senior: { name: '高校部', icon: '🎓' }
         };
+        const savedSchools = JSON.parse(localStorage.getItem('schools') || '{}');
+        this.schools = { ...defaultSchools, ...savedSchools };
+        
         this.currentSchool = localStorage.getItem('selectedSchool') || 'elementary';
         this.schoolMenuExpanded = false;
         
@@ -954,43 +958,49 @@ class AdminApp {
     
     // スクール管理の初期化
     initSchoolManagement() {
-        this.updateSelectedSchoolDisplay();
-        this.updateActiveSchoolItem(this.currentSchool);
+        this.updateSchoolSelectorDisplay();
+        this.updateActiveSchoolOption(this.currentSchool);
     }
     
     // スクールメニューの開閉切り替え
     toggleSchoolMenu() {
-        const schoolList = document.getElementById('school-list');
-        const toggleArrow = document.getElementById('school-toggle-arrow');
-        const schoolSection = document.querySelector('.school-management-section');
+        const dropdown = document.getElementById('school-dropdown');
+        const arrow = document.getElementById('school-dropdown-arrow');
+        const button = document.querySelector('.school-selector-button');
         
-        if (!schoolList || !toggleArrow || !schoolSection) return;
+        if (!dropdown || !arrow || !button) return;
         
         this.schoolMenuExpanded = !this.schoolMenuExpanded;
         
         if (this.schoolMenuExpanded) {
-            schoolList.classList.remove('collapsed');
-            toggleArrow.classList.add('rotated');
-            schoolSection.classList.add('expanded');
+            dropdown.classList.add('open');
+            arrow.classList.add('rotated');
+            button.classList.add('active');
         } else {
-            schoolList.classList.add('collapsed');
-            toggleArrow.classList.remove('rotated');
-            schoolSection.classList.remove('expanded');
+            dropdown.classList.remove('open');
+            arrow.classList.remove('rotated');
+            button.classList.remove('active');
         }
     }
     
     // スクール選択
-    selectSchool(schoolId, schoolName) {
+    selectSchool(schoolId, schoolName, schoolIcon) {
         this.currentSchool = schoolId;
+        
+        // スクール情報を更新（新しいスクールの場合）
+        if (!this.schools[schoolId]) {
+            this.schools[schoolId] = { name: schoolName, icon: schoolIcon };
+        }
         
         // ローカルストレージに保存
         localStorage.setItem('selectedSchool', schoolId);
+        localStorage.setItem('schools', JSON.stringify(this.schools));
         
         // 選択されたスクールの表示を更新
-        this.updateSelectedSchoolDisplay();
+        this.updateSchoolSelectorDisplay();
         
-        // アクティブなスクールアイテムを更新
-        this.updateActiveSchoolItem(schoolId);
+        // アクティブなスクールオプションを更新
+        this.updateActiveSchoolOption(schoolId);
         
         // スクールメニューを閉じる
         this.schoolMenuExpanded = true; // 現在の状態を反転させるため
@@ -1007,34 +1017,87 @@ class AdminApp {
         this.showMessage(`${schoolName}に切り替えました`, 'success');
     }
     
-    // 選択されたスクールの表示を更新
-    updateSelectedSchoolDisplay() {
-        const mainIcon = document.getElementById('main-school-icon');
-        const mainTitle = document.getElementById('main-school-title');
+    // スクールセレクターの表示を更新
+    updateSchoolSelectorDisplay() {
+        const icon = document.getElementById('selected-school-icon');
+        const text = document.getElementById('selected-school-text');
         
-        if (!mainIcon || !mainTitle) return;
+        if (!icon || !text) return;
         
         const school = this.schools[this.currentSchool];
-        if (!school) return;
-        
-        mainIcon.textContent = school.icon;
-        mainTitle.textContent = school.name;
+        if (school) {
+            icon.textContent = school.icon;
+            text.textContent = school.name;
+        } else {
+            icon.textContent = '🏫';
+            text.textContent = 'スクール選択';
+        }
     }
     
     
-    // アクティブなスクールアイテムを更新
-    updateActiveSchoolItem(schoolId) {
-        // 全てのスクールアイテムからactiveクラスを削除
-        const schoolItems = document.querySelectorAll('.school-item');
-        schoolItems.forEach(item => {
-            item.classList.remove('active');
+    // アクティブなスクールオプションを更新
+    updateActiveSchoolOption(schoolId) {
+        // 全てのスクールオプションからselectedクラスを削除
+        const schoolOptions = document.querySelectorAll('.school-option');
+        schoolOptions.forEach(option => {
+            option.classList.remove('selected');
         });
         
-        // 選択されたスクールアイテムにactiveクラスを追加
-        const selectedItem = document.querySelector(`[data-school="${schoolId}"]`);
-        if (selectedItem) {
-            selectedItem.classList.add('active');
+        // 選択されたスクールオプションにselectedクラスを追加
+        const selectedOption = document.querySelector(`[data-school="${schoolId}"]`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
         }
+    }
+    
+    // 新しいスクール追加機能
+    addNewSchool() {
+        const schoolName = prompt('新しいスクール名を入力してください:');
+        if (!schoolName || schoolName.trim() === '') return;
+        
+        const schoolIcon = prompt('スクールのアイコン（絵文字）を入力してください:', '🏫');
+        if (!schoolIcon || schoolIcon.trim() === '') return;
+        
+        // ユニークなIDを生成
+        const schoolId = 'custom_' + Date.now();
+        
+        // 新しいスクールを追加
+        this.schools[schoolId] = {
+            name: schoolName.trim(),
+            icon: schoolIcon.trim()
+        };
+        
+        // ローカルストレージに保存
+        localStorage.setItem('schools', JSON.stringify(this.schools));
+        
+        // ドロップダウンに新しいオプションを追加
+        this.addSchoolOptionToDropdown(schoolId, schoolName.trim(), schoolIcon.trim());
+        
+        // 新しいスクールを選択
+        this.selectSchool(schoolId, schoolName.trim(), schoolIcon.trim());
+        
+        this.showMessage(`新しいスクール「${schoolName.trim()}」を追加しました`, 'success');
+    }
+    
+    // ドロップダウンに新しいスクールオプションを追加
+    addSchoolOptionToDropdown(schoolId, schoolName, schoolIcon) {
+        const dropdown = document.getElementById('school-dropdown');
+        const addButton = dropdown.querySelector('.add-school');
+        
+        if (!dropdown || !addButton) return;
+        
+        const newOption = document.createElement('div');
+        newOption.className = 'school-option';
+        newOption.setAttribute('data-school', schoolId);
+        newOption.onclick = () => this.selectSchool(schoolId, schoolName, schoolIcon);
+        
+        newOption.innerHTML = `
+            <span class="school-option-icon">${schoolIcon}</span>
+            <span>${schoolName}</span>
+        `;
+        
+        // 追加ボタンの前に挿入
+        dropdown.insertBefore(newOption, addButton);
     }
     
     // 現在のスクールに基づいてデータをフィルタリング
@@ -1093,8 +1156,12 @@ function toggleSchoolMenu() {
     if (window.adminApp) window.adminApp.toggleSchoolMenu();
 }
 
-function selectSchool(schoolId, schoolName) {
-    if (window.adminApp) window.adminApp.selectSchool(schoolId, schoolName);
+function selectSchool(schoolId, schoolName, schoolIcon) {
+    if (window.adminApp) window.adminApp.selectSchool(schoolId, schoolName, schoolIcon || '🏫');
+}
+
+function addNewSchool() {
+    if (window.adminApp) window.adminApp.addNewSchool();
 }
 
 function switchTab(tabName) {
