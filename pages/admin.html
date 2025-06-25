@@ -32,9 +32,6 @@
                 </svg>
             </div>
             <div class="utage-header-right">
-                <div class="school-selector">
-                    <select id="admin-school-select"></select>
-                </div>
                 <span class="admin-user-info" id="admin-user-info">管理者: </span>
                 <button class="utage-logout-btn" onclick="adminApp.logout()">ログアウト</button>
             </div>
@@ -47,7 +44,39 @@
             <div class="utage-sidebar-content">
                 <h2 class="utage-sidebar-title">スキルアップ講座管理</h2>
                 
-                <nav class="utage-nav">
+                <!-- スクール管理セクション -->
+                <div class="school-management-section">
+                    <div class="school-management-toggle" onclick="adminApp.toggleSchoolMenu()">
+                        <span class="utage-nav-icon">🏫</span>
+                        <span>スクール管理</span>
+                        <span class="toggle-arrow" id="school-toggle-arrow">▼</span>
+                    </div>
+                    <div class="school-list" id="school-list">
+                        <div class="school-item" data-school="elementary" onclick="adminApp.selectSchool('elementary', '小学部')">
+                            <span class="school-icon">🎒</span>
+                            <span>小学部</span>
+                        </div>
+                        <div class="school-item" data-school="junior" onclick="adminApp.selectSchool('junior', '中学部')">
+                            <span class="school-icon">📖</span>
+                            <span>中学部</span>
+                        </div>
+                        <div class="school-item" data-school="senior" onclick="adminApp.selectSchool('senior', '高校部')">
+                            <span class="school-icon">🎓</span>
+                            <span>高校部</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 選択されたスクール表示 -->
+                <div class="selected-school-section" id="selected-school-section">
+                    <div class="selected-school-header">
+                        <span class="selected-school-icon" id="selected-school-icon">🎒</span>
+                        <span class="selected-school-name" id="selected-school-name">小学部</span>
+                    </div>
+                </div>
+                
+                <!-- スクール別ナビゲーション -->
+                <nav class="utage-nav" id="school-nav">
                     <ul class="utage-nav-list">
                         <li class="utage-nav-item">
                             <button class="utage-nav-link active" data-tab="dashboard" onclick="adminApp.switchTab('dashboard')">
