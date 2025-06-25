@@ -988,11 +988,14 @@
 /* ヘッダーのスクールセレクター */
 .school-selector {
     margin-right: 16px;
-    display: flex;
+    display: flex !important;
     align-items: center;
     position: relative;
     min-width: 140px;
     flex-shrink: 0;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 100;
 }
 
 .school-selector select {
