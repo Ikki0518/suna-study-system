@@ -239,9 +239,9 @@ class AdminApp {
                                         subject: subject.name,
                                         course: course.name,
                                         chapter: chapter.name,
-                                        status: 'active',
-                                        createdDate: '2025/6/22',
-                                        updatedDate: '2025/6/22'
+                                        status: lesson.status || 'draft',
+                                        createdDate: lesson.created_at || '2025/6/22',
+                                        updatedDate: lesson.updated_at || '2025/6/22'
                                     });
                                 });
                             }
@@ -265,23 +265,54 @@ class AdminApp {
         }
 
         tbody.innerHTML = lessons.slice(0, 10).map(lesson => `
-            <tr>
+            <tr data-lesson-id="${lesson.id}">
                 <td><input type="checkbox" class="utage-checkbox"></td>
                 <td>
                     <div style="font-weight: 500;">${lesson.name}</div>
                     <div style="color: #64748b; font-size: 12px;">${lesson.subject} > ${lesson.course} > ${lesson.chapter}</div>
                 </td>
-                <td><span class="utage-status-badge ${lesson.status}">公開中</span></td>
+                <td>
+                    <select class="lesson-status-select utage-select" data-lesson-id="${lesson.id}">
+                        <option value="published" ${lesson.status==='published'?'selected':''}>公開</option>
+                        <option value="draft" ${lesson.status!=='published'?'selected':''}>下書き</option>
+                    </select>
+                </td>
                 <td>${lesson.createdDate}</td>
                 <td>${lesson.updatedDate}</td>
                 <td>
                     <div class="utage-action-buttons">
-                        <button class="utage-action-btn edit">✏️</button>
-                        <button class="utage-action-btn delete">🗑️</button>
+                        <button class="utage-action-btn edit" data-edit="${lesson.id}">✏️</button>
+                        <button class="utage-action-btn delete" data-delete="${lesson.id}">🗑️</button>
                     </div>
                 </td>
             </tr>
         `).join('');
+
+        // ステータス変更イベント
+        tbody.querySelectorAll('.lesson-status-select').forEach(sel=>{
+            sel.onchange=(e)=>{
+                const id=e.target.dataset.lessonId;
+                this.updateLessonStatus(id,e.target.value);
+            };
+        });
+
+        // 削除イベント
+        tbody.querySelectorAll('[data-delete]').forEach(btn=>{
+            btn.onclick=()=>{
+                const id=btn.dataset.delete;
+                if(!confirm('このレッスンを削除しますか？')) return;
+                this.deleteLesson(id);
+            };
+        });
+
+        // 編集イベント
+        tbody.querySelectorAll('[data-edit]').forEach(btn=>{
+            btn.onclick=()=>{
+                const id=btn.dataset.edit;
+                // TODO: 編集モーダル実装または既存ページ遷移
+                location.href=`create-course.html?lessonId=${id}`;
+            };
+        });
     }
 
     // フィルタリングされた受講生を取得
@@ -759,6 +790,51 @@ class AdminApp {
         if (confirm('ログアウトしますか？')) {
             localStorage.removeItem('sunaUser');
             window.location.href = '../pages/login.html';
+        }
+    }
+
+    // レッスンステータス更新
+    updateLessonStatus(lessonId, status) {
+        // subjects localStorage を走査して更新
+        const subjectsData = JSON.parse(localStorage.getItem('subjects') || '{}');
+        let found = false;
+        Object.values(subjectsData).forEach(sub => {
+            Object.values(sub.courses || {}).forEach(course => {
+                Object.values(course.chapters || {}).forEach(chap => {
+                    const ls = chap.lessons && chap.lessons[lessonId];
+                    if (ls) {
+                        ls.status = status;
+                        ls.updated_at = new Date().toISOString().split('T')[0];
+                        found = true;
+                    }
+                });
+            });
+        });
+        if (found) {
+            localStorage.setItem('subjects', JSON.stringify(subjectsData));
+            // テーブルの表示も更新
+            this.renderLessonsTable();
+        }
+    }
+
+    // レッスン削除
+    deleteLesson(lessonId) {
+        const subjectsData = JSON.parse(localStorage.getItem('subjects') || '{}');
+        let removed = false;
+        Object.values(subjectsData).forEach(sub => {
+            Object.values(sub.courses || {}).forEach(course => {
+                Object.values(course.chapters || {}).forEach(chap => {
+                    if (chap.lessons && chap.lessons[lessonId]) {
+                        delete chap.lessons[lessonId];
+                        removed = true;
+                    }
+                });
+            });
+        });
+        if (removed) {
+            localStorage.setItem('subjects', JSON.stringify(subjectsData));
+            // テーブル再描画
+            this.renderLessonsTable();
         }
     }
 }
