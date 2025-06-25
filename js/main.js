@@ -3507,12 +3507,6 @@ class StudyApp {
         
         homeView.innerHTML = `
             <div class="courses-header">
-                <button class="back-to-subjects-btn" id="back-to-subjects-btn">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
-                    </svg>
-                    科目一覧に戻る
-                </button>
                 <div class="courses-header-main">
                     <h2>${subject.icon} ${subject.name}のコース一覧</h2>
                     <p>${subject.description}</p>
@@ -3522,35 +3516,7 @@ class StudyApp {
             </div>
         `;
 
-        // 戻るボタンのイベントリスナーを設定（複数の方法で確実に）
-        setTimeout(() => {
-            const backBtn = document.getElementById('back-to-subjects-btn');
-            console.log('Looking for back button:', backBtn);
-            if (backBtn) {
-                // 既存のイベントリスナーをクリア
-                backBtn.replaceWith(backBtn.cloneNode(true));
-                const newBackBtn = document.getElementById('back-to-subjects-btn');
-                
-                newBackBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Back to subjects button clicked via addEventListener');
-                    this.showSubjects();
-                });
-                
-                // onclick属性でも設定（フォールバック）
-                newBackBtn.onclick = (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Back to subjects button clicked via onclick');
-                    this.showSubjects();
-                };
-                
-                console.log('Back button event listeners set');
-            } else {
-                console.log('Back button not found');
-            }
-        }, 100);
+        // （「科目一覧に戻る」ボタン削除に伴い、イベントリスナー設定も削除）
 
         const courseList = document.getElementById('course-list');
 
@@ -4457,7 +4423,7 @@ class StudyApp {
         }
 
         return `
-            <button class="back-button" onclick="${backAction}">
+            <button class="back-button" id="back-btn" onclick="${backAction}; return false;">
                 <span class="icon">←</span>
                 ${backText}
             </button>
@@ -4483,6 +4449,15 @@ class StudyApp {
 
     bindNavigationEvents() {
         // ナビゲーションボタンの追加イベントがあればここに追加
+        const backBtn = document.getElementById('back-btn');
+        if (backBtn) {
+            backBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (window.app && typeof window.app.showSubjects === 'function') {
+                    window.app.showSubjects();
+                }
+            });
+        }
     }
 
     // 進捗ダッシュボードの初期化
