@@ -1,13 +1,57 @@
 // コース / 章 管理用共通スクリプト
 (function(){
     const hierarchyKey = 'contentHierarchy';
-    const categories=[
-        '未分類',
-        '小学生向け',
-        '中学生向け',
-        '高校生向け',
-        '冬季講習'
-    ];
+    const categoriesKey = 'contentCategories';
+    const CATEGORY_TABLE = 'study_subject_categories'; // Supabaseテーブル名
+
+    // -------  ローカルストレージ版 -------
+    function loadCategoriesLocal(){
+        try{
+            const data = JSON.parse(localStorage.getItem(categoriesKey));
+            if(Array.isArray(data) && data.length) return data;
+        }catch(e){}
+        return ['未分類','小学生向け','中学生向け','高校生向け','冬季講習'];
+    }
+
+    function saveCategoriesLocal(list){
+        localStorage.setItem(categoriesKey, JSON.stringify(list));
+    }
+
+    // -------  Supabase版 -------
+    async function fetchCategoriesFromSupabase(){
+        if(!window.supabaseManager) throw new Error('SupabaseManager not ready');
+        const { data, error } = await window.supabaseManager.supabase
+            .from(CATEGORY_TABLE)
+            .select('name, sort_order')
+            .order('sort_order', { ascending: true });
+        if(error) throw error;
+        return data.map(row=>row.name);
+    }
+
+    async function addCategoryToSupabase(name){
+        if(!window.supabaseManager) return; // オフライン時は無視
+        const { error } = await window.supabaseManager.supabase
+            .from(CATEGORY_TABLE)
+            .insert([{ name }]);
+        if(error) console.error('Supabase カテゴリ追加失敗', error);
+    }
+
+    // -------  共通 -------
+    let categories = loadCategoriesLocal();
+
+    async function refreshCategories(){
+        try{
+            const remote = await fetchCategoriesFromSupabase();
+            if(remote && remote.length){
+                categories = remote;
+                saveCategoriesLocal(categories); // ローカルにも保存しておく
+            }
+        }catch(err){
+            console.warn('Supabaseからカテゴリ取得に失敗、ローカルを使用', err.message);
+            categories = loadCategoriesLocal();
+        }
+    }
+
     function loadHierarchy(){
         try{ return JSON.parse(localStorage.getItem(hierarchyKey)||'{"subjects":[]}'); }catch(e){return {subjects:[]};}
     }
@@ -18,7 +62,10 @@
     const courseId = params.get('courseId');
 
     if(document.getElementById('subjects-table')){
-        renderSubjectsPage();
+        // Supabaseからカテゴリをロードしてから描画
+        refreshCategories().finally(()=>{
+            renderSubjectsPage();
+        });
     }else if(document.getElementById('courses-table')){
         renderCoursesPage();
     }else if(document.getElementById('lessons-table')){
@@ -86,6 +133,9 @@
 
     function renderSubjectsPage(){
         const hierarchy=loadHierarchy();
+        // 最新のカテゴリを取得（すでにrefreshCategoriesで反映済みだが念のため）
+        categories = loadCategoriesLocal();
+
         const table=document.getElementById('subjects-table');
         let html='';
         categories.forEach(cat=>{
@@ -103,12 +153,35 @@
         });
 
         document.getElementById('add-subject-btn').onclick=()=>{
-            const name=prompt('科目名を入力'); if(!name) return;
-            let catPrompt='カテゴリーを選択:\n'+categories.map((c,i)=>`${i+1}: ${c}`).join('\n');
-            let idx=parseInt(prompt(catPrompt,'1')||'1',10)-1;
-            if(idx<0||idx>=categories.length) idx=0;
-            const category=categories[idx];
-            hierarchy.subjects.push({id:generateId('subj'),name,category,courses:[]});
+            // --- 1) カテゴリ選択 ---
+            categories = loadCategoriesLocal();
+            const catPromptLines = categories.map((c,i)=>`${i+1}: ${c}`).join('\n');
+            const catChoiceRaw = prompt(`追加する枠（カテゴリ）を選択してください:\n${catPromptLines}\n0: 新しい枠を作成`,`1`);
+            if(catChoiceRaw===null) return; // キャンセル
+            let selectedCategory = '';
+
+            const catIdx = parseInt(catChoiceRaw,10);
+            if(Number.isNaN(catIdx)) return alert('番号で入力してください');
+
+            if(catIdx === 0){
+                // 新規カテゴリ
+                const newCat = prompt('新しい枠（カテゴリ）名を入力してください');
+                if(!newCat) return;
+                categories.push(newCat);
+                saveCategoriesLocal(categories);
+                addCategoryToSupabase(newCat);
+                selectedCategory = newCat;
+            }else if(catIdx > 0 && catIdx <= categories.length){
+                selectedCategory = categories[catIdx-1];
+            }else{
+                return alert('無効な番号です');
+            }
+
+            // --- 2) 科目名入力 ---
+            const name = prompt('追加する科目名を入力してください');
+            if(!name) return;
+
+            hierarchy.subjects.push({id:generateId('subj'),name,category:selectedCategory,courses:[]});
             saveHierarchy(hierarchy);
             renderSubjectsPage();
         };

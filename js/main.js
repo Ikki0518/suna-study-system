@@ -3513,8 +3513,18 @@ class StudyApp {
         
         homeView.innerHTML = `
             <div class="courses-header">
-                <h2>${subject.icon} ${subject.name}のコース一覧</h2>
-                <p>${subject.description}</p>
+                <div class="courses-header-content">
+                    <div class="courses-header-main">
+                        <h2>${subject.icon} ${subject.name}のコース一覧</h2>
+                        <p>${subject.description}</p>
+                    </div>
+                    <button class="back-to-subjects-btn" onclick="app.showSubjects()">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                        </svg>
+                        科目一覧に戻る
+                    </button>
+                </div>
             </div>
             <div class="course-list" id="course-list">
             </div>
@@ -3709,6 +3719,9 @@ class StudyApp {
 
     // 特定のコースを表示
     showCourse(course) {
+        console.log('showCourse called with:', course);
+        console.log('Setting currentCourse to:', course?.title);
+        
         this.currentView = 'course';
         this.currentCourse = course;
         this.currentLesson = null;
@@ -3732,7 +3745,7 @@ class StudyApp {
             </div>
             <div class="lesson-list">
                         ${chapter.lessons.map(lesson => `
-                            <div class="lesson-item" onclick="app.showLesson('${lesson.id}')">
+                            <div class="lesson-item" onclick="event.stopPropagation(); app.showLesson('${lesson.id}'); return false;">
                                 <div class="lesson-checkbox ${this.isLessonCompleted(lesson.id) ? 'completed' : ''}">
                                     ${this.isLessonCompleted(lesson.id) ? '✓' : ''}
                                 </div>
@@ -3740,7 +3753,7 @@ class StudyApp {
                                     <div class="lesson-title">${lesson.title}</div>
                                     <div class="lesson-subtitle">動画とテキストで学習</div>
                                 </div>
-                                <button class="lesson-button">受講する</button>
+                                <button class="lesson-button" onclick="event.stopPropagation();">受講する</button>
                         </div>
                     `).join('')}
                 </div>
