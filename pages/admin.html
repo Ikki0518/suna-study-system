@@ -66,13 +66,13 @@
                             </button>
                         </li>
                         <li class="utage-nav-item">
-                            <button class="utage-nav-link" data-tab="students" onclick="adminApp.switchTab('students')">
+                            <button class="utage-nav-link" data-tab="students" onclick="console.log('Students button clicked'); if(window.adminApp) { window.adminApp.switchTab('students'); } else if(window.switchTabGlobal) { window.switchTabGlobal('students'); } else { console.error('No switchTab function found'); }">
                                 <span class="utage-nav-icon">👥</span>
                                 <span>受講生管理</span>
                             </button>
                         </li>
                         <li class="utage-nav-item">
-                            <button class="utage-nav-link" data-tab="lessons" onclick="adminApp.switchTab('lessons')">
+                            <button class="utage-nav-link" data-tab="lessons" onclick="console.log('Lessons button clicked'); if(window.adminApp) { window.adminApp.switchTab('lessons'); } else if(window.switchTabGlobal) { window.switchTabGlobal('lessons'); } else { console.error('No switchTab function found'); }">
                                 <span class="utage-nav-icon">📚</span>
                                 <span>レッスン管理</span>
                             </button>
