@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サブスクリプション管理 - Suna Study System</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/payment.css">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>📚 Suna Study System</h1>
+                </div>
+                <nav class="nav">
+                    <a href="../pages/admin.html" class="nav-link">管理画面</a>
+                    <a href="pricing.html" class="nav-link">料金プラン</a>
+                    <button class="btn-secondary logout-required" onclick="supabaseAuth.signOut()">ログアウト</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- ページヘッダー -->
+            <div class="page-header">
+                <h2>サブスクリプション管理</h2>
+                <p>現在のプラン状況と決済情報を管理できます</p>
+            </div>
+
+            <!-- サブスクリプション状況 -->
+            <div id="subscription-status" class="subscription-status-container">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>サブスクリプション情報を読み込み中...</p>
+                </div>
+            </div>
+
+            <!-- 使用量詳細 -->
+            <div id="usage-details" class="usage-details-section" style="display: none;">
+                <h3>使用量詳細</h3>
+                <div class="usage-grid">
+                    <div class="usage-card">
+                        <div class="usage-icon">👥</div>
+                        <div class="usage-info">
+                            <h4>生徒数</h4>
+                            <div class="usage-numbers">
+                                <span id="current-students">0</span> / <span id="max-students">0</span>
+                            </div>
+                            <div class="usage-bar">
+                                <div id="students-progress" class="usage-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="usage-card">
+                        <div class="usage-icon">📚</div>
+                        <div class="usage-info">
+                            <h4>コース数</h4>
+                            <div class="usage-numbers">
+                                <span id="current-courses">0</span> / <span id="max-courses">0</span>
+                            </div>
+                            <div class="usage-bar">
+                                <div id="courses-progress" class="usage-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="usage-card">
+                        <div class="usage-icon">📊</div>
+                        <div class="usage-info">
+                            <h4>今月の活動</h4>
+                            <div class="activity-stats">
+                                <p>ログイン数: <span id="monthly-logins">-</span></p>
+                                <p>視聴時間: <span id="monthly-watch-time">-</span>h</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 決済情報 -->
+            <div id="billing-section" class="billing-section" style="display: none;">
+                <h3>決済情報</h3>
+                <div class="billing-content">
+                    <div class="payment-method-section">
+                        <h4>決済方法</h4>
+                        <div id="payment-methods" class="payment-methods-list">
+                            <!-- JavaScript で動的に生成 -->
+                        </div>
+                        <button class="btn-secondary" onclick="showAddPaymentMethodModal()">
+                            新しい決済方法を追加
+                        </button>
+                    </div>
+                    
+                    <div class="billing-address-section">
+                        <h4>請求先住所</h4>
+                        <div id="billing-address" class="billing-address-info">
+                            <!-- JavaScript で動的に生成 -->
+                        </div>
+                        <button class="btn-secondary" onclick="showEditBillingAddressModal()">
+                            請求先住所を編集
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 決済履歴 -->
+            <div class="payment-history-section">
+                <div class="section-header">
+                    <h3>決済履歴</h3>
+                    <div class="history-controls">
+                        <select id="history-filter" onchange="filterPaymentHistory()">
+                            <option value="all">すべて</option>
+                            <option value="succeeded">成功</option>
+                            <option value="failed">失敗</option>
+                            <option value="pending">処理中</option>
+                        </select>
+                        <button class="btn-secondary" onclick="exportPaymentHistory()">
+                            CSV エクスポート
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="payment-history-container" class="payment-history-container">
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>決済履歴を読み込み中...</p>
+                    </div>
+                </div>
+                
+                <div id="history-pagination" class="pagination-container" style="display: none;"></div>
+            </div>
+
+            <!-- アクションセクション -->
+            <div id="subscription-actions" class="subscription-actions-section" style="display: none;">
+                <h3>アクション</h3>
+                <div class="actions-grid">
+                    <div class="action-card">
+                        <h4>プラン変更</h4>
+                        <p>より多くの機能や容量が必要な場合は、プランをアップグレードできます。</p>
+                        <button class="btn-primary" onclick="window.location.href='pricing.html'">
+                            プランを変更
+                        </button>
+                    </div>
+                    
+                    <div class="action-card">
+                        <h4>請求書ダウンロード</h4>
+                        <p>過去の請求書をPDF形式でダウンロードできます。</p>
+                        <button class="btn-secondary" onclick="showInvoiceList()">
+                            請求書一覧
+                        </button>
+                    </div>
+                    
+                    <div class="action-card danger">
+                        <h4>サブスクリプションキャンセル</h4>
+                        <p>サービスが不要になった場合は、いつでもキャンセルできます。</p>
+                        <button class="btn-danger" onclick="showCancelDialog()">
+                            キャンセル
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- モーダル -->
+    <div id="modal-container"></div>
+
+    <!-- 通知システム -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Suna Study System. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">利用規約</a>
+                <a href="#" class="footer-link">プライバシーポリシー</a>
+                <a href="#" class="footer-link">お問い合わせ</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/payment.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        let currentFilter = 'all';
+        let paymentHistoryData = null;
+
+        // ページ初期化
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 認証チェック
+            const user = supabaseClient.auth.getUser();
+            if (!user) {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // データ読み込み
+            await loadSubscriptionData();
+            await loadPaymentHistory();
+        });
+
+        async function loadSubscriptionData() {
+            try {
+                const userProfile = await getCurrentUserProfile();
+                if (!userProfile || !userProfile.schools) {
+                    showNoSubscriptionMessage();
+                    return;
+                }
+
+                const response = await fetch(`/api/subscription-status/${userProfile.schools.id}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error);
+                }
+
+                if (!data.hasSubscription) {
+                    showNoSubscriptionMessage();
+                    return;
+                }
+
+                renderSubscriptionStatus(data);
+                renderUsageDetails(data.usage);
+                
+                document.getElementById('billing-section').style.display = 'block';
+                document.getElementById('subscription-actions').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading subscription data:', error);
+                showError('サブスクリプション情報の読み込みに失敗しました');
+            }
+        }
+
+        function showNoSubscriptionMessage() {
+            const container = document.getElementById('subscription-status');
+            container.innerHTML = `
+                <div class="no-subscription">
+                    <div class="no-subscription-icon">💳</div>
+                    <h3>アクティブなサブスクリプションがありません</h3>
+                    <p>Suna Study Systemをご利用いただくには、プランの選択が必要です。</p>
+                    <div class="no-subscription-actions">
+                        <a href="pricing.html" class="btn-primary">プランを選択する</a>
+                        <a href="../pages/admin.html" class="btn-secondary">管理画面に戻る</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSubscriptionStatus(data) {
+            const subscription = data.subscription;
+            const plan = subscription.pricing_plans;
+            
+            const container = document.getElementById('subscription-status');
+            container.innerHTML = `
+                <div class="subscription-active">
+                    <div class="subscription-header">
+                        <div class="plan-info">
+                            <h3>${plan.name}</h3>
+                            <p>${plan.description}</p>
+                        </div>
+                        <div class="status-info">
+                            <span class="status-badge status-${subscription.status}">
+                                ${getStatusText(subscription.status)}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="subscription-details">
+                        <div class="detail-item">
+                            <span class="detail-label">料金</span>
+                            <span class="detail-value">
+                                ¥${(subscription.billing_cycle === 'yearly' ? plan.price_yearly : plan.price_monthly).toLocaleString()}
+                                /${subscription.billing_cycle === 'yearly' ? '年' : '月'}
+                            </span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-label">次回請求日</span>
+                            <span class="detail-value">
+                                ${new Date(subscription.current_period_end).toLocaleDateString('ja-JP')}
+                            </span>
+                        </div>
+                        
+                        ${subscription.trial_end ? `
+                            <div class="detail-item">
+                                <span class="detail-label">トライアル終了日</span>
+                                <span class="detail-value">
+                                    ${new Date(subscription.trial_end).toLocaleDateString('ja-JP')}
+                                </span>
+                            </div>
+                        ` : ''}
+                        
+                        ${subscription.canceled_at ? `
+                            <div class="detail-item">
+                                <span class="detail-label">キャンセル日</span>
+                                <span class="detail-value">
+                                    ${new Date(subscription.canceled_at).toLocaleDateString('ja-JP')}
+                                </span>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderUsageDetails(usage) {
+            if (!usage) return;
+
+            document.getElementById('usage-details').style.display = 'block';
+            
+            const studentsPercent = usage.max_students ? (usage.current_students / usage.max_students * 100) : 50;
+            const coursesPercent = usage.max_courses ? (usage.current_courses / usage.max_courses * 100) : 50;
+            
+            document.getElementById('current-students').textContent = usage.current_students;
+            document.getElementById('max-students').textContent = usage.max_students || '無制限';
+            document.getElementById('current-courses').textContent = usage.current_courses;
+            document.getElementById('max-courses').textContent = usage.max_courses || '無制限';
+            
+            document.getElementById('students-progress').style.width = `${studentsPercent}%`;
+            document.getElementById('courses-progress').style.width = `${coursesPercent}%`;
+        }
+
+        async function loadPaymentHistory() {
+            try {
+                const userProfile = await getCurrentUserProfile();
+                if (!userProfile || !userProfile.schools) return;
+
+                const response = await fetch(`/api/payment-history/${userProfile.schools.id}?page=${currentPage}&filter=${currentFilter}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error);
+                }
+
+                paymentHistoryData = data;
+                renderPaymentHistory(data);
+                renderPagination(data);
+                
+            } catch (error) {
+                console.error('Error loading payment history:', error);
+                showError('決済履歴の読み込みに失敗しました');
+            }
+        }
+
+        function renderPaymentHistory(data) {
+            const container = document.getElementById('payment-history-container');
+            
+            if (data.payments.length === 0) {
+                container.innerHTML = `
+                    <div class="no-payments">
+                        <p>決済履歴がありません</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="payment-history-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>日付</th>
+                                <th>金額</th>
+                                <th>ステータス</th>
+                                <th>決済方法</th>
+                                <th>アクション</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.payments.map(payment => `
+                                <tr>
+                                    <td>${new Date(payment.created_at).toLocaleDateString('ja-JP')}</td>
+                                    <td>¥${payment.amount.toLocaleString()}</td>
+                                    <td>
+                                        <span class="status-badge status-${payment.status}">
+                                            ${getPaymentStatusText(payment.status)}
+                                        </span>
+                                    </td>
+                                    <td>${payment.payment_method || '-'}</td>
+                                    <td>
+                                        ${payment.receipt_url ? `
+                                            <a href="${payment.receipt_url}" target="_blank" class="btn-link">
+                                                領収書
+                                            </a>
+                                        ` : '-'}
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderPagination(data) {
+            const container = document.getElementById('history-pagination');
+            
+            if (data.totalPages <= 1) {
+                container.style.display = 'none';
+                return;
+            }
+
+            let paginationHTML = '<div class="pagination">';
+            
+            // Previous button
+            if (data.page > 1) {
+                paginationHTML += `<button class="btn-pagination" onclick="changePage(${data.page - 1})">前へ</button>`;
+            }
+            
+            // Page numbers
+            for (let i = 1; i <= data.totalPages; i++) {
+                if (i === data.page) {
+                    paginationHTML += `<button class="btn-pagination active">${i}</button>`;
+                } else {
+                    paginationHTML += `<button class="btn-pagination" onclick="changePage(${i})">${i}</button>`;
+                }
+            }
+            
+            // Next button
+            if (data.page < data.totalPages) {
+                paginationHTML += `<button class="btn-pagination" onclick="changePage(${data.page + 1})">次へ</button>`;
+            }
+            
+            paginationHTML += '</div>';
+            container.innerHTML = paginationHTML;
+            container.style.display = 'block';
+        }
+
+        async function changePage(page) {
+            currentPage = page;
+            await loadPaymentHistory();
+        }
+
+        async function filterPaymentHistory() {
+            const filter = document.getElementById('history-filter').value;
+            currentFilter = filter;
+            currentPage = 1;
+            await loadPaymentHistory();
+        }
+
+        function showCancelDialog() {
+            if (paymentManager) {
+                paymentManager.showCancelDialog();
+            }
+        }
+
+        function showInvoiceList() {
+            // 請求書一覧モーダルを表示
+            console.log('Show invoice list');
+        }
+
+        function exportPaymentHistory() {
+            if (!paymentHistoryData || !paymentHistoryData.payments.length) {
+                showError('エクスポートするデータがありません');
+                return;
+            }
+
+            const csvContent = generateCSV(paymentHistoryData.payments);
+            downloadCSV(csvContent, `payment_history_${new Date().toISOString().split('T')[0]}.csv`);
+        }
+
+        function generateCSV(payments) {
+            const headers = ['日付', '金額', 'ステータス', '決済方法', '説明'];
+            const rows = payments.map(payment => [
+                new Date(payment.created_at).toLocaleDateString('ja-JP'),
+                payment.amount,
+                getPaymentStatusText(payment.status),
+                payment.payment_method || '',
+                payment.description || ''
+            ]);
+
+            return [headers, ...rows].map(row => 
+                row.map(cell => `"${cell}"`).join(',')
+            ).join('\n');
+        }
+
+        function downloadCSV(content, filename) {
+            const blob = new Blob(['\uFEFF' + content], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // ユーティリティ関数
+        function getStatusText(status) {
+            const statusMap = {
+                'trialing': 'トライアル中',
+                'active': '有効',
+                'past_due': '支払い期限超過',
+                'canceled': 'キャンセル済み',
+                'unpaid': '未払い'
+            };
+            return statusMap[status] || status;
+        }
+
+        function getPaymentStatusText(status) {
+            const statusMap = {
+                'pending': '処理中',
+                'succeeded': '成功',
+                'failed': '失敗',
+                'canceled': 'キャンセル',
+                'refunded': '返金済み'
+            };
+            return statusMap[status] || status;
+        }
+
+        function showError(message) {
+            console.error(message);
+            // 実際にはトースト通知システムを実装
+            alert(message);
+        }
+    </script>
+</body>
+</html>

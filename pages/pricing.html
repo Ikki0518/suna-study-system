@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>料金プラン選択 - Suna Study System</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/payment.css">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>📚 Suna Study System</h1>
+                </div>
+                <nav class="nav">
+                    <a href="../pages/admin.html" class="nav-link">管理画面</a>
+                    <a href="subscription.html" class="nav-link">サブスクリプション管理</a>
+                    <button class="btn-secondary logout-required" onclick="supabaseAuth.signOut()">ログアウト</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- ページヘッダー -->
+            <div class="page-header">
+                <h2>料金プラン選択</h2>
+                <p>あなたの塾に最適なプランをお選びください。すべてのプランで14日間の無料トライアルをご利用いただけます。</p>
+            </div>
+
+            <!-- 現在のサブスクリプション状況 -->
+            <div id="current-subscription" class="current-subscription" style="display: none;">
+                <div class="subscription-alert">
+                    <h3>現在のサブスクリプション</h3>
+                    <div id="subscription-info"></div>
+                </div>
+            </div>
+
+            <!-- 料金プラン -->
+            <div class="pricing-section">
+                <div class="pricing-header">
+                    <h3>プラン一覧</h3>
+                    <div class="billing-toggle">
+                        <label class="toggle-label">
+                            <input type="radio" name="billing-display" value="monthly" checked>
+                            <span>月額表示</span>
+                        </label>
+                        <label class="toggle-label">
+                            <input type="radio" name="billing-display" value="yearly">
+                            <span>年額表示</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="pricing-plans-container" class="pricing-plans">
+                    <!-- 料金プランがJavaScriptで動的に生成されます -->
+                    <div class="loading-spinner">
+                        <div class="spinner"></div>
+                        <p>プランを読み込み中...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- プラン比較表 -->
+            <div class="comparison-section">
+                <h3>プラン比較</h3>
+                <div class="comparison-table-container">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>機能</th>
+                                <th>スタータープラン</th>
+                                <th>スタンダードプラン</th>
+                                <th>プレミアムプラン</th>
+                                <th>エンタープライズ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>最大生徒数</td>
+                                <td>20名</td>
+                                <td>100名</td>
+                                <td>500名</td>
+                                <td>無制限</td>
+                            </tr>
+                            <tr>
+                                <td>最大コース数</td>
+                                <td>10コース</td>
+                                <td>50コース</td>
+                                <td>無制限</td>
+                                <td>無制限</td>
+                            </tr>
+                            <tr>
+                                <td>5科目対応</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>学習進捗管理</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>詳細な分析機能</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>カスタマイズ機能</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>API アクセス</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>白ラベル対応</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>専用サポート</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                                <td>✅</td>
+                            </tr>
+                            <tr>
+                                <td>導入コンサルティング</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>❌</td>
+                                <td>✅</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- よくある質問 -->
+            <div class="faq-section">
+                <h3>よくある質問</h3>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question">無料トライアル期間中に料金は発生しますか？</div>
+                        <div class="faq-answer">
+                            いいえ、14日間の無料トライアル期間中は一切料金は発生しません。トライアル期間終了前にキャンセルすることも可能です。
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">プランの変更はできますか？</div>
+                        <div class="faq-answer">
+                            はい、いつでもプランのアップグレードやダウングレードが可能です。変更は次回請求日から適用されます。
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">データのエクスポートはできますか？</div>
+                        <div class="faq-answer">
+                            スタンダードプラン以上で、学習データや進捗データのエクスポート機能をご利用いただけます。
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">サポート体制について教えてください</div>
+                        <div class="faq-answer">
+                            スタータープランは基本サポート（メール）、スタンダードプランは優先サポート、プレミアム以上は専用サポートをご提供します。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 決済モーダル -->
+    <div id="payment-modal" class="modal" style="display: none;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content" id="payment-modal-content">
+            <!-- 決済フォームがJavaScriptで動的に生成されます -->
+        </div>
+    </div>
+
+    <!-- 通知システム -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Suna Study System. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">利用規約</a>
+                <a href="#" class="footer-link">プライバシーポリシー</a>
+                <a href="#" class="footer-link">お問い合わせ</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/payment.js"></script>
+    
+    <script>
+        // ページ初期化
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 認証チェック
+            const user = supabaseClient.auth.getUser();
+            if (!user) {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // 表示切り替えの処理
+            document.querySelectorAll('input[name="billing-display"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    updatePricingDisplay(e.target.value);
+                });
+            });
+
+            // FAQ アコーディオン
+            document.querySelectorAll('.faq-question').forEach(question => {
+                question.addEventListener('click', () => {
+                    const faqItem = question.parentElement;
+                    faqItem.classList.toggle('active');
+                });
+            });
+
+            // 現在のサブスクリプション情報を表示
+            await displayCurrentSubscription();
+        });
+
+        function updatePricingDisplay(billingType) {
+            // 料金表示の切り替え処理
+            document.querySelectorAll('.pricing-card').forEach(card => {
+                const monthlyPrice = card.querySelector('.price-monthly');
+                const yearlyPrice = card.querySelector('.price-yearly');
+                
+                if (billingType === 'yearly') {
+                    monthlyPrice.style.display = 'none';
+                    if (yearlyPrice) yearlyPrice.style.display = 'block';
+                } else {
+                    monthlyPrice.style.display = 'block';
+                    if (yearlyPrice) yearlyPrice.style.display = 'none';
+                }
+            });
+        }
+
+        async function displayCurrentSubscription() {
+            try {
+                const userProfile = await getCurrentUserProfile();
+                if (!userProfile || !userProfile.schools) return;
+
+                const response = await fetch(`/api/subscription-status/${userProfile.schools.id}`);
+                const data = await response.json();
+
+                if (data.hasSubscription) {
+                    const container = document.getElementById('current-subscription');
+                    const info = document.getElementById('subscription-info');
+                    
+                    const subscription = data.subscription;
+                    const plan = subscription.pricing_plans;
+                    
+                    info.innerHTML = `
+                        <div class="current-plan-info">
+                            <p><strong>現在のプラン:</strong> ${plan.name}</p>
+                            <p><strong>ステータス:</strong> <span class="status-badge status-${subscription.status}">${getStatusText(subscription.status)}</span></p>
+                            <p><strong>次回請求日:</strong> ${new Date(subscription.current_period_end).toLocaleDateString('ja-JP')}</p>
+                            <a href="subscription.html" class="btn-primary">詳細を見る</a>
+                        </div>
+                    `;
+                    
+                    container.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error displaying current subscription:', error);
+            }
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'trialing': 'トライアル中',
+                'active': '有効',
+                'past_due': '支払い期限超過',
+                'canceled': 'キャンセル済み',
+                'unpaid': '未払い'
+            };
+            return statusMap[status] || status;
+        }
+    </script>
+</body>
+</html>
