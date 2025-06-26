@@ -304,6 +304,48 @@ body {
     gap: 20px;
     padding: 0;
     max-width: 100%;
+/* タイピングインジケーター（3つの泡） */
+.ai-typing-content {
+    padding: 12px 16px !important;
+}
+
+.typing-dots {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 20px;
+}
+
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #9ca3af;
+    animation: typing-bounce 1.4s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(1) {
+    animation-delay: 0ms;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 200ms;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 400ms;
+}
+
+@keyframes typing-bounce {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.5;
+    }
+    30% {
+        transform: translateY(-10px);
+        opacity: 1;
+    }
+}
 }
 
 .course-list {

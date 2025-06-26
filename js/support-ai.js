@@ -51,8 +51,8 @@ console.log('🤖 AI Sidebar Chat script loaded!');
 
     // イベントリスナーの設定
     function setupEventListeners() {
-        // AIトグルボタン
-        aiToggleBtn.addEventListener('click', openAISidebar);
+        // AIトグルボタン（トグル式）
+        aiToggleBtn.addEventListener('click', toggleAISidebar);
         
         // AI閉じるボタン
         aiCloseBtn.addEventListener('click', closeAISidebar);
@@ -91,6 +91,17 @@ console.log('🤖 AI Sidebar Chat script loaded!');
     function autoResizeTextarea() {
         aiInput.style.height = 'auto';
         aiInput.style.height = Math.min(aiInput.scrollHeight, 120) + 'px';
+    }
+
+    // AIサイドバーのトグル（開いてる時は閉じる、閉じてる時は開く）
+    function toggleAISidebar() {
+        const isOpen = aiSidebar.classList.contains('open');
+        
+        if (isOpen) {
+            closeAISidebar();
+        } else {
+            openAISidebar();
+        }
     }
 
     // AIサイドバーを開く
@@ -184,9 +195,54 @@ console.log('🤖 AI Sidebar Chat script loaded!');
         aiSendBtn.disabled = responding || aiInput.value.trim().length === 0;
         
         if (responding) {
-            aiLoading.style.display = 'flex';
+            // 3つの泡のタイピングインジケーターを表示
+            showTypingIndicator();
         } else {
-            aiLoading.style.display = 'none';
+            // タイピングインジケーターを削除
+            hideTypingIndicator();
+        }
+    }
+
+    // タイピングインジケーター（3つの泡）を表示
+    function showTypingIndicator() {
+        // 既存のタイピングインジケーターがあれば削除
+        hideTypingIndicator();
+        
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'ai-message ai-message-assistant ai-typing-indicator';
+        typingDiv.id = 'ai-typing-indicator';
+        
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = 'ai-message-avatar';
+        avatarDiv.innerHTML = `
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="12" fill="#10B981"/>
+                <path d="M8 10H16M8 14H16" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+        `;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'ai-message-content ai-typing-content';
+        contentDiv.innerHTML = `
+            <div class="typing-dots">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        `;
+        
+        typingDiv.appendChild(avatarDiv);
+        typingDiv.appendChild(contentDiv);
+        
+        aiMessages.appendChild(typingDiv);
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+    }
+
+    // タイピングインジケーターを削除
+    function hideTypingIndicator() {
+        const typingIndicator = document.getElementById('ai-typing-indicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
         }
     }
 
@@ -263,66 +319,161 @@ console.log('🤖 AI Sidebar Chat script loaded!');
         }).join('');
     }
 
-    // 現在の講座コンテキストを取得
+    // 現在の講座コンテキストを取得（改善版）
     function getCurrentCourseContext() {
         try {
-            // 現在表示されているレッスンの情報を取得
-            const lessonView = document.getElementById('lesson-view');
-            if (!lessonView || lessonView.style.display === 'none') {
-                return null;
-            }
-
-            // レッスンタイトルを取得
-            const titleElement = lessonView.querySelector('.lesson-title, h1, h2, h3');
-            const title = titleElement ? titleElement.textContent.trim() : '';
-
-            // レッスン内容を取得
-            const contentElement = lessonView.querySelector('.lesson-content, .text-content, .lesson-body');
-            let content = '';
+            console.log('🤖 講座コンテキストを取得中...');
             
-            if (contentElement) {
-                // HTMLタグを除去してテキストのみ抽出
-                content = contentElement.innerText || contentElement.textContent || '';
-                // 長すぎる場合は最初の2000文字のみ使用
-                content = content.substring(0, 2000);
-            }
-
-            // パンくずから科目・章情報を取得
-            const breadcrumb = document.querySelector('.breadcrumb-content');
+            let title = '';
             let subject = '';
             let chapter = '';
-            
+            let content = '';
+
+            // 1. メインコンテンツエリア全体から情報を取得
+            const mainContent = document.getElementById('main-content');
+            if (mainContent) {
+                // 現在表示されている画面を判定
+                const lessonView = document.getElementById('lesson-view');
+                const courseView = document.getElementById('course-view');
+                const homeView = document.getElementById('home-view');
+
+                // レッスン画面が表示されている場合
+                if (lessonView && lessonView.style.display !== 'none') {
+                    console.log('🤖 レッスン画面からコンテキストを取得');
+                    
+                    // タイトルを複数のセレクターで検索
+                    const titleSelectors = [
+                        '.lesson-title',
+                        '.course-title',
+                        'h1', 'h2', 'h3',
+                        '[data-lesson-title]',
+                        '.page-title',
+                        '.content-title'
+                    ];
+                    
+                    for (const selector of titleSelectors) {
+                        const titleEl = lessonView.querySelector(selector);
+                        if (titleEl && titleEl.textContent.trim()) {
+                            title = titleEl.textContent.trim();
+                            break;
+                        }
+                    }
+
+                    // コンテンツを複数のセレクターで検索
+                    const contentSelectors = [
+                        '.lesson-content',
+                        '.text-content',
+                        '.lesson-body',
+                        '.course-content',
+                        '.main-content',
+                        '.content-body',
+                        '[data-lesson-content]'
+                    ];
+                    
+                    for (const selector of contentSelectors) {
+                        const contentEl = lessonView.querySelector(selector);
+                        if (contentEl) {
+                            // HTMLタグを除去してテキストのみ抽出
+                            const textContent = contentEl.innerText || contentEl.textContent || '';
+                            if (textContent.trim()) {
+                                content = textContent.trim().substring(0, 3000); // 3000文字に拡張
+                                break;
+                            }
+                        }
+                    }
+
+                    // レッスン画面全体からもコンテンツを取得（フォールバック）
+                    if (!content) {
+                        const allText = lessonView.innerText || lessonView.textContent || '';
+                        if (allText.trim()) {
+                            content = allText.trim().substring(0, 2000);
+                        }
+                    }
+                }
+
+                // コース画面が表示されている場合
+                else if (courseView && courseView.style.display !== 'none') {
+                    console.log('🤖 コース画面からコンテキストを取得');
+                    
+                    const courseTitleEl = courseView.querySelector('.course-title, h1, h2');
+                    if (courseTitleEl) {
+                        title = courseTitleEl.textContent.trim();
+                    }
+                    
+                    const courseContentEl = courseView.querySelector('.course-description, .course-content');
+                    if (courseContentEl) {
+                        content = (courseContentEl.innerText || courseContentEl.textContent || '').substring(0, 2000);
+                    }
+                }
+            }
+
+            // 2. パンくずナビゲーションから科目・章情報を取得
+            const breadcrumb = document.querySelector('.breadcrumb-content, .breadcrumb, [data-breadcrumb]');
             if (breadcrumb) {
                 const breadcrumbText = breadcrumb.textContent || '';
-                const parts = breadcrumbText.split('›').map(part => part.trim());
-                if (parts.length > 1) {
-                    subject = parts[1] || '';
+                const parts = breadcrumbText.split(/[›>\/]/).map(part => part.trim()).filter(part => part && part !== 'Home');
+                
+                if (parts.length >= 1) subject = parts[0] || '';
+                if (parts.length >= 2) chapter = parts[1] || '';
+                
+                console.log('🤖 パンくず情報:', { subject, chapter });
+            }
+
+            // 3. StudyAppのグローバル状態から情報を取得
+            if (window.app) {
+                if (window.app.currentLesson) {
+                    const lesson = window.app.currentLesson;
+                    title = title || lesson.title || '';
+                    subject = subject || lesson.subject || '';
+                    chapter = chapter || lesson.chapter || '';
+                    content = content || lesson.content || lesson.textContent || '';
+                    console.log('🤖 StudyApp.currentLessonから情報を取得');
                 }
-                if (parts.length > 2) {
-                    chapter = parts[2] || '';
+                
+                if (window.app.currentSubject) {
+                    subject = subject || window.app.currentSubject.name || '';
+                }
+                
+                if (window.app.currentCourse) {
+                    chapter = chapter || window.app.currentCourse.name || '';
                 }
             }
 
-            // StudyAppの現在のレッスンデータがある場合はそれも使用
-            if (window.app && window.app.currentLesson) {
-                const lesson = window.app.currentLesson;
-                return {
-                    title: title || lesson.title || '',
-                    subject: subject || lesson.subject || '',
-                    chapter: chapter || lesson.chapter || '',
-                    content: content || lesson.content || lesson.textContent || ''
-                };
+            // 4. ページタイトルからも情報を取得
+            if (!title) {
+                const pageTitle = document.title;
+                if (pageTitle && !pageTitle.includes('スキルプラス')) {
+                    title = pageTitle;
+                }
             }
 
-            return title || content ? {
-                title: title,
-                subject: subject,
-                chapter: chapter,
-                content: content
-            } : null;
+            // 5. 結果を構築
+            const context = {
+                title: title || '現在の講座',
+                subject: subject || '学習中の科目',
+                chapter: chapter || '学習中の章',
+                content: content || '画面に表示されている内容'
+            };
+
+            // デバッグ情報をログ出力
+            console.log('🤖 取得した講座コンテキスト:', {
+                hasTitle: !!context.title,
+                hasSubject: !!context.subject,
+                hasChapter: !!context.chapter,
+                contentLength: context.content.length,
+                context: context
+            });
+
+            // 有用な情報が取得できた場合のみ返す
+            if (context.title !== '現在の講座' || context.content !== '画面に表示されている内容' || context.content.length > 50) {
+                return context;
+            }
+
+            console.log('🤖 有用な講座コンテキストが見つかりませんでした');
+            return null;
 
         } catch (error) {
-            console.warn('🤖 Failed to get course context:', error);
+            console.error('🤖 講座コンテキスト取得エラー:', error);
             return null;
         }
     }
