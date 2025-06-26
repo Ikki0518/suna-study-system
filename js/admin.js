@@ -18,19 +18,206 @@ class AdminApp {
         this.init();
     }
 
-    init() {
+    async init() {
         console.log('AdminApp initialized');
-        // スクール管理を最初に初期化（データ作成のため）
-        this.initSchoolManagement();
-        this.loadStudentData();
+        
+        // Supabaseの初期化
+        await this.initSupabase();
+        
+        // データを順次読み込み（Supabaseベース）
+        await this.initSchoolManagement();
+        await this.loadSubjectsFromSupabase();
+        await this.loadCoursesFromSupabase();
+        await this.loadLessonsFromSupabase();
+        await this.loadStudentData();
+        
+        // UI レンダリング
         this.renderStatsCards();
         this.renderStudentTable();
         this.renderRecentActivity();
         this.renderLessonsTable();
         this.bindEvents();
+        
         // スクールデータ作成後にUI更新
         this.updateAuthUI();
         this.checkUrlHash();
+    }
+
+    // Supabase初期化
+    async initSupabase() {
+        if (window.supabaseManager) {
+            await window.supabaseManager.initAuth();
+            console.log('Supabase initialized for admin');
+        } else {
+            console.warn('SupabaseManager not available, using localStorage fallback');
+        }
+    }
+
+    // 科目データの読み込み（Supabaseベース）
+    async loadSubjectsFromSupabase() {
+        try {
+            if (window.supabaseManager) {
+                const { data: subjects, error } = await window.supabaseManager.getSubjects();
+                
+                if (!error && subjects && subjects.length > 0) {
+                    console.log('Loading subjects from Supabase:', subjects.length);
+                    this.subjects = subjects.map(subject => ({
+                        id: subject.id,
+                        name: subject.name,
+                        description: subject.description,
+                        grade: subject.grade,
+                        schoolDivision: subject.school_division,
+                        icon: subject.icon || '📚',
+                        color: subject.color || '#3B82F6',
+                        active: subject.is_active !== false,
+                        createdAt: subject.created_at
+                    }));
+                    
+                    // localStorageにも保存（フォールバック用）
+                    localStorage.setItem('subjects', JSON.stringify(this.subjects));
+                    console.log('Subjects loaded from Supabase:', this.subjects.length);
+                    return;
+                }
+            }
+            
+            // Supabaseから取得できない場合はフォールバック
+            console.log('Falling back to localStorage for subjects');
+            this.loadSubjectsFromLocalStorage();
+            
+        } catch (error) {
+            console.error('Error loading subjects from Supabase:', error);
+            this.loadSubjectsFromLocalStorage();
+        }
+    }
+
+    // 科目データのlocalStorageフォールバック
+    loadSubjectsFromLocalStorage() {
+        const savedSubjects = localStorage.getItem('subjects');
+        if (savedSubjects) {
+            try {
+                this.subjects = JSON.parse(savedSubjects);
+                console.log('Loaded subjects from localStorage:', this.subjects.length);
+                return;
+            } catch (error) {
+                console.error('Error parsing subjects from localStorage:', error);
+            }
+        }
+        
+        // デフォルト科目データ
+        this.subjects = [];
+        console.log('No subjects data available');
+    }
+
+    // コースデータの読み込み（Supabaseベース）
+    async loadCoursesFromSupabase() {
+        try {
+            if (window.supabaseManager) {
+                const { data: courses, error } = await window.supabaseManager.getCourses();
+                
+                if (!error && courses && courses.length > 0) {
+                    console.log('Loading courses from Supabase:', courses.length);
+                    this.courses = courses.map(course => ({
+                        id: course.id,
+                        name: course.title,
+                        description: course.description,
+                        subjectId: course.subject_id,
+                        grade: course.grade,
+                        difficulty: course.difficulty_level || 1,
+                        duration: course.estimated_hours || 60,
+                        color: course.color || '#10B981',
+                        active: course.is_active !== false,
+                        createdAt: course.created_at
+                    }));
+                    
+                    // localStorageにも保存（フォールバック用）
+                    localStorage.setItem('courses', JSON.stringify(this.courses));
+                    console.log('Courses loaded from Supabase:', this.courses.length);
+                    return;
+                }
+            }
+            
+            // Supabaseから取得できない場合はフォールバック
+            console.log('Falling back to localStorage for courses');
+            this.loadCoursesFromLocalStorage();
+            
+        } catch (error) {
+            console.error('Error loading courses from Supabase:', error);
+            this.loadCoursesFromLocalStorage();
+        }
+    }
+
+    // コースデータのlocalStorageフォールバック
+    loadCoursesFromLocalStorage() {
+        const savedCourses = localStorage.getItem('courses');
+        if (savedCourses) {
+            try {
+                this.courses = JSON.parse(savedCourses);
+                console.log('Loaded courses from localStorage:', this.courses.length);
+                return;
+            } catch (error) {
+                console.error('Error parsing courses from localStorage:', error);
+            }
+        }
+        
+        // デフォルトコースデータ
+        this.courses = [];
+        console.log('No courses data available');
+    }
+
+    // レッスンデータの読み込み（Supabaseベース）
+    async loadLessonsFromSupabase() {
+        try {
+            if (window.supabaseManager) {
+                const { data: lessons, error } = await window.supabaseManager.getLessons();
+                
+                if (!error && lessons && lessons.length > 0) {
+                    console.log('Loading lessons from Supabase:', lessons.length);
+                    this.lessons = lessons.map(lesson => ({
+                        id: lesson.id,
+                        title: lesson.title,
+                        description: lesson.description,
+                        chapterId: lesson.chapter_id,
+                        order: lesson.sort_order || 1,
+                        duration: lesson.duration_minutes || 45,
+                        content: lesson.content || '',
+                        videoUrl: lesson.video_url,
+                        active: lesson.is_active !== false,
+                        createdAt: lesson.created_at
+                    }));
+                    
+                    // localStorageにも保存（フォールバック用）
+                    localStorage.setItem('lessons', JSON.stringify(this.lessons));
+                    console.log('Lessons loaded from Supabase:', this.lessons.length);
+                    return;
+                }
+            }
+            
+            // Supabaseから取得できない場合はフォールバック
+            console.log('Falling back to localStorage for lessons');
+            this.loadLessonsFromLocalStorage();
+            
+        } catch (error) {
+            console.error('Error loading lessons from Supabase:', error);
+            this.loadLessonsFromLocalStorage();
+        }
+    }
+
+    // レッスンデータのlocalStorageフォールバック
+    loadLessonsFromLocalStorage() {
+        const savedLessons = localStorage.getItem('lessons');
+        if (savedLessons) {
+            try {
+                this.lessons = JSON.parse(savedLessons);
+                console.log('Loaded lessons from localStorage:', this.lessons.length);
+                return;
+            } catch (error) {
+                console.error('Error parsing lessons from localStorage:', error);
+            }
+        }
+        
+        // デフォルトレッスンデータ
+        this.lessons = [];
+        console.log('No lessons data available');
     }
 
     // 受講生データの読み込み
@@ -972,7 +1159,7 @@ class AdminApp {
         }
     }
 
-    // 受講生情報を更新
+    // 受講生情報を更新（Supabaseベース）
     async updateStudent(event, studentId) {
         event.preventDefault();
         
@@ -985,7 +1172,45 @@ class AdminApp {
             return;
         }
 
-        // ローカルストレージから受講生データを更新
+        try {
+            // Supabaseで受講生データを更新
+            if (window.supabaseManager) {
+                const schoolDivision = this.getSchoolDivisionFromGrade(grade);
+                const updateData = {
+                    name: name,
+                    grade: grade,
+                    status: status,
+                    school_division: schoolDivision
+                };
+
+                const { data, error } = await window.supabaseManager.updateStudent(studentId, updateData);
+                
+                if (!error) {
+                    this.showMessage(`受講生「${name}」の情報を更新しました`, 'success');
+                    
+                    // データを再読み込みして表示を更新
+                    await this.loadStudentData();
+                    this.renderStatsCards();
+                    this.renderStudentTable();
+                    this.closeEditStudentModal();
+                    return;
+                }
+                
+                console.error('Supabase update error:', error);
+            }
+            
+            // Supabaseが失敗した場合はlocalStorageフォールバック
+            this.updateStudentLocalStorage(studentId, name, grade, status);
+            
+        } catch (error) {
+            console.error('Error updating student:', error);
+            // エラーの場合もlocalStorageフォールバック
+            this.updateStudentLocalStorage(studentId, name, grade, status);
+        }
+    }
+
+    // 受講生情報のlocalStorageフォールバック更新
+    updateStudentLocalStorage(studentId, name, grade, status) {
         const registrations = JSON.parse(localStorage.getItem('studentRegistrations') || '[]');
         const registrationIndex = registrations.findIndex(reg => reg.id === studentId);
         
@@ -1191,10 +1416,10 @@ class AdminApp {
     }
 // ===== スクール管理機能 =====
     
-    // スクール管理の初期化
-    initSchoolManagement() {
-        // スクールデータの初期化
-        this.initializeSchoolData();
+    // スクール管理の初期化（Supabaseベース）
+    async initSchoolManagement() {
+        // Supabaseからスクールデータを読み込み
+        await this.loadSchoolsFromSupabase();
         
         // ヘッダーのスクール選択機能を初期化
         const schoolSelect = document.getElementById('admin-school-select');
@@ -1202,6 +1427,9 @@ class AdminApp {
             // 現在の選択状態を復元
             const savedSchool = localStorage.getItem('selectedSchool') || 'elementary';
             this.currentSchool = savedSchool;
+            
+            // Supabaseから取得したスクールデータでオプションを更新
+            this.updateSchoolSelectOptions(schoolSelect);
             schoolSelect.value = savedSchool;
             
             // イベントリスナーを追加
@@ -1217,9 +1445,66 @@ class AdminApp {
         this.updateSchoolSelectorDisplay();
         this.updateActiveSchoolOption(this.currentSchool);
     }
+
+    // Supabaseからスクールデータを読み込み
+    async loadSchoolsFromSupabase() {
+        try {
+            if (window.supabaseManager) {
+                const { data: schools, error } = await window.supabaseManager.getSchools();
+                
+                if (!error && schools && schools.length > 0) {
+                    console.log('Loading schools from Supabase:', schools.length);
+                    
+                    // Supabaseからのデータを内部形式に変換
+                    this.schools = {};
+                    schools.forEach(school => {
+                        // IDをキーとして学年ベースのIDにマッピング
+                        let divisionId = 'elementary'; // デフォルト
+                        if (school.name.includes('中学') || school.name.includes('📖')) {
+                            divisionId = 'junior';
+                        } else if (school.name.includes('高校') || school.name.includes('🎓')) {
+                            divisionId = 'senior';
+                        }
+                        
+                        this.schools[divisionId] = {
+                            id: divisionId,
+                            supabaseId: school.id,
+                            name: school.name,
+                            description: school.description,
+                            color: school.color,
+                            active: true,
+                            createdAt: school.created_at
+                        };
+                    });
+                    
+                    // localStorageにも保存（フォールバック用）
+                    localStorage.setItem('schools', JSON.stringify(this.schools));
+                    console.log('Schools loaded from Supabase:', this.schools);
+                    return;
+                }
+            }
+            
+            // Supabaseから取得できない場合はフォールバック
+            console.log('Falling back to localStorage/default schools');
+            this.initializeSchoolDataFallback();
+            
+        } catch (error) {
+            console.error('Error loading schools from Supabase:', error);
+            this.initializeSchoolDataFallback();
+        }
+    }
+
+    // スクールセレクトのオプションを更新
+    updateSchoolSelectOptions(schoolSelect) {
+        if (!this.schools || Object.keys(this.schools).length === 0) return;
+        
+        schoolSelect.innerHTML = Object.values(this.schools).map(school =>
+            `<option value="${school.id}">${school.name}</option>`
+        ).join('');
+    }
     
-    // スクールデータの初期化
-    initializeSchoolData() {
+    // スクールデータの初期化（フォールバック用）
+    initializeSchoolDataFallback() {
         let schools = JSON.parse(localStorage.getItem('schools') || '{}');
         
         // デフォルトのスクールデータがない場合は作成
@@ -1254,6 +1539,7 @@ class AdminApp {
             console.log('DEBUG: Existing school data found:', schools);
         }
         
+        this.schools = schools;
         return schools;
     }
     
