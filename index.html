@@ -3,147 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学習管理システム - あなたの学習塾</title>
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>スキルプラス - オンライン学習プラットフォーム</title>
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .redirect-message {
+            text-align: center;
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-    <header class="main-header">
-        <div class="header-container">
-            <div class="logo-section">
-                <div class="logo">
-                    <svg width="115" height="55" viewBox="0 0 115 55" class="flex-shrink-0">
-                        <!-- 大きな円（右上、明るいターコイズブルー） -->
-                        <circle cx="90" cy="20" r="13" fill="#67E8F9" opacity="0.85"/>
-
-                        <!-- 中くらいの円（左中央、濃いブルー） -->
-                        <circle cx="73" cy="28" r="8" fill="#2563EB" opacity="0.9"/>
-
-                        <!-- 小さな円（右下、薄いターコイズ） -->
-                        <circle cx="83" cy="35" r="5" fill="#A7F3D0" opacity="0.75"/>
-
-                        <!-- テキスト "suna" - 太字、濃いネイビー -->
-                        <text x="0" y="42" font-size="26" font-weight="700" fill="#1E293B" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" letter-spacing="-1.2px">
-                            suna
-                        </text>
-                    </svg>
-                </div>
-                <p class="tagline">次世代AIとの革新的な学習体験</p>
-            </div>
-            <div id="auth-section" class="auth-section">
-                <div class="auth-buttons">
-                    <a href="pages/login.html" class="login-btn">ログイン</a>
-                    <a href="signup.html" class="signup-btn">会員登録</a>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- ブレッドクラムナビゲーション -->
-    <nav id="breadcrumb-nav" class="breadcrumb-nav" style="display: none;">
-        <div class="breadcrumb-container">
-            <div class="breadcrumb-content">
-                <button id="back-btn" class="back-btn">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
-                    </svg>
-                    戻る
-                </button>
-                <div id="breadcrumb-path" class="breadcrumb-path">
-                    <!-- ブレッドクラムパスがJavaScriptで動的に生成されます -->
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <main class="main-content">
-        <!-- ホーム画面 -->
-        <div id="home-view" class="home-view">
-
-            <!-- 科目一覧 -->
-            <div id="subjects-container" class="subjects-container">
-                <!-- 科目カードがJavaScriptで動的に生成されます -->
-            </div>
-
-            <!-- コース一覧 -->
-            <div id="courses-container" class="courses-container">
-                <!-- コースカードがJavaScriptで動的に生成されます -->
-            </div>
-        </div>
-
-        <!-- コース詳細画面 -->
-        <div id="course-view" class="course-view" style="display: none;">
-            <!-- コース詳細がJavaScriptで動的に生成されます -->
-        </div>
-
-        <!-- 講義画面 -->
-        <div id="lesson-view" class="lesson-view" style="display: none;">
-            <!-- 講義内容がJavaScriptで動的に生成されます -->
-        </div>
-    </main>
-
-    <!-- サイドバー -->
-    <aside id="sidebar" class="sidebar">
-        <div class="sidebar-content">
-            <!-- サイドバー内容がJavaScriptで動的に生成されます -->
-        </div>
-    </aside>
-
-    <!-- フッター -->
-    <footer class="main-footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <a href="/" style="display:inline-block;">
-                            <svg width="115" height="55" viewBox="0 0 115 55" class="footer-logo-svg">
-                                <!-- 大きな円（右上、明るいターコイズブルー） -->
-                                <circle cx="90" cy="20" r="13" fill="#67E8F9" opacity="0.85"/>
-        
-                                <!-- 中くらいの円（左中央、濃いブルー） -->
-                                <circle cx="73" cy="28" r="8" fill="#2563EB" opacity="0.9"/>
-        
-                                <!-- 小さな円（右下、薄いターコイズ） -->
-                                <circle cx="83" cy="35" r="5" fill="#A7F3D0" opacity="0.75"/>
-        
-                                <!-- テキスト "suna" - 太字、白 -->
-                                <text x="0" y="42" font-size="26" font-weight="700" fill="#fff" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" letter-spacing="-1.2px">
-                                    suna
-                                </text>
-                            </svg>
-                        </a>
-                    </div>
-                    <h3>学習管理システム</h3>
-                    <p>質の高い教育を提供する学習塾</p>
-                </div>
-                <div class="footer-section">
-                    <h4>学習科目</h4>
-                    <ul>
-                        <li>国語</li>
-                        <li>数学</li>
-                        <li>英語</li>
-                        <li>理科</li>
-                        <li>社会</li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>システム</h4>
-                    <ul>
-                        <li><a href="pages/login.html">ログイン</a></li>
-                        <li><a href="signup.html">新規登録</a></li>
-                        <li><a href="pages/admin.html">管理者画面</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 あなたの学習塾. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="js/main.js"></script>
-    <script src="js/support-ai.js"></script>
+    <div class="redirect-message">
+        <h1>スキルプラス</h1>
+        <p>ログインページにリダイレクトしています...</p>
+        <div class="spinner"></div>
+    </div>
+    
+    <script>
+        // メインページにアクセスした場合、ログインページにリダイレクト
+        setTimeout(() => {
+            window.location.href = 'pages/login.html';
+        }, 1000);
+    </script>
 </body>
 </html>

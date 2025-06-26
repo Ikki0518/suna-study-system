@@ -68,63 +68,132 @@ class StudyApp {
     }
 
     loadDemoData() {
-        // デモ用学習データ
+        // 要件に合わせた学習データ（科目→コース→章→講座の階層構造）
         this.subjects = [
             {
-                id: 'glucon-relations',
-                name: 'グルコン関係',
-                description: 'グルコンアーカイブの基本操作と応用',
-                color: '#3b82f6',
-                icon: '📊',
+                id: 'japanese',
+                name: '国語',
+                description: '現代文・古文・漢文を総合的に学習',
+                color: '#dc2626',
+                icon: '📚',
                 study_courses: [
                     {
-                        id: 'main-lesson',
-                        title: 'メインレッスン',
-                        description: 'グルコンアーカイブの基本操作を学習',
+                        id: 'modern-japanese',
+                        title: '現代文',
+                        description: '現代文の読解力と表現力を身につける',
                         image: '/api/placeholder/400/200',
+                        thumbnail: '📖',
                         study_chapters: [
                             {
-                                id: 'chapter-1',
-                                title: 'グルコンアーカイブの格納方法について',
+                                id: 'narrative-text',
+                                title: '物語文',
                                 sort_order: 1,
                                 study_lessons: [
                                     {
-                                        id: 'lesson-1',
-                                        title: 'アーカイブ格納方法の解説',
-                                        description: 'グルコンアーカイブ全体の流れ',
-                                        video_url: '/videos/archive-explanation.mp4',
-                                        duration: '2 min',
-                                        views: 17
+                                        id: 'narrative-lesson-1',
+                                        title: '第一問：登場人物の心情理解',
+                                        description: '物語文における登場人物の心情を読み取る技法',
+                                        video_url: '/videos/narrative-1.mp4',
+                                        pdf_url: '/pdfs/narrative-1.pdf',
+                                        text_content: '物語文では、登場人物の心情を正確に読み取ることが重要です...',
+                                        duration: '15 min',
+                                        views: 124
+                                    },
+                                    {
+                                        id: 'narrative-lesson-2',
+                                        title: '第二問：場面設定の理解',
+                                        description: '物語の場面設定と雰囲気の読み取り方',
+                                        video_url: '/videos/narrative-2.mp4',
+                                        pdf_url: '/pdfs/narrative-2.pdf',
+                                        text_content: '場面設定は物語の理解において基礎となる要素です...',
+                                        duration: '12 min',
+                                        views: 98
                                     }
                                 ]
                             },
                             {
-                                id: 'chapter-2',
-                                title: 'AI副業1on1 りえさんへのスプレッドシート共有方法',
+                                id: 'kanji-study',
+                                title: '漢字',
                                 sort_order: 2,
                                 study_lessons: [
                                     {
-                                        id: 'lesson-2',
-                                        title: 'スプレッドシート共有の手順',
-                                        description: 'AI副業での効率的な情報共有方法',
-                                        video_url: '/videos/spreadsheet-sharing.mp4',
-                                        duration: '3 min',
-                                        views: 25
+                                        id: 'kanji-lesson-1',
+                                        title: '第一問：常用漢字の読み方',
+                                        description: '高校レベルの常用漢字の正しい読み方',
+                                        video_url: '/videos/kanji-1.mp4',
+                                        pdf_url: '/pdfs/kanji-1.pdf',
+                                        text_content: '常用漢字は日常生活で使用頻度の高い漢字です...',
+                                        duration: '10 min',
+                                        views: 156
                                     }
                                 ]
                             },
                             {
-                                id: 'chapter-3',
-                                title: 'AI副業1on1 ゆきえさん（yukieさん）のエラー共有',
+                                id: 'composition',
+                                title: '作文',
                                 sort_order: 3,
                                 study_lessons: [
                                     {
-                                        id: 'lesson-3',
-                                        title: 'エラー解決とトラブルシューティング',
-                                        description: 'よくあるエラーとその対処法',
-                                        video_url: '/videos/error-troubleshooting.mp4',
-                                        duration: '4 min',
-                                        views: 32
+                                        id: 'composition-lesson-1',
+                                        title: '第一問：論理的な文章構成',
+                                        description: '説得力のある文章の書き方',
+                                        video_url: '/videos/composition-1.mp4',
+                                        pdf_url: '/pdfs/composition-1.pdf',
+                                        text_content: '論理的な文章を書くためには、明確な構成が必要です...',
+                                        duration: '20 min',
+                                        views: 89
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'classical-japanese',
+                        title: '古文',
+                        description: '古典文学の読解と文法を学習',
+                        image: '/api/placeholder/400/200',
+                        thumbnail: '🏛️',
+                        study_chapters: [
+                            {
+                                id: 'classical-grammar',
+                                title: '古典文法',
+                                sort_order: 1,
+                                study_lessons: [
+                                    {
+                                        id: 'grammar-lesson-1',
+                                        title: '第一問：助動詞の活用',
+                                        description: '古文における助動詞の正しい活用形',
+                                        video_url: '/videos/classical-grammar-1.mp4',
+                                        pdf_url: '/pdfs/classical-grammar-1.pdf',
+                                        text_content: '古文の助動詞は現代語とは異なる活用をします...',
+                                        duration: '18 min',
+                                        views: 67
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'chinese-classics',
+                        title: '漢文',
+                        description: '漢文の読み方と古典中国文学',
+                        image: '/api/placeholder/400/200',
+                        thumbnail: '🏮',
+                        study_chapters: [
+                            {
+                                id: 'chinese-reading',
+                                title: '漢文読解',
+                                sort_order: 1,
+                                study_lessons: [
+                                    {
+                                        id: 'chinese-lesson-1',
+                                        title: '第一問：返り点の読み方',
+                                        description: '漢文における返り点の正しい読み方',
+                                        video_url: '/videos/chinese-1.mp4',
+                                        pdf_url: '/pdfs/chinese-1.pdf',
+                                        text_content: '返り点は漢文を日本語として読むための重要な記号です...',
+                                        duration: '14 min',
+                                        views: 45
                                     }
                                 ]
                             }
@@ -133,60 +202,128 @@ class StudyApp {
                 ]
             },
             {
-                id: 'business-skills',
-                name: 'ビジネススキル',
-                description: '実践的なビジネススキルを習得',
-                color: '#10b981',
-                icon: '💼',
+                id: 'mathematics',
+                name: '数学',
+                description: '数学I・A、数学II・B、数学III・Cを体系的に学習',
+                color: '#2563eb',
+                icon: '🔢',
                 study_courses: [
                     {
-                        id: 'business-basics',
-                        title: 'ビジネス基礎',
-                        description: 'ビジネスの基本スキルを学習',
+                        id: 'math-1a',
+                        title: '数学I・A',
+                        description: '高校数学の基礎となる数学I・Aを学習',
                         image: '/api/placeholder/400/200',
+                        thumbnail: '📐',
                         study_chapters: [
                             {
-                                id: 'business-chapter-1',
-                                title: '請求書提出方法',
+                                id: 'quadratic-functions',
+                                title: '二次関数',
                                 sort_order: 1,
                                 study_lessons: [
                                     {
-                                        id: 'business-lesson-1',
-                                        title: '効率的な請求書作成',
-                                        description: '請求書の正しい作成方法',
-                                        video_url: '/videos/invoice-creation.mp4',
-                                        duration: '5 min',
-                                        views: 45
+                                        id: 'quadratic-lesson-1',
+                                        title: '第一問：二次関数のグラフ',
+                                        description: '二次関数のグラフの性質と描き方',
+                                        video_url: '/videos/quadratic-1.mp4',
+                                        pdf_url: '/pdfs/quadratic-1.pdf',
+                                        text_content: '二次関数 y = ax² + bx + c のグラフは放物線になります...',
+                                        duration: '25 min',
+                                        views: 203
                                     }
                                 ]
                             },
                             {
-                                id: 'business-chapter-2',
-                                title: 'ビジョン会議',
+                                id: 'probability',
+                                title: '確率',
                                 sort_order: 2,
                                 study_lessons: [
                                     {
-                                        id: 'business-lesson-2',
-                                        title: '効果的な会議運営',
-                                        description: 'ビジョン共有のための会議術',
-                                        video_url: '/videos/vision-meeting.mp4',
-                                        duration: '6 min',
-                                        views: 38
+                                        id: 'probability-lesson-1',
+                                        title: '第一問：順列と組み合わせ',
+                                        description: '順列と組み合わせの基本概念と計算方法',
+                                        video_url: '/videos/probability-1.mp4',
+                                        pdf_url: '/pdfs/probability-1.pdf',
+                                        text_content: '順列は順序を考慮した並べ方、組み合わせは順序を考慮しない選び方です...',
+                                        duration: '22 min',
+                                        views: 178
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'math-2b',
+                        title: '数学II・B',
+                        description: '発展的な数学概念を学習',
+                        image: '/api/placeholder/400/200',
+                        thumbnail: '📊',
+                        study_chapters: [
+                            {
+                                id: 'trigonometry',
+                                title: '三角関数',
+                                sort_order: 1,
+                                study_lessons: [
+                                    {
+                                        id: 'trig-lesson-1',
+                                        title: '第一問：三角関数の基本',
+                                        description: 'sin、cos、tanの基本的な性質',
+                                        video_url: '/videos/trigonometry-1.mp4',
+                                        pdf_url: '/pdfs/trigonometry-1.pdf',
+                                        text_content: '三角関数は角度と比の関係を表す重要な関数です...',
+                                        duration: '28 min',
+                                        views: 145
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'english',
+                name: '英語',
+                description: '英語コミュニケーション、論理・表現を総合学習',
+                color: '#059669',
+                icon: '🌍',
+                study_courses: [
+                    {
+                        id: 'english-communication',
+                        title: '英語コミュニケーション',
+                        description: '実践的な英語コミュニケーション能力を育成',
+                        image: '/api/placeholder/400/200',
+                        thumbnail: '💬',
+                        study_chapters: [
+                            {
+                                id: 'reading-comprehension',
+                                title: '長文読解',
+                                sort_order: 1,
+                                study_lessons: [
+                                    {
+                                        id: 'reading-lesson-1',
+                                        title: '第一問：スキミング技法',
+                                        description: '英語長文を効率的に読むスキミング技法',
+                                        video_url: '/videos/reading-1.mp4',
+                                        pdf_url: '/pdfs/reading-1.pdf',
+                                        text_content: 'スキミングは文章全体の概要を素早く把握する読解技法です...',
+                                        duration: '16 min',
+                                        views: 234
                                     }
                                 ]
                             },
                             {
-                                id: 'business-chapter-3',
-                                title: '徹夜明けのパフォーマンス最大化講座',
-                                sort_order: 3,
+                                id: 'grammar',
+                                title: '英文法',
+                                sort_order: 2,
                                 study_lessons: [
                                     {
-                                        id: 'business-lesson-3',
-                                        title: 'パフォーマンス向上テクニック',
-                                        description: '疲労時でも最高のパフォーマンスを発揮する方法',
-                                        video_url: '/videos/performance-optimization.mp4',
-                                        duration: '7 min',
-                                        views: 52
+                                        id: 'grammar-lesson-1',
+                                        title: '第一問：関係代名詞の用法',
+                                        description: '関係代名詞の基本的な使い方と応用',
+                                        video_url: '/videos/grammar-1.mp4',
+                                        pdf_url: '/pdfs/grammar-1.pdf',
+                                        text_content: '関係代名詞は2つの文を1つにまとめる重要な文法項目です...',
+                                        duration: '19 min',
+                                        views: 189
                                     }
                                 ]
                             }
@@ -207,6 +344,9 @@ class StudyApp {
                 break;
             case 'chapters':
                 this.renderChapters();
+                break;
+            case 'lessons':
+                this.renderLessons();
                 break;
             case 'lesson':
                 this.renderLesson();
@@ -238,11 +378,15 @@ class StudyApp {
             console.log('📋 [UI REQUIREMENTS] - Subject icon:', subject.icon);
             return `
                 <div class="subject-card" onclick="app.selectSubject('${subject.id}')" style="--subject-color: ${subject.color}">
-                    <div class="subject-icon">${subject.icon}</div>
-                    <h3 class="subject-title">${subject.name}</h3>
-                    <p class="subject-description">${subject.description}</p>
-                    <div class="subject-stats">
-                        <span class="course-count">${subject.study_courses?.length || 0} コース</span>
+                    <div class="subject-card-header">
+                        <div class="subject-icon">${subject.icon}</div>
+                        <h3 class="subject-title">${subject.name}</h3>
+                    </div>
+                    <div class="subject-card-body">
+                        <p class="subject-description">${subject.description}</p>
+                        <div class="subject-stats">
+                            <span class="course-count">${subject.study_courses?.length || 0} コース</span>
+                        </div>
                     </div>
                 </div>
             `;
@@ -261,21 +405,31 @@ class StudyApp {
         this.hideOtherViews(['subjects-container']);
     }
 
-    renderCourses() {
+    renderCourses(subject) {
+        console.log('🎓 [COURSE DEBUG] renderCourses called for:', subject?.name || this.currentSubject?.name);
         const container = document.getElementById('subjects-container');
-        if (!container || !this.currentSubject) return;
+        if (!container) return;
+        
+        const targetSubject = subject || this.currentSubject;
+        if (!targetSubject) return;
 
-        const courses = this.currentSubject.study_courses || [];
+        const courses = targetSubject.study_courses || [];
+        console.log('📋 [UI REQUIREMENTS] Rendering courses in card format with thumbnails');
+        
         const coursesHTML = courses.map(course => `
             <div class="course-card" onclick="app.selectCourse('${course.id}')">
-                <div class="course-image">
-                    <img src="${course.image}" alt="${course.title}" onerror="this.src='/api/placeholder/400/200'">
+                <div class="course-thumbnail">
+                    <div class="course-thumbnail-icon">${course.thumbnail || '📚'}</div>
+                    <div class="course-thumbnail-edit" onclick="event.stopPropagation(); app.changeThumbnail('${course.id}')">
+                        ✏️
+                    </div>
                 </div>
                 <div class="course-content">
                     <h4 class="course-title">${course.title}</h4>
                     <p class="course-description">${course.description}</p>
                     <div class="course-stats">
                         <span class="chapter-count">${course.study_chapters?.length || 0} 章</span>
+                        <span class="lesson-count">${this.getTotalLessons(course)} 講座</span>
                     </div>
                     <button class="course-btn">受講する</button>
                 </div>
@@ -283,70 +437,164 @@ class StudyApp {
         `).join('');
 
         container.innerHTML = `
+            <div class="course-header">
+                <h2>${targetSubject.name}</h2>
+                <p>コースを選択してください</p>
+            </div>
             <div class="courses-grid">
                 ${coursesHTML}
             </div>
         `;
+
+        // 他の画面を非表示
+        this.hideOtherViews(['subjects-container']);
     }
 
     renderChapters() {
+        console.log('📋 [UI REQUIREMENTS] Rendering chapters in list format');
         const container = document.getElementById('subjects-container');
         if (!container || !this.currentCourse) return;
 
         const chapters = this.currentCourse.study_chapters || [];
-        const chaptersHTML = chapters.map(chapter => `
-            <div class="chapter-item" onclick="app.selectChapter('${chapter.id}')">
+        const chaptersHTML = chapters.map((chapter, index) => `
+            <div class="chapter-list-item" onclick="app.selectChapter('${chapter.id}')">
+                <div class="chapter-number">${index + 1}</div>
                 <div class="chapter-content">
                     <h4 class="chapter-title">${chapter.title}</h4>
-                    <div class="chapter-lessons">
-                        ${chapter.study_lessons?.length || 0} レッスン
+                    <div class="chapter-meta">
+                        <span class="lesson-count">${chapter.study_lessons?.length || 0} 講座</span>
+                        <span class="chapter-duration">${this.getChapterDuration(chapter)}</span>
                     </div>
                 </div>
-                <button class="chapter-btn">受講する</button>
+                <div class="chapter-arrow">▶</div>
             </div>
         `).join('');
 
         container.innerHTML = `
             <div class="chapter-header">
                 <h2>${this.currentCourse.title}</h2>
-                <p>メインレッスン</p>
+                <p>章を選択してください</p>
             </div>
             <div class="chapters-list">
                 ${chaptersHTML}
             </div>
         `;
+
+        // 他の画面を非表示
+        this.hideOtherViews(['subjects-container']);
+    }
+
+    renderLessons() {
+        console.log('📋 [UI REQUIREMENTS] Rendering lessons in list format');
+        const container = document.getElementById('subjects-container');
+        if (!container || !this.currentChapter) return;
+
+        const lessons = this.currentChapter.study_lessons || [];
+        const lessonsHTML = lessons.map((lesson, index) => `
+            <div class="lesson-list-item" onclick="app.selectLesson('${lesson.id}')">
+                <div class="lesson-number">${index + 1}</div>
+                <div class="lesson-content">
+                    <h4 class="lesson-title">${lesson.title}</h4>
+                    <p class="lesson-description">${lesson.description}</p>
+                    <div class="lesson-meta">
+                        <span class="lesson-duration">⏱️ ${lesson.duration}</span>
+                        <span class="lesson-views">👁️ ${lesson.views} views</span>
+                    </div>
+                </div>
+                <div class="lesson-arrow">▶</div>
+            </div>
+        `).join('');
+
+        container.innerHTML = `
+            <div class="lesson-header">
+                <h2>${this.currentChapter.title}</h2>
+                <p>講座を選択してください</p>
+            </div>
+            <div class="lessons-list">
+                ${lessonsHTML}
+            </div>
+        `;
+
+        // 他の画面を非表示
+        this.hideOtherViews(['subjects-container']);
     }
 
     renderLesson() {
+        console.log('📋 [UI REQUIREMENTS] Rendering lesson with video and PDF/text content');
         const container = document.getElementById('subjects-container');
         if (!container || !this.currentLesson) return;
 
+        const lesson = this.currentLesson;
+        
         container.innerHTML = `
             <div class="lesson-container">
                 <div class="lesson-header">
-                    <h2>${this.currentLesson.title}</h2>
+                    <h2>${lesson.title}</h2>
+                    <p class="lesson-breadcrumb">${this.currentSubject?.name} > ${this.currentCourse?.title} > ${this.currentChapter?.title}</p>
                 </div>
+                
+                <div class="lesson-content-tabs">
+                    <button class="tab-btn active" onclick="app.switchTab('video')">📹 動画講義</button>
+                    <button class="tab-btn" onclick="app.switchTab('text')">📄 テキスト</button>
+                    ${lesson.pdf_url ? '<button class="tab-btn" onclick="app.switchTab(\'pdf\')">📋 PDF</button>' : ''}
+                </div>
+
                 <div class="lesson-content">
-                    <div class="video-container">
-                        <video controls poster="/api/placeholder/800/450">
-                            <source src="${this.currentLesson.video_url}" type="video/mp4">
-                            お使いのブラウザは動画再生に対応していません。
-                        </video>
+                    <!-- 動画セクション -->
+                    <div class="content-section video-section active" id="video-section">
+                        <div class="video-container">
+                            <video controls poster="/api/placeholder/800/450">
+                                <source src="${lesson.video_url}" type="video/mp4">
+                                お使いのブラウザは動画再生に対応していません。
+                            </video>
+                        </div>
                         <div class="video-info">
-                            <div class="video-title">${this.currentLesson.title}</div>
+                            <h3>${lesson.title}</h3>
                             <div class="video-stats">
-                                <span class="duration">⏱️ ${this.currentLesson.duration}</span>
-                                <span class="views">👁️ ${this.currentLesson.views} views</span>
+                                <span class="duration">⏱️ ${lesson.duration}</span>
+                                <span class="views">👁️ ${lesson.views} views</span>
+                            </div>
+                            <p class="video-description">${lesson.description}</p>
+                        </div>
+                    </div>
+
+                    <!-- テキストセクション -->
+                    <div class="content-section text-section" id="text-section">
+                        <div class="text-content">
+                            <h3>${lesson.title}</h3>
+                            <div class="text-body">
+                                ${lesson.text_content || 'テキスト内容が準備中です。'}
                             </div>
                         </div>
                     </div>
-                    <div class="lesson-description">
-                        <h3>アーカイブ格納方法の解説</h3>
-                        <p>${this.currentLesson.description}</p>
+
+                    <!-- PDFセクション -->
+                    ${lesson.pdf_url ? `
+                    <div class="content-section pdf-section" id="pdf-section">
+                        <div class="pdf-viewer">
+                            <div class="pdf-header">
+                                <h3>📋 PDF資料</h3>
+                                <a href="${lesson.pdf_url}" target="_blank" class="pdf-download-btn">
+                                    📥 ダウンロード
+                                </a>
+                            </div>
+                            <iframe src="${lesson.pdf_url}" width="100%" height="600px" frameborder="0">
+                                PDFを表示できません。<a href="${lesson.pdf_url}" target="_blank">こちらからダウンロード</a>してください。
+                            </iframe>
+                        </div>
                     </div>
+                    ` : ''}
+                </div>
+
+                <div class="lesson-navigation">
+                    <button class="nav-btn secondary" onclick="app.goBack()">← 戻る</button>
+                    <button class="nav-btn primary" onclick="app.nextLesson()">次の講座 →</button>
                 </div>
             </div>
         `;
+
+        // 他の画面を非表示
+        this.hideOtherViews(['subjects-container']);
     }
 
     selectSubject(subjectId) {
@@ -365,10 +613,74 @@ class StudyApp {
     selectChapter(chapterId) {
         if (!this.currentCourse) return;
         this.currentChapter = this.currentCourse.study_chapters.find(c => c.id === chapterId);
-        if (this.currentChapter && this.currentChapter.study_lessons?.length > 0) {
-            this.currentLesson = this.currentChapter.study_lessons[0];
-            this.currentView = 'lesson';
+        this.currentView = 'lessons';
+        this.renderCurrentView();
+    }
+
+    selectLesson(lessonId) {
+        if (!this.currentChapter) return;
+        this.currentLesson = this.currentChapter.study_lessons.find(l => l.id === lessonId);
+        this.currentView = 'lesson';
+        this.renderCurrentView();
+    }
+
+    // ヘルパーメソッド
+    getTotalLessons(course) {
+        let total = 0;
+        if (course.study_chapters) {
+            course.study_chapters.forEach(chapter => {
+                total += chapter.study_lessons?.length || 0;
+            });
+        }
+        return total;
+    }
+
+    getChapterDuration(chapter) {
+        if (!chapter.study_lessons) return '0 min';
+        let totalMinutes = 0;
+        chapter.study_lessons.forEach(lesson => {
+            const duration = lesson.duration || '0 min';
+            const minutes = parseInt(duration.match(/\d+/)?.[0] || '0');
+            totalMinutes += minutes;
+        });
+        return `${totalMinutes} min`;
+    }
+
+    changeThumbnail(courseId) {
+        const thumbnails = ['📚', '📖', '📝', '🎓', '💡', '🔬', '🎨', '🎵', '⚽', '🌟'];
+        const randomThumbnail = thumbnails[Math.floor(Math.random() * thumbnails.length)];
+        
+        // 現在の科目のコースを更新
+        if (this.currentSubject) {
+            const course = this.currentSubject.study_courses.find(c => c.id === courseId);
+            if (course) {
+                course.thumbnail = randomThumbnail;
+                this.renderCurrentView(); // 再描画
+            }
+        }
+    }
+
+    switchTab(tabName) {
+        // タブボタンの状態を更新
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        // コンテンツセクションの表示を切り替え
+        document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+        document.getElementById(`${tabName}-section`)?.classList.add('active');
+    }
+
+    nextLesson() {
+        if (!this.currentChapter || !this.currentLesson) return;
+        
+        const lessons = this.currentChapter.study_lessons;
+        const currentIndex = lessons.findIndex(l => l.id === this.currentLesson.id);
+        
+        if (currentIndex < lessons.length - 1) {
+            this.currentLesson = lessons[currentIndex + 1];
             this.renderCurrentView();
+        } else {
+            alert('これが最後の講座です。');
         }
     }
 
@@ -384,12 +696,15 @@ class StudyApp {
     goBack() {
         if (this.currentView === 'lesson') {
             this.currentLesson = null;
+            this.currentView = 'lessons';
+        } else if (this.currentView === 'lessons') {
+            this.currentChapter = null;
             this.currentView = 'chapters';
         } else if (this.currentView === 'chapters') {
-            this.currentChapter = null;
+            this.currentCourse = null;
             this.currentView = 'courses';
         } else if (this.currentView === 'courses') {
-            this.currentCourse = null;
+            this.currentSubject = null;
             this.currentView = 'subjects';
         }
         this.renderCurrentView();
@@ -463,15 +778,69 @@ const schools = loadSchools();
 // AuthManager（認証管理）
 class AuthManager {
     constructor() {
-        this.isLoggedIn = true;
-        this.currentUser = { name: "ゲスト", email: "guest@example.com", grade: "高校1年" };
+        this.isLoggedIn = false;
+        this.currentUser = null;
         this.currentSchool = { id: "production-school", name: "あなたの学習塾" };
+        this.checkLoginStatus();
     }
-    requireStudentAuth() { return true; }
-    getCurrentSchool() { return this.currentSchool; }
-    logout() { alert("ログアウト（ダミー）"); }
-    showMessage(msg, type) { alert(`[${type}] ${msg}`); }
-    changeSchool(schoolId) { this.currentSchool = { id: schoolId, name: schoolId }; }
+
+    checkLoginStatus() {
+        console.log('🔐 Checking login status...');
+        const userData = localStorage.getItem('sunaUser');
+        
+        if (userData) {
+            try {
+                this.currentUser = JSON.parse(userData);
+                this.isLoggedIn = true;
+                console.log('🔐 User is logged in:', this.currentUser.name);
+            } catch (error) {
+                console.error('🔐 Error parsing user data:', error);
+                this.logout();
+            }
+        } else {
+            console.log('🔐 No user data found');
+            this.isLoggedIn = false;
+        }
+    }
+
+    requireStudentAuth() {
+        if (!this.isLoggedIn || !this.currentUser) {
+            console.log('🔐 Authentication required, redirecting to login...');
+            this.redirectToLogin();
+            return false;
+        }
+        return true;
+    }
+
+    redirectToLogin() {
+        // 現在のページがログインページでない場合のみリダイレクト
+        if (!window.location.pathname.includes('login.html')) {
+            window.location.href = 'login.html';
+        }
+    }
+
+    getCurrentSchool() {
+        return this.currentSchool;
+    }
+
+    logout() {
+        console.log('🔐 Logging out user...');
+        localStorage.removeItem('sunaUser');
+        localStorage.removeItem('sunaRememberLogin');
+        this.isLoggedIn = false;
+        this.currentUser = null;
+        this.redirectToLogin();
+    }
+
+    showMessage(msg, type) {
+        // より良いメッセージ表示（将来的にはトースト通知など）
+        console.log(`[${type.toUpperCase()}] ${msg}`);
+        alert(`[${type}] ${msg}`);
+    }
+
+    changeSchool(schoolId) {
+        this.currentSchool = { id: schoolId, name: schoolId };
+    }
 }
 
 // 初期化
