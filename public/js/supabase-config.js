@@ -262,3 +262,4 @@ if (typeof window !== "undefined" && typeof migrateLocalSubjectsToSupabase === "
   window.migrateLocalSubjectsToSupabase = migrateLocalSubjectsToSupabase;
 }
 window.migrateLocalSubjectsToSupabase = migrateLocalSubjectsToSupabase;
+window.migrateLocalSubjectsToSupabase = migrateLocalSubjectsToSupabase;
