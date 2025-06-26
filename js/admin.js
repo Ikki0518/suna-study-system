@@ -20,15 +20,17 @@ class AdminApp {
 
     init() {
         console.log('AdminApp initialized');
+        // スクール管理を最初に初期化（データ作成のため）
+        this.initSchoolManagement();
         this.loadStudentData();
         this.renderStatsCards();
         this.renderStudentTable();
         this.renderRecentActivity();
         this.renderLessonsTable();
         this.bindEvents();
+        // スクールデータ作成後にUI更新
         this.updateAuthUI();
         this.checkUrlHash();
-        this.initSchoolManagement();
     }
 
     // 受講生データの読み込み
@@ -471,7 +473,11 @@ class AdminApp {
             if (schoolSelect) {
                 const schools = JSON.parse(localStorage.getItem('schools') || '{}');
                 const currentSchoolId = currentUser.schoolId || Object.keys(schools)[0];
-                schoolSelect.innerHTML = Object.values(schools).map(s=>`<option value="${s.id}" ${s.id===currentSchoolId?'selected':''}>${s.name}</option>`).join('');
+                
+                if (Object.keys(schools).length > 0) {
+                    schoolSelect.innerHTML = Object.values(schools).map(s=>`<option value="${s.id}" ${s.id===currentSchoolId?'selected':''}>${s.name}</option>`).join('');
+                }
+                
                 schoolSelect.onchange = () => {
                     currentUser.schoolId = schoolSelect.value;
                     localStorage.setItem('sunaUser', JSON.stringify(currentUser));
@@ -1046,6 +1052,9 @@ class AdminApp {
     
     // スクール管理の初期化
     initSchoolManagement() {
+        // スクールデータの初期化
+        this.initializeSchoolData();
+        
         // ヘッダーのスクール選択機能を初期化
         const schoolSelect = document.getElementById('admin-school-select');
         if (schoolSelect) {
@@ -1066,6 +1075,45 @@ class AdminApp {
         
         this.updateSchoolSelectorDisplay();
         this.updateActiveSchoolOption(this.currentSchool);
+    }
+    
+    // スクールデータの初期化
+    initializeSchoolData() {
+        let schools = JSON.parse(localStorage.getItem('schools') || '{}');
+        
+        // デフォルトのスクールデータがない場合は作成
+        if (Object.keys(schools).length === 0) {
+            schools = {
+                'elementary': {
+                    id: 'elementary',
+                    name: '🎒 小学部',
+                    description: '小学生向けコース',
+                    active: true,
+                    createdAt: new Date().toISOString()
+                },
+                'junior': {
+                    id: 'junior',
+                    name: '📖 中学部',
+                    description: '中学生向けコース',
+                    active: true,
+                    createdAt: new Date().toISOString()
+                },
+                'senior': {
+                    id: 'senior',
+                    name: '🎓 高校部',
+                    description: '高校生向けコース',
+                    active: true,
+                    createdAt: new Date().toISOString()
+                }
+            };
+            
+            localStorage.setItem('schools', JSON.stringify(schools));
+            console.log('DEBUG: Default school data created:', schools);
+        } else {
+            console.log('DEBUG: Existing school data found:', schools);
+        }
+        
+        return schools;
     }
     
     // スクール変更処理
