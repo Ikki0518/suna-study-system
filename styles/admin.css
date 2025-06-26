@@ -1182,3 +1182,61 @@
         justify-content: center;
     }
 }
+/* スクールバッジとタグのスタイル */
+.utage-school-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.utage-school-badge.elementary {
+    background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
+    color: #92400e;
+}
+
+.utage-school-badge.junior {
+    background: linear-gradient(135deg, #ddd6fe 0%, #8b5cf6 100%);
+    color: #5b21b6;
+}
+
+.utage-school-badge.senior {
+    background: linear-gradient(135deg, #d1fae5 0%, #10b981 100%);
+    color: #065f46;
+}
+
+.utage-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    margin: 2px 4px 2px 0;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: lowercase;
+}
+
+.utage-tag:hover {
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    color: #334155;
+}
+
+/* スクール切り替え時のアニメーション */
+.school-transition {
+    animation: schoolSwitch 0.5s ease-in-out;
+}
+
+@keyframes schoolSwitch {
+    0% { opacity: 1; transform: translateX(0); }
+    50% { opacity: 0.5; transform: translateX(-10px); }
+    100% { opacity: 1; transform: translateX(0); }
+}

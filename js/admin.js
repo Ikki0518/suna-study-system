@@ -42,12 +42,55 @@ class AdminApp {
             name: reg.name,
             email: reg.email,
             grade: reg.grade,
+            schoolDivision: this.getSchoolDivisionFromGrade(reg.grade),
+            tags: reg.tags || [],
             registrationDate: reg.registrationDate,
             lastAccess: reg.lastAccess || reg.registrationDate,
             status: reg.status || 'active',
             totalProgress: this.calculateTotalProgress(reg.email),
             subjects: this.getStudentSubjects(reg.email)
         }));
+        
+        // 現在選択されているスクールでフィルタリング
+        this.filterStudentsBySchool();
+    }
+
+    // 学年からスクール部門を判定
+    getSchoolDivisionFromGrade(grade) {
+        if (!grade) return 'elementary';
+        
+        if (grade.includes('小学')) {
+            return 'elementary';
+        } else if (grade.includes('中学')) {
+            return 'junior';
+        } else if (grade.includes('高校')) {
+            return 'senior';
+        }
+        
+        // デフォルトは小学部
+        return 'elementary';
+    }
+
+    // スクールによる受講生フィルタリング
+    filterStudentsBySchool() {
+        if (!this.currentSchool) return;
+        
+        // 全受講生を取得
+        const allStudents = this.students;
+        
+        // 現在選択されているスクールに該当する受講生のみをフィルタ
+        this.filteredStudents = allStudents.filter(student =>
+            student.schoolDivision === this.currentSchool
+        );
+        
+        console.log(`${this.currentSchool}スクールの受講生: ${this.filteredStudents.length}人`);
+    }
+
+    // 現在選択中のスクールの受講生を取得
+    getCurrentSchoolStudents() {
+        return this.filteredStudents || this.students.filter(student =>
+            student.schoolDivision === this.currentSchool
+        );
     }
 
     // 受講生の総合進捗を計算
@@ -83,10 +126,13 @@ class AdminApp {
         const statsGrid = document.getElementById('stats-grid');
         if (!statsGrid) return;
 
-        const activeStudents = this.students.filter(s => s.status === 'active').length;
-        const totalStudents = this.students.length;
-        const avgProgress = totalStudents > 0 ? Math.round(this.students.reduce((sum, s) => sum + s.totalProgress, 0) / totalStudents) : 0;
-        const highPerformers = this.students.filter(s => s.totalProgress >= 70).length;
+        // 現在選択中のスクールの受講生を取得
+        const currentStudents = this.getCurrentSchoolStudents();
+        
+        const activeStudents = currentStudents.filter(s => s.status === 'active').length;
+        const totalStudents = currentStudents.length;
+        const avgProgress = totalStudents > 0 ? Math.round(currentStudents.reduce((sum, s) => sum + s.totalProgress, 0) / totalStudents) : 0;
+        const highPerformers = currentStudents.filter(s => s.totalProgress >= 70).length;
 
         // 科目数を取得
         const subjects = JSON.parse(localStorage.getItem('subjects') || '{}');
@@ -226,8 +272,14 @@ class AdminApp {
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span style="font-weight: 500;">${student.name}</span>
                         <span style="color: #64748b; font-size: 12px;">${student.grade || ''}</span>
+                        ${this.getSchoolDivisionBadge(student.schoolDivision)}
                     </div>
                     <div style="color: #64748b; font-size: 12px;">${student.email}</div>
+                    ${student.tags && student.tags.length > 0 ? `
+                        <div style="margin-top: 4px;">
+                            ${student.tags.map(tag => `<span class="utage-tag">${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
                 </td>
                 <td><span class="utage-status-badge ${student.status}">${this.getStatusText(student.status)}</span></td>
                 <td>${this.formatDate(student.registrationDate)}</td>
@@ -370,14 +422,19 @@ class AdminApp {
     // フィルタリングされた受講生を取得
     getFilteredStudents() {
         return this.students.filter(student => {
-            const matchesSearch = !this.currentFilter.search || 
-                student.name.toLowerCase().includes(this.currentFilter.search.toLowerCase()) ||
-                student.email.toLowerCase().includes(this.currentFilter.search.toLowerCase());
+            // スクールフィルタ（現在選択中のスクールに所属する受講生のみ）
+            const matchesSchool = student.schoolDivision === this.currentSchool;
             
-            const matchesProgress = !this.currentFilter.progress || 
+            const matchesSearch = !this.currentFilter.search ||
+                student.name.toLowerCase().includes(this.currentFilter.search.toLowerCase()) ||
+                student.email.toLowerCase().includes(this.currentFilter.search.toLowerCase()) ||
+                (student.grade && student.grade.toLowerCase().includes(this.currentFilter.search.toLowerCase())) ||
+                (student.tags && student.tags.some(tag => tag.toLowerCase().includes(this.currentFilter.search.toLowerCase())));
+            
+            const matchesProgress = !this.currentFilter.progress ||
                 this.getProgressCategory(student.totalProgress) === this.currentFilter.progress;
             
-            return matchesSearch && matchesProgress;
+            return matchesSchool && matchesSearch && matchesProgress;
         });
     }
 
@@ -522,6 +579,16 @@ class AdminApp {
         return 'low';
     }
 
+    // スクール部門バッジを取得
+    getSchoolDivisionBadge(schoolDivision) {
+        const badges = {
+            'elementary': '<span class="utage-school-badge elementary">🎒 小学部</span>',
+            'junior': '<span class="utage-school-badge junior">📖 中学部</span>',
+            'senior': '<span class="utage-school-badge senior">🎓 高校部</span>'
+        };
+        return badges[schoolDivision] || badges['elementary'];
+    }
+
     getRandomSubject() {
         const subjects = ['国語', '数学', '英語', '理科', '社会'];
         return subjects[Math.floor(Math.random() * subjects.length)];
@@ -572,11 +639,20 @@ class AdminApp {
         const email = document.getElementById('reg-email')?.value || document.getElementById('invite-email')?.value;
         const name = document.getElementById('reg-name')?.value || document.getElementById('invite-name')?.value;
         const grade = document.getElementById('reg-grade')?.value || document.getElementById('invite-grade')?.value;
+        const tagsInput = document.getElementById('reg-tags')?.value || '';
 
         if (!email || !name || !grade) {
             this.showMessage('すべての項目を入力してください', 'error');
             return;
         }
+
+        // タグの処理（カンマ区切りの文字列を配列に変換）
+        const tags = tagsInput.split(',')
+            .map(tag => tag.trim())
+            .filter(tag => tag.length > 0);
+
+        // 学年からスクール部門を自動判定
+        const schoolDivision = this.getSchoolDivisionFromGrade(grade);
 
         // パスワード生成
         const password = this.generatePassword();
@@ -587,6 +663,8 @@ class AdminApp {
             email: email,
             name: name,
             grade: grade,
+            schoolDivision: schoolDivision,
+            tags: tags,
             password: password,
             registrationDate: new Date().toISOString().split('T')[0],
             status: 'active',
@@ -1120,6 +1198,15 @@ class AdminApp {
     handleSchoolChange(schoolId, schoolName) {
         console.log('School changed to:', schoolId, schoolName);
         
+        // アニメーション効果を追加
+        const mainContent = document.querySelector('.utage-main');
+        if (mainContent) {
+            mainContent.classList.add('school-transition');
+            setTimeout(() => {
+                mainContent.classList.remove('school-transition');
+            }, 500);
+        }
+        
         this.currentSchool = schoolId;
         localStorage.setItem('selectedSchool', schoolId);
         
@@ -1142,8 +1229,15 @@ class AdminApp {
             this.renderTopStudents();
         }
         
-        // 成功メッセージを表示
-        this.showMessage(`${schoolName}に切り替えました`, 'success');
+        // 現在のスクール情報を表示
+        const schoolInfo = this.getSchoolInfo(schoolId);
+        this.showMessage(`${schoolInfo.name}に切り替えました (${this.getCurrentSchoolStudents().length}名)`, 'success');
+    }
+    
+    // スクール情報を取得
+    getSchoolInfo(schoolId) {
+        const schools = JSON.parse(localStorage.getItem('schools') || '{}');
+        return schools[schoolId] || { name: 'Unknown School', description: '' };
     }
     
     // スクールメニューの開閉切り替え
