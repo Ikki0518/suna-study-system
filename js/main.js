@@ -3371,11 +3371,21 @@ class StudyApp {
         if (homeView) {
             homeView.style.display = 'block';
         }
-        
-        // 科目コンテナを取得
-        const subjectsContainer = document.getElementById('subjects-container');
+
+        // subjects-containerがなければhomeViewを科目一覧用テンプレートで上書き
+        let subjectsContainer = document.getElementById('subjects-container');
+        if (!subjectsContainer && homeView) {
+            homeView.innerHTML = `
+                <div class="subjects-header">
+                    <h2>学習科目を選択してください</h2>
+                    <p>興味のある科目から学習を始めましょう</p>
+                </div>
+                <div id="subjects-container"></div>
+            `;
+            subjectsContainer = document.getElementById('subjects-container');
+        }
         if (!subjectsContainer) {
-            console.warn('[DEBUG] subjectsContainer not found in renderSubjects!');
+            console.warn('[DEBUG] subjectsContainer not found in renderSubjects! (after force insert)');
             return;
         }
         
