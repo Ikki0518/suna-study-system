@@ -1,29 +1,269 @@
-// Support AI Chat Widget
+// Support AI Sidebar Chat
 // Author: Suna Study System
 // ------------------------------
-// This script dynamically injects a chat widget on the bottom-right of the page for students.
-// It communicates with a backend endpoint (e.g., Vercel Serverless Function or Supabase Edge Function)
-// that wraps the OpenAI Chat Completion API. Update ENDPOINT_URL if you expose the function elsewhere.
+// 右側サイドバー式のAIチャット機能
 // ------------------------------
 
-console.log('🤖 Support AI script loaded!');
+console.log('🤖 AI Sidebar Chat script loaded!');
 
 (function () {
-    console.log('🤖 Support AI IIFE started');
-    // Use relative path in normal hosted environments. If opened via file:// protocol, fallback to localhost:8000
+    console.log('🤖 AI Sidebar Chat IIFE started');
+    
+    // API エンドポイント
     const ENDPOINT_URL = (window.location.protocol === 'file:' ? 'http://localhost:8000' : '') + '/api/support-ai';
-
-    // Keeps conversation context (optional, first N exchanges)
+    
+    // 会話履歴を保持
     let conversationHistory = [];
+    let isAIResponding = false;
 
-    // Utility to create DOM from HTML string
-    function htmlToElement(html) {
-        const template = document.createElement('template');
-        template.innerHTML = html.trim();
-        return template.content.firstChild;
+    // DOM要素
+    let aiToggleBtn, aiSidebar, aiCloseBtn, aiInput, aiSendBtn, aiMessages, aiLoading, mainContainer;
+
+    // 初期化関数
+    function initAISidebar() {
+        console.log('🤖 Initializing AI Sidebar...');
+        
+        // DOM要素を取得
+        aiToggleBtn = document.getElementById('ai-toggle-btn');
+        aiSidebar = document.getElementById('ai-sidebar');
+        aiCloseBtn = document.getElementById('ai-close-btn');
+        aiInput = document.getElementById('ai-input');
+        aiSendBtn = document.getElementById('ai-send-btn');
+        aiMessages = document.getElementById('ai-messages');
+        aiLoading = document.getElementById('ai-loading');
+        mainContainer = document.getElementById('main-container');
+
+        if (!aiToggleBtn || !aiSidebar) {
+            console.warn('🤖 AI Sidebar elements not found, skipping initialization');
+            return;
+        }
+
+        console.log('🤖 AI Sidebar elements found, setting up event listeners...');
+
+        // イベントリスナーを設定
+        setupEventListeners();
+        
+        // 入力フィールドの状態を監視
+        monitorInputState();
+
+        console.log('🤖 AI Sidebar initialization complete');
     }
 
-    // 現在の講座コンテキストを取得する関数
+    // イベントリスナーの設定
+    function setupEventListeners() {
+        // AIトグルボタン
+        aiToggleBtn.addEventListener('click', openAISidebar);
+        
+        // AI閉じるボタン
+        aiCloseBtn.addEventListener('click', closeAISidebar);
+        
+        // ESCキーで閉じる
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && aiSidebar.classList.contains('open')) {
+                closeAISidebar();
+            }
+        });
+        
+        // 送信ボタン
+        aiSendBtn.addEventListener('click', handleSendMessage);
+        
+        // Enter キーで送信
+        aiInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMessage();
+            }
+        });
+        
+        // 入力欄のリサイズ
+        aiInput.addEventListener('input', autoResizeTextarea);
+    }
+
+    // 入力状態の監視
+    function monitorInputState() {
+        aiInput.addEventListener('input', () => {
+            const hasText = aiInput.value.trim().length > 0;
+            aiSendBtn.disabled = !hasText || isAIResponding;
+        });
+    }
+
+    // テキストエリアの自動リサイズ
+    function autoResizeTextarea() {
+        aiInput.style.height = 'auto';
+        aiInput.style.height = Math.min(aiInput.scrollHeight, 120) + 'px';
+    }
+
+    // AIサイドバーを開く
+    function openAISidebar() {
+        console.log('🤖 Opening AI Sidebar...');
+        aiSidebar.classList.add('open');
+        mainContainer.classList.add('ai-open');
+        aiInput.focus();
+        
+        // 初回開いた時のウェルカムメッセージ（まだメッセージがない場合）
+        if (conversationHistory.length === 0) {
+            // ウェルカムメッセージは既にHTMLに含まれているのでスキップ
+        }
+    }
+
+    // AIサイドバーを閉じる
+    function closeAISidebar() {
+        console.log('🤖 Closing AI Sidebar...');
+        aiSidebar.classList.remove('open');
+        mainContainer.classList.remove('ai-open');
+    }
+
+    // メッセージ送信処理
+    async function handleSendMessage() {
+        const message = aiInput.value.trim();
+        if (!message || isAIResponding) return;
+
+        console.log('🤖 Sending message:', message);
+
+        // ユーザーメッセージを表示
+        appendMessage('user', message);
+        
+        // 会話履歴に追加
+        conversationHistory.push({ role: 'user', content: message });
+        
+        // 入力欄をクリア
+        aiInput.value = '';
+        autoResizeTextarea();
+        
+        // AI応答中状態に設定
+        setAIResponding(true);
+        
+        try {
+            // 現在の講座コンテキストを取得
+            const courseContext = getCurrentCourseContext();
+            
+            // リクエストボディを構築
+            const requestBody = {
+                messages: conversationHistory.slice(-10) // 最新10件の会話を送信
+            };
+            
+            // 講座コンテキストがある場合は追加
+            if (courseContext) {
+                requestBody.courseContext = courseContext;
+                console.log('🤖 Course context:', courseContext);
+            }
+
+            // API呼び出し
+            const response = await fetch(ENDPOINT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            const aiReply = data.reply || 'すみません、回答を生成できませんでした。';
+
+            // AIメッセージを表示
+            appendMessage('assistant', aiReply);
+            
+            // 会話履歴に追加
+            conversationHistory.push({ role: 'assistant', content: aiReply });
+            
+            console.log('🤖 AI response received successfully');
+            
+        } catch (error) {
+            console.error('🤖 AI API Error:', error);
+            appendMessage('assistant', 'すみません、エラーが発生しました。しばらく時間をおいてから再度お試しください。');
+        } finally {
+            setAIResponding(false);
+        }
+    }
+
+    // AI応答中状態の管理
+    function setAIResponding(responding) {
+        isAIResponding = responding;
+        aiSendBtn.disabled = responding || aiInput.value.trim().length === 0;
+        
+        if (responding) {
+            aiLoading.style.display = 'flex';
+        } else {
+            aiLoading.style.display = 'none';
+        }
+    }
+
+    // メッセージを追加
+    function appendMessage(role, content) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `ai-message ai-message-${role}`;
+        
+        // アバター
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = 'ai-message-avatar';
+        
+        if (role === 'assistant') {
+            avatarDiv.innerHTML = `
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="12" fill="#10B981"/>
+                    <path d="M8 10H16M8 14H16" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            `;
+        } else {
+            avatarDiv.textContent = 'あ'; // ユーザーの初文字（仮）
+        }
+        
+        // メッセージ内容
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'ai-message-content';
+        
+        // HTMLフォーマット処理
+        if (role === 'assistant') {
+            contentDiv.innerHTML = formatAIMessage(content);
+        } else {
+            contentDiv.textContent = content;
+        }
+        
+        messageDiv.appendChild(avatarDiv);
+        messageDiv.appendChild(contentDiv);
+        
+        aiMessages.appendChild(messageDiv);
+        
+        // スクロールを最下部に
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+        
+        return messageDiv;
+    }
+
+    // AIメッセージのフォーマット処理
+    function formatAIMessage(text) {
+        // セキュリティのため基本的なHTMLエスケープ
+        let escaped = text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        
+        // 段落分け（2つ以上の連続する改行）
+        const paragraphs = escaped.split(/\n\s*\n/).filter(p => p.trim());
+        
+        return paragraphs.map(paragraph => {
+            // 各段落内の処理
+            let processed = paragraph
+                // 改行文字を <br> に変換
+                .replace(/\n/g, '<br>')
+                // 太字（**text**）
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                // イタリック（*text*）
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                // 箇条書き（- item）
+                .replace(/^- (.+)$/gm, '&bull; $1')
+                // 番号付きリスト（1. item）
+                .replace(/^(\d+)\. (.+)$/gm, '<strong>$1.</strong> $2');
+            
+            return `<p>${processed}</p>`;
+        }).join('');
+    }
+
+    // 現在の講座コンテキストを取得
     function getCurrentCourseContext() {
         try {
             // 現在表示されているレッスンの情報を取得
@@ -63,7 +303,7 @@ console.log('🤖 Support AI script loaded!');
                 }
             }
 
-            // 現在のレッスンデータがある場合はそれも使用
+            // StudyAppの現在のレッスンデータがある場合はそれも使用
             if (window.app && window.app.currentLesson) {
                 const lesson = window.app.currentLesson;
                 return {
@@ -82,189 +322,23 @@ console.log('🤖 Support AI script loaded!');
             } : null;
 
         } catch (error) {
-            console.warn('講座コンテキストの取得に失敗しました:', error);
+            console.warn('🤖 Failed to get course context:', error);
             return null;
         }
     }
 
-    // Append the widget container to body
-    function mountWidget() {
-        console.log('🤖 Support AI mountWidget() called');
-        if (document.getElementById('support-ai-widget')) {
-            console.log('🤖 Support AI widget already exists, skipping mount');
-            return; // Already mounted
+    // DOM準備完了後に初期化
+    function waitForDOM() {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAISidebar);
+        } else {
+            // 少し遅延させてHTMLの動的生成を待つ
+            setTimeout(initAISidebar, 100);
         }
-        console.log('🤖 Creating new Support AI widget');
-
-        const widgetHTML = `
-            <div id="support-ai-widget">
-                <button class="support-ai-toggle" id="support-ai-toggle" aria-label="チャットを開く" title="質問はこちら">💬</button>
-
-                <div class="support-ai-chat hidden" id="support-ai-chat" role="dialog" aria-label="学習サポートAIチャット">
-                    <div class="support-ai-header">
-                        <span>学習サポートAI</span>
-                        <button class="support-ai-close" id="support-ai-close" aria-label="閉じる">&times;</button>
-                    </div>
-                    <div class="support-ai-messages" id="support-ai-messages"></div>
-                    <form class="support-ai-form" id="support-ai-form">
-                        <input type="text" id="support-ai-input" placeholder="質問を入力..." aria-label="メッセージ" required autocomplete="off" />
-                        <button type="submit" aria-label="送信">送信</button>
-                    </form>
-                </div>
-            </div>
-        `;
-
-        const widget = htmlToElement(widgetHTML);
-        document.body.appendChild(widget);
-
-        // Add event listeners
-        const toggleBtn = document.getElementById('support-ai-toggle');
-        const chatBox = document.getElementById('support-ai-chat');
-        const closeBtn = document.getElementById('support-ai-close');
-        const form = document.getElementById('support-ai-form');
-        const input = document.getElementById('support-ai-input');
-        const messagesDiv = document.getElementById('support-ai-messages');
-
-        // Helper to add message bubbles
-        function appendMessage(sender, text) {
-            const msgEl = document.createElement('div');
-            msgEl.className = `support-ai-message ${sender}`;
-            
-            if (sender === 'ai') {
-                // AIメッセージの場合は改行と段落を適切に処理
-                const formattedText = formatAIMessage(text);
-                msgEl.innerHTML = formattedText;
-            } else {
-                // ユーザーメッセージはそのまま
-                msgEl.textContent = text;
-            }
-            
-            messagesDiv.appendChild(msgEl);
-            // Scroll to bottom
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            return msgEl;
-        }
-
-        // AIメッセージのフォーマット処理
-        function formatAIMessage(text) {
-            // セキュリティのため基本的なHTMLエスケープ
-            let escaped = text
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-            
-            // 改行文字を <br> に変換
-            escaped = escaped.replace(/\n/g, '<br>');
-            
-            // 箇条書き対応（- で始まる行）
-            escaped = escaped.replace(/^- (.+)$/gm, '&bull; $1');
-            
-            // 番号付きリスト対応（1. で始まる行）
-            escaped = escaped.replace(/^(\d+)\. (.+)$/gm, '<strong>$1.</strong> $2');
-            
-            // 見出し風の行（** で囲まれた部分）
-            escaped = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-            
-            // 段落分け（2つ以上の連続する改行）
-            escaped = escaped.replace(/(<br>\s*){2,}/g, '</p><p>');
-            
-            // 段落タグで全体を囲む
-            if (escaped.includes('</p><p>')) {
-                escaped = '<p>' + escaped + '</p>';
-            }
-            
-            return escaped;
-        }
-
-        toggleBtn.addEventListener('click', () => {
-            chatBox.classList.toggle('hidden');
-            if (!chatBox.classList.contains('hidden')) {
-                input.focus();
-            }
-        });
-
-        closeBtn.addEventListener('click', () => {
-            chatBox.classList.add('hidden');
-        });
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const text = input.value.trim();
-            if (!text) return;
-
-            // Show user message
-            appendMessage('user', text);
-            // Add to history
-            conversationHistory.push({ role: 'user', content: text });
-            // Reset field
-            input.value = '';
-
-            // Placeholder AI message (spinner)
-            const aiMsgEl = appendMessage('ai', '回答を考えています...');
-
-            try {
-                // 現在の講座コンテキストを取得
-                const courseContext = getCurrentCourseContext();
-                
-                // リクエストボディを構築
-                const requestBody = {
-                    messages: conversationHistory.slice(-10) // send last 10 turns
-                };
-                
-                // 講座コンテキストがある場合は追加
-                if (courseContext) {
-                    requestBody.courseContext = courseContext;
-                    console.log('講座コンテキストを送信:', courseContext);
-                }
-
-                const response = await fetch(ENDPOINT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(requestBody)
-                });
-
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                const replyText = data.reply || 'すみません、うまく応答できませんでした。';
-
-                // 改行文字を<br>タグに変換して見やすくする
-                const formattedReply = replyText
-                    .replace(/\n\n/g, '<br><br>')  // 段落区切り
-                    .replace(/\n/g, '<br>')        // 改行
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // 太字
-                    .replace(/\*(.*?)\*/g, '<em>$1</em>');  // イタリック
-                
-                aiMsgEl.innerHTML = formattedReply;
-                conversationHistory.push({ role: 'assistant', content: replyText });
-                
-                // デバッグ情報をコンソールに出力
-                if (data.hasContext) {
-                    console.log('✅ 講座コンテキストを使用して回答しました');
-                }
-                if (data.model) {
-                    console.log('使用モデル:', data.model);
-                }
-                
-            } catch (err) {
-                console.error('Support AI error:', err);
-                aiMsgEl.textContent = 'エラーが発生しました。時間をおいて再度お試しください。';
-            }
-        });
     }
 
-    // Wait for DOM to be ready
-    console.log('🤖 Checking DOM ready state:', document.readyState);
-    if (document.readyState === 'loading') {
-        console.log('🤖 DOM loading, adding event listener');
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🤖 DOMContentLoaded fired, mounting widget');
-            mountWidget();
-        });
-    } else {
-        console.log('🤖 DOM already ready, mounting widget immediately');
-        mountWidget();
-    }
-    console.log('🤖 Support AI script setup complete');
+    // 初期化実行
+    waitForDOM();
+    
+    console.log('🤖 AI Sidebar Chat script setup complete');
 })();

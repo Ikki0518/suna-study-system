@@ -52,14 +52,14 @@
     <nav class="breadcrumb" id="breadcrumb">
         <div class="container">
             <div class="breadcrumb-content">
-                <a href="#" onclick="app?.showHome()" class="breadcrumb-item">Home</a>
+                <a href="#" onclick="app?.goHome()" class="breadcrumb-item">Home</a>
             </div>
         </div>
     </nav>
 
     <!-- メインコンテンツ -->
     <main class="main-content">
-        <div class="container">
+        <div class="container main-container" id="main-container">
             <!-- サイドバー -->
             <aside class="sidebar" id="sidebar">
                 <div class="sidebar-content">
@@ -72,6 +72,16 @@
 
             <!-- メインエリア -->
             <div class="content-area" id="main-content">
+                <!-- AIトグルボタン -->
+                <button class="ai-toggle-btn" id="ai-toggle-btn" title="AI講師に質問する">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H11V21H5V19H13V21H17V23H19C20.11 23 21 22.11 21 21V9ZM15 3L19 7H15V3ZM9 7V9H11V7H9ZM9 11V13H11V11H9ZM9 15V17H11V15H9Z" fill="currentColor"/>
+                        <circle cx="19" cy="19" r="3" fill="#10B981"/>
+                        <path d="M19 17.5V20.5M17.5 19H20.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>AI講師</span>
+                </button>
+
                 <!-- ホーム画面 -->
                 <div class="home-view" id="home-view">
                     <div id="subjects-container"></div>
@@ -87,6 +97,72 @@
                     <!-- レッスン詳細はJavaScriptで生成 -->
                 </div>
             </div>
+
+            <!-- AIサイドバー -->
+            <aside class="ai-sidebar" id="ai-sidebar">
+                <div class="ai-sidebar-header">
+                    <div class="ai-title">
+                        <div class="ai-avatar">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="16" fill="#10B981"/>
+                                <path d="M12 12H20M12 16H20M12 20H16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div class="ai-info">
+                            <h3>AI講師アシスタント</h3>
+                            <p>いつでも質問してください</p>
+                        </div>
+                    </div>
+                    <button class="ai-close-btn" id="ai-close-btn" title="AIチャットを閉じる">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="ai-chat-container">
+                    <div class="ai-messages" id="ai-messages">
+                        <div class="ai-message ai-message-assistant">
+                            <div class="ai-message-avatar">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="12" cy="12" r="12" fill="#10B981"/>
+                                    <path d="M8 10H16M8 14H16" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div class="ai-message-content">
+                                <p>こんにちは！私はあなたの学習をサポートするAI講師アシスタントです。</p>
+                                <p>分からないことがあれば、いつでも気軽に質問してくださいね。一緒に頑張りましょう！</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-input-area">
+                        <div class="ai-input-container">
+                            <textarea
+                                id="ai-input"
+                                placeholder="質問を入力してください..."
+                                rows="3"
+                                maxlength="1000"
+                            ></textarea>
+                            <button class="ai-send-btn" id="ai-send-btn" disabled>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2 10L18 2L15 10L18 18L2 10Z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="ai-input-help">
+                            <small>Enter キーで送信 / Shift + Enter で改行</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ai-loading" id="ai-loading" style="display: none;">
+                    <div class="ai-loading-content">
+                        <div class="ai-loading-spinner"></div>
+                        <p>AI講師が回答を考えています...</p>
+                    </div>
+                </div>
+            </aside>
         </div>
     </main>
 
