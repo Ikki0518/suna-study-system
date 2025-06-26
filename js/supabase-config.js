@@ -97,6 +97,167 @@ class SupabaseManager {
             return { success: false, error: error.message };
         }
     }
+    
+        // === 科目（subjects）CRUD ===
+    
+        // 科目一覧取得
+        async getSubjects() {
+            const { data, error } = await this.supabase
+                .from('subjects')
+                .select('*')
+                .order('created_at');
+            if (error) {
+                console.error('getSubjects error:', error);
+                return [];
+            }
+            return data;
+        }
+    
+        // 科目追加
+        async addSubject(subject) {
+            const { data, error } = await this.supabase
+                .from('subjects')
+                .insert([subject])
+                .select();
+            if (error) {
+                console.error('addSubject error:', error);
+                return null;
+            }
+            return data[0];
+        }
+    
+        // 科目更新
+        async updateSubject(id, updates) {
+            const { data, error } = await this.supabase
+                .from('subjects')
+                .update(updates)
+                .eq('id', id)
+                .select();
+            if (error) {
+                console.error('updateSubject error:', error);
+                return null;
+            }
+            return data[0];
+        }
+    
+        // 科目削除
+        async deleteSubject(id) {
+            const { error } = await this.supabase
+                .from('subjects')
+                .delete()
+                .eq('id', id);
+            if (error) {
+                console.error('deleteSubject error:', error);
+                return false;
+            }
+            return true;
+        }
+    
+        // === コース（courses）CRUD ===
+    
+        async getCourses(subjectId) {
+            const query = this.supabase
+                .from('courses')
+                .select('*')
+                .order('created_at');
+            if (subjectId) query.eq('subject_id', subjectId);
+            const { data, error } = await query;
+            if (error) {
+                console.error('getCourses error:', error);
+                return [];
+            }
+            return data;
+        }
+    
+        async addCourse(course) {
+            const { data, error } = await this.supabase
+                .from('courses')
+                .insert([course])
+                .select();
+            if (error) {
+                console.error('addCourse error:', error);
+                return null;
+            }
+            return data[0];
+        }
+    
+        async updateCourse(id, updates) {
+            const { data, error } = await this.supabase
+                .from('courses')
+                .update(updates)
+                .eq('id', id)
+                .select();
+            if (error) {
+                console.error('updateCourse error:', error);
+                return null;
+            }
+            return data[0];
+        }
+    
+        async deleteCourse(id) {
+            const { error } = await this.supabase
+                .from('courses')
+                .delete()
+                .eq('id', id);
+            if (error) {
+                console.error('deleteCourse error:', error);
+                return false;
+            }
+            return true;
+        }
+    
+        // === レッスン（lessons）CRUD ===
+    
+        async getLessons(courseId) {
+            const query = this.supabase
+                .from('lessons')
+                .select('*')
+                .order('created_at');
+            if (courseId) query.eq('course_id', courseId);
+            const { data, error } = await query;
+            if (error) {
+                console.error('getLessons error:', error);
+                return [];
+            }
+            return data;
+        }
+    
+        async addLesson(lesson) {
+            const { data, error } = await this.supabase
+                .from('lessons')
+                .insert([lesson])
+                .select();
+            if (error) {
+                console.error('addLesson error:', error);
+                return null;
+            }
+            return data[0];
+        }
+    
+        async updateLesson(id, updates) {
+            const { data, error } = await this.supabase
+                .from('lessons')
+                .update(updates)
+                .eq('id', id)
+                .select();
+            if (error) {
+                console.error('updateLesson error:', error);
+                return null;
+            }
+            return data[0];
+        }
+    
+        async deleteLesson(id) {
+            const { error } = await this.supabase
+                .from('lessons')
+                .delete()
+                .eq('id', id);
+            if (error) {
+                console.error('deleteLesson error:', error);
+                return false;
+            }
+            return true;
+        }
 
     // 招待の作成
     async createInvitation(invitationData) {

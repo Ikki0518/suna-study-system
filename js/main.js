@@ -21,22 +21,16 @@ const schools = loadSchools();
 
 // 科目とコースデータの定義（管理者が作成するまで空の状態）
 // 各スクールで異なるコンテンツを配信可能
-let subjects = {};
-try {
-    const storedSubjects = localStorage.getItem('subjects');
-    if (storedSubjects) {
-        subjects = JSON.parse(storedSubjects);
+// Supabase経由でsubjects一覧を取得し、描画
+let subjects = [];
+window.addEventListener('DOMContentLoaded', async () => {
+    if (window.supabaseManager) {
+        subjects = await window.supabaseManager.getSubjects();
+        if (typeof renderSubjects === 'function') {
+            renderSubjects(subjects);
+        }
     }
-} catch (e) {
-    console.warn('[DEBUG] Failed to parse localStorage subjects, using default.', e);
-    subjects = {};
-}
-if (Object.keys(subjects).length === 0) {
-    subjects = {
-        // ここに元のsubjects定義（24〜2731行目の内容）を貼り付ける必要がある
-        // 実際の修正時は元のsubjects定義をここにまるごと移動
-    };
-}
+});
 
 // ...（2733行目以降は元のまま続く）
 const lessonContents = {
