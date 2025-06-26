@@ -46,3 +46,13 @@ const lessonContents = {
     },
     // ...（以降省略）
 };
+// subjects取得後のデバッグ用ログ
+window.addEventListener('DOMContentLoaded', async () => {
+    if (window.supabaseManager) {
+        subjects = await window.supabaseManager.getSubjects();
+        console.log('[DEBUG] Supabaseから取得したsubjects:', subjects);
+        if (typeof renderSubjects === 'function') {
+            renderSubjects(subjects);
+        }
+    }
+});
