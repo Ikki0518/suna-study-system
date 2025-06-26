@@ -252,10 +252,13 @@ console.log('🤖 AI Sidebar Chat script loaded!');
         const contentDiv = document.createElement('div');
         contentDiv.className = 'ai-message-content ai-typing-content';
         contentDiv.innerHTML = `
-            <div class="typing-dots">
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
+            <div class="typing-wrapper">
+                <span class="typing-text">思考中</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
             </div>
         `;
         
