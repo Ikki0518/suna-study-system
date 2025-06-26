@@ -3330,6 +3330,7 @@ class StudyApp {
         // 同一タブ内での変更も監視（5秒間隔）
         setInterval(() => {
             if (this._suspendStorageListener) return;
+            console.log('[DEBUG][storageListener] currentView:', this.currentView);
             const currentKeys = Object.keys(subjects);
             const storedSubjects = localStorage.getItem('subjects');
             if (storedSubjects) {
@@ -3338,7 +3339,7 @@ class StudyApp {
                 
                 // キーの数が変わった場合は再読み込み
                 if (currentKeys.length !== storedKeys.length) {
-                    console.log('Subjects count changed, reloading...');
+                    console.log('Subjects count changed, reloading... currentView:', this.currentView);
                     this.loadSubjectsFromStorage();
                     this.renderSubjects();
                 }
