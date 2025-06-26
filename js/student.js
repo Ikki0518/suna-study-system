@@ -6,18 +6,32 @@ class StudentApp extends StudyApp {
     }
 
     initStudentSpecific() {
-        console.log('Initializing student-specific features...');
-        console.log('AuthManager exists:', !!window.authManager);
-        console.log('User data:', window.authManager?.currentUser);
+        console.log('🔍 [DIAGNOSIS] Initializing student-specific features...');
+        console.log('🔍 [DIAGNOSIS] AuthManager exists:', !!window.authManager);
+        console.log('🔍 [DIAGNOSIS] User data:', window.authManager?.currentUser);
+        console.log('🔍 [DIAGNOSIS] Current subjects data:', this.subjects);
+        console.log('🔍 [DIAGNOSIS] Current view:', this.currentView);
+        console.log('🔍 [DIAGNOSIS] DOM elements check:');
+        console.log('🔍 [DIAGNOSIS] - subjects-container:', !!document.getElementById('subjects-container'));
+        console.log('🔍 [DIAGNOSIS] - main-content:', !!document.getElementById('main-content'));
+        console.log('🔍 [DIAGNOSIS] - home-view:', !!document.getElementById('home-view'));
         
         // 受講生権限チェック
         if (!window.authManager || !window.authManager.requireStudentAuth()) {
-            console.log('Student auth check failed');
+            console.log('🔍 [DIAGNOSIS] Student auth check failed');
             return;
         }
         
-        console.log('StudentApp initialized for student:', window.authManager.currentUser.name);
+        console.log('🔍 [DIAGNOSIS] StudentApp initialized for student:', window.authManager.currentUser.name);
         this.updateStudentAuthUI();
+        
+        // データとUI状態の診断
+        setTimeout(() => {
+            console.log('🔍 [DIAGNOSIS] Post-init check:');
+            console.log('🔍 [DIAGNOSIS] - Subjects loaded:', this.subjects?.length || 0);
+            console.log('🔍 [DIAGNOSIS] - Current view after init:', this.currentView);
+            console.log('🔍 [DIAGNOSIS] - subjects-container content:', document.getElementById('subjects-container')?.innerHTML?.length || 0);
+        }, 1000);
     }
 
     // 受講生専用の認証UI更新

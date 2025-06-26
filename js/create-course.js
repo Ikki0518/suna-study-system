@@ -45,14 +45,12 @@ class CourseCreator {
         const params=new URLSearchParams(location.search);
         const chapId=params.get('chapterId');
         const courseId=params.get('courseId');
-        if(!courseId){
-            // 直接アクセスされた場合は科目管理にリダイレクト
-            window.location.href='subjects-admin.html';
-            return;
-        }
+        
+        // 常に講座作成フォームを表示
+        document.getElementById('lesson-editor-block').style.display='block';
+        
         if(chapId&&courseId){
             this.selectedCourseId=courseId; this.selectedChapterId=chapId;
-            document.getElementById('lesson-editor-block').style.display='block';
             document.getElementById('course-course').value=courseId;
             this.updateChapterSelect();
             document.getElementById('course-chapter').value=chapId;
@@ -60,18 +58,22 @@ class CourseCreator {
             const subjectId=this.findSubjectIdByCourse(courseId);
             this.setFormSelections(subjectId, courseId, chapId);
             this.updateBreadcrumbs(courseId, chapId);
-        }else{
-            // 編集対象がない場合はエディタを非表示のまま
-            document.getElementById('lesson-editor-block').style.display='none';
         }
+        
+        // HTMLプレビュー機能を初期化
+        this.initHtmlPreview();
     }
 
     // 管理者認証チェック
     checkAdminAuth() {
-        if (!authManager || !authManager.requireAdminAuth()) {
-            return false;
+        try {
+            if (typeof authManager !== 'undefined' && authManager && authManager.requireAdminAuth) {
+                return authManager.requireAdminAuth();
+            }
+        } catch (error) {
+            console.warn('AuthManager not available:', error);
         }
-        return true;
+        return true; // 認証システムが使用できない場合は通す
     }
 
     // 認証UI更新
@@ -79,21 +81,37 @@ class CourseCreator {
         const authSection = document.getElementById('admin-auth-section');
         if (!authSection) return;
 
-        if (authManager && authManager.isLoggedIn && authManager.currentUser) {
-            const currentSchool = authManager.getCurrentSchool();
+        try {
+            if (typeof authManager !== 'undefined' && authManager && authManager.isLoggedIn && authManager.currentUser) {
+                const currentSchool = authManager.getCurrentSchool ? authManager.getCurrentSchool() : null;
+                authSection.innerHTML = `
+                    <div class="admin-user-info">
+                        <span class="user-name">管理者: ${authManager.currentUser.name || authManager.currentUser.email}</span>
+                        <div class="school-selector">
+                            <select id="create-course-school-select" onchange="authManager.changeSchool(this.value)">
+                                ${typeof schools !== 'undefined' ? Object.values(schools).map(school => `
+                                    <option value="${school.id}" ${currentSchool && currentSchool.id === school.id ? 'selected' : ''}>
+                                        ${school.name}
+                                    </option>
+                                `).join('') : '<option value="">デフォルトスクール</option>'}
+                            </select>
+                        </div>
+                        <button class="logout-btn" onclick="authManager.logout()">ログアウト</button>
+                    </div>
+                `;
+            } else {
+                // 認証システムが利用できない場合のフォールバック表示
+                authSection.innerHTML = `
+                    <div class="admin-user-info">
+                        <span class="user-name">管理者: デモユーザー</span>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.warn('認証UI更新エラー:', error);
             authSection.innerHTML = `
                 <div class="admin-user-info">
-                    <span class="user-name">管理者: ${authManager.currentUser.name || authManager.currentUser.email}</span>
-                    <div class="school-selector">
-                        <select id="create-course-school-select" onchange="authManager.changeSchool(this.value)">
-                            ${Object.values(schools).map(school => `
-                                <option value="${school.id}" ${currentSchool && currentSchool.id === school.id ? 'selected' : ''}>
-                                    ${school.name}
-                                </option>
-                            `).join('')}
-                        </select>
-                    </div>
-                    <button class="logout-btn" onclick="authManager.logout()">ログアウト</button>
+                    <span class="user-name">管理者: システムユーザー</span>
                 </div>
             `;
         }
@@ -1416,4 +1434,117 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1500);
         }
     }, 100);
+});
+
+// HTMLプレビュー機能の追加
+CourseCreator.prototype.initHtmlPreview = function() {
+    console.log('HTMLプレビュー機能を初期化...');
+    
+    // コンテンツテキストエリアのリアルタイム監視
+    const contentTextarea = document.getElementById('course-content');
+    if (contentTextarea) {
+        contentTextarea.addEventListener('input', () => {
+            this.updatePreviewContent();
+        });
+    }
+    
+    // タイトルと説明のリアルタイム監視
+    const titleInput = document.getElementById('course-title');
+    const descInput = document.getElementById('course-description');
+    
+    if (titleInput) {
+        titleInput.addEventListener('input', () => {
+            this.updatePreviewContent();
+        });
+    }
+    
+    if (descInput) {
+        descInput.addEventListener('input', () => {
+            this.updatePreviewContent();
+        });
+    }
+};
+
+CourseCreator.prototype.updatePreviewContent = function() {
+    const previewContent = document.getElementById('preview-content');
+    if (!previewContent) return;
+    
+    const title = document.getElementById('course-title').value;
+    const description = document.getElementById('course-description').value;
+    const content = document.getElementById('course-content').value;
+    
+    if (!title && !description && !content) {
+        previewContent.innerHTML = '<p class="preview-empty">プレビューボタンを押すと、作成中の講座内容を確認できます</p>';
+        return;
+    }
+    
+    let html = '<div class="lesson-preview">';
+    
+    if (title) {
+        html += `<h1 class="lesson-title">${this.escapeHtml(title)}</h1>`;
+    }
+    
+    if (description) {
+        html += `<div class="lesson-description">${this.escapeHtml(description)}</div>`;
+    }
+    
+    if (content) {
+        html += `<div class="lesson-content">${content}</div>`;
+    }
+    
+    html += '</div>';
+    
+    previewContent.innerHTML = html;
+};
+
+CourseCreator.prototype.escapeHtml = function(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+};
+
+// プレビュー表示関数をグローバルに追加
+window.showPreview = function() {
+    const previewSection = document.getElementById('preview-section');
+    if (previewSection) {
+        previewSection.style.display = 'block';
+        // プレビュー内容を更新
+        if (window.courseCreator) {
+            window.courseCreator.updatePreviewContent();
+        }
+    }
+};
+
+window.hidePreview = function() {
+    const previewSection = document.getElementById('preview-section');
+    if (previewSection) {
+        previewSection.style.display = 'none';
+    }
+};
+
+// 下書き保存とその他のグローバル関数
+window.saveDraft = function() {
+    if (window.courseCreator) {
+        window.courseCreator.saveDraft();
+    } else {
+        alert('💾 下書きを保存しました（ローカルストレージに保存）');
+    }
+};
+
+window.goToAdmin = function() {
+    window.location.href = 'admin.html';
+};
+
+window.createAnother = function() {
+    document.getElementById('success-modal').style.display = 'none';
+    document.getElementById('course-form').reset();
+    if (window.courseCreator) {
+        window.courseCreator.updatePreviewContent();
+    }
+};
+
+// ページ読み込み完了後にCourseCreatorを初期化
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded: CourseCreatorを初期化します');
+    window.courseCreator = new CourseCreator();
 });

@@ -3479,3 +3479,374 @@ body:has([id="subject-icon"]) .lesson-count {
 .breadcrumb button:hover {
     color: #1d4ed8;
 }
+/* ========================================
+   学習プラットフォーム用スタイル
+======================================== */
+
+/* 科目一覧グリッド */
+.subjects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.subject-card {
+    background: linear-gradient(135deg, var(--subject-color, #3b82f6) 0%, var(--subject-color, #2563eb) 100%);
+    border-radius: 16px;
+    padding: 32px 24px;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.subject-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.subject-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+    pointer-events: none;
+}
+
+.subject-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.subject-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: white;
+}
+
+.subject-description {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.subject-stats {
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+/* コース一覧グリッド */
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 32px;
+    padding: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.course-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.course-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+}
+
+.course-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+}
+
+.course-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.course-card:hover .course-image img {
+    transform: scale(1.05);
+}
+
+.course-content {
+    padding: 24px;
+}
+
+.course-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.course-description {
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.course-stats {
+    color: #3b82f6;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.course-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.course-btn:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-1px);
+}
+
+/* 章一覧 */
+.chapter-header {
+    text-align: center;
+    padding: 32px 24px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    margin: 24px;
+    margin-bottom: 32px;
+}
+
+.chapter-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.chapter-header p {
+    color: #6b7280;
+    font-size: 1.1rem;
+}
+
+.chapters-list {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.chapter-item {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 4px solid #3b82f6;
+}
+
+.chapter-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.chapter-content {
+    flex: 1;
+}
+
+.chapter-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.chapter-lessons {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.chapter-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chapter-btn:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+/* レッスン画面 */
+.lesson-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.lesson-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.lesson-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.video-container {
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.video-container video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.video-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: white;
+    padding: 20px;
+}
+
+.video-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.video-stats {
+    display: flex;
+    gap: 16px;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.lesson-description {
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.lesson-description h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 16px;
+    padding-left: 16px;
+    border-left: 4px solid #3b82f6;
+}
+
+.lesson-description p {
+    color: #6b7280;
+    line-height: 1.7;
+    font-size: 1.1rem;
+}
+
+/* パンくずナビゲーション */
+.breadcrumb {
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 16px 0;
+}
+
+.breadcrumb-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.breadcrumb-item {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb-item:hover {
+    color: #2563eb;
+}
+
+.breadcrumb-separator {
+    color: #9ca3af;
+    margin: 0 4px;
+}
+
+.breadcrumb-current {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .subjects-grid,
+    .courses-grid {
+        grid-template-columns: 1fr;
+        padding: 16px;
+        gap: 16px;
+    }
+    
+    .chapter-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .chapter-btn {
+        align-self: stretch;
+    }
+    
+    .lesson-container {
+        padding: 16px;
+    }
+    
+    .lesson-description {
+        padding: 20px;
+    }
+}

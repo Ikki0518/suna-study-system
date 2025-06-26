@@ -118,13 +118,44 @@ const DEMO_PAYMENT_HISTORY = [
     receipt_url: '#'
   },
   {
-    id: 'pay-2', 
+    id: 'pay-2',
     created_at: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
     amount: 9980,
     status: 'succeeded',
     payment_method: 'card',
     description: 'スタンダードプラン - 月額',
     receipt_url: '#'
+  }
+];
+
+// デモ用スクールデータ
+const DEMO_SCHOOLS = [
+  {
+    id: 'school-demo-1',
+    name: '🎒 小学部',
+    description: '小学生向けの学習プログラム',
+    color: '#ff6b6b',
+    is_default: false,
+    instructors: ['田中先生', '佐藤先生'],
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'school-demo-2',
+    name: '📖 中学部',
+    description: '中学生向けの受験対策',
+    color: '#4ecdc4',
+    is_default: true,
+    instructors: ['山田先生', '高橋先生'],
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'school-demo-3',
+    name: '🎓 高校部',
+    description: '高校生向けの大学受験準備',
+    color: '#45b7d1',
+    is_default: false,
+    instructors: ['鈴木先生', '伊藤先生'],
+    created_at: new Date().toISOString()
   }
 ];
 
@@ -282,6 +313,16 @@ app.get('/', (req, res) => {
                 </div>
                 
                 <div class="feature-card">
+                    <div class="feature-icon">🏫</div>
+                    <div class="feature-title">スクール管理</div>
+                    <div class="feature-description">
+                        スクールの追加・編集・削除<br>
+                        名前やカラーの変更。
+                    </div>
+                    <a href="/schools" class="feature-btn">管理画面</a>
+                </div>
+                
+                <div class="feature-card">
                     <div class="feature-icon">📈</div>
                     <div class="feature-title">決済テスト</div>
                     <div class="feature-description">
@@ -314,6 +355,545 @@ app.get('/pricing', (req, res) => {
 // サブスクリプション管理ページ
 app.get('/subscription', (req, res) => {
   res.sendFile(path.join(__dirname, 'pages', 'subscription.html'));
+});
+
+// スクール管理ページ
+app.get('/schools', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>スクール管理 - 決済システム</title>
+        <link rel="stylesheet" href="/styles/main.css">
+        <link rel="stylesheet" href="/styles/payment.css">
+        <style>
+            .school-management {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 40px 20px;
+            }
+            .schools-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 30px;
+                margin-top: 30px;
+            }
+            .school-card {
+                background: white;
+                border-radius: 15px;
+                padding: 25px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                border-left: 5px solid;
+                position: relative;
+            }
+            .school-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 15px;
+            }
+            .school-name {
+                font-size: 1.3rem;
+                font-weight: bold;
+                margin: 0;
+            }
+            .school-actions {
+                display: flex;
+                gap: 8px;
+            }
+            .btn-icon {
+                background: none;
+                border: none;
+                font-size: 1.2rem;
+                cursor: pointer;
+                padding: 5px;
+                border-radius: 4px;
+                transition: background 0.3s ease;
+            }
+            .btn-icon:hover {
+                background: #f0f0f0;
+            }
+            .btn-icon.delete:hover {
+                background: #fee;
+                color: #dc3545;
+            }
+            .school-description {
+                color: #666;
+                margin-bottom: 15px;
+                font-size: 0.9rem;
+            }
+            .school-instructors {
+                margin-bottom: 15px;
+            }
+            .instructor-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            .instructor-tag {
+                background: #e9ecef;
+                padding: 4px 8px;
+                border-radius: 12px;
+                font-size: 0.8rem;
+                color: #495057;
+            }
+            .school-meta {
+                font-size: 0.8rem;
+                color: #999;
+                border-top: 1px solid #eee;
+                padding-top: 15px;
+            }
+            .add-school-card {
+                border: 2px dashed #dee2e6;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                min-height: 200px;
+            }
+            .add-school-card:hover {
+                border-color: #007bff;
+                background: #f8f9fa;
+            }
+            .add-school-content {
+                text-align: center;
+                color: #6c757d;
+            }
+            .add-school-icon {
+                font-size: 3rem;
+                margin-bottom: 15px;
+            }
+            
+            /* モーダル */
+            .modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+                display: none;
+                align-items: center;
+                justify-content: center;
+            }
+            .modal.show {
+                display: flex;
+            }
+            .modal-content {
+                background: white;
+                border-radius: 15px;
+                padding: 30px;
+                max-width: 500px;
+                width: 90%;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+            .form-group {
+                margin-bottom: 20px;
+            }
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+                color: #333;
+            }
+            .form-control {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                font-size: 16px;
+                transition: border-color 0.3s ease;
+            }
+            .form-control:focus {
+                outline: none;
+                border-color: #007bff;
+            }
+            .color-picker {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-top: 10px;
+            }
+            .color-option {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                border: 3px solid transparent;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .color-option.selected {
+                border-color: #333;
+                transform: scale(1.1);
+            }
+            .instructors-input {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                margin-top: 10px;
+            }
+            .instructor-input {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                margin-bottom: 5px;
+            }
+            .instructor-input input {
+                flex: 1;
+                min-width: 120px;
+            }
+            .btn-remove {
+                background: #dc3545;
+                color: white;
+                border: none;
+                padding: 5px 8px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+            }
+            .btn-add-instructor {
+                background: #28a745;
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+                margin-top: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="school-management">
+            <div class="page-header">
+                <h1>🏫 スクール管理</h1>
+                <p>スクールの追加、編集、削除ができます</p>
+                <a href="/" class="btn-secondary">← ダッシュボードに戻る</a>
+            </div>
+
+            <div id="schools-container" class="schools-grid">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>スクール一覧を読み込み中...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- スクール追加・編集モーダル -->
+        <div id="school-modal" class="modal">
+            <div class="modal-content">
+                <h3 id="modal-title">新しいスクールを追加</h3>
+                <form id="school-form">
+                    <div class="form-group">
+                        <label for="school-name">スクール名 *</label>
+                        <input type="text" id="school-name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="school-description">説明</label>
+                        <textarea id="school-description" class="form-control" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>カラー</label>
+                        <div class="color-picker">
+                            <div class="color-option" data-color="#ff6b6b" style="background: #ff6b6b;"></div>
+                            <div class="color-option" data-color="#4ecdc4" style="background: #4ecdc4;"></div>
+                            <div class="color-option" data-color="#45b7d1" style="background: #45b7d1;"></div>
+                            <div class="color-option" data-color="#96ceb4" style="background: #96ceb4;"></div>
+                            <div class="color-option" data-color="#feca57" style="background: #feca57;"></div>
+                            <div class="color-option" data-color="#ff9ff3" style="background: #ff9ff3;"></div>
+                            <div class="color-option" data-color="#54a0ff" style="background: #54a0ff;"></div>
+                            <div class="color-option selected" data-color="#007bff" style="background: #007bff;"></div>
+                        </div>
+                        <input type="hidden" id="school-color" value="#007bff">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>講師</label>
+                        <div id="instructors-container" class="instructors-input">
+                            <div class="instructor-input">
+                                <input type="text" placeholder="講師名" class="form-control">
+                                <button type="button" class="btn-remove" onclick="removeInstructor(this)">削除</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add-instructor" onclick="addInstructor()">講師を追加</button>
+                    </div>
+                    
+                    <div class="form-actions" style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 30px;">
+                        <button type="button" class="btn-secondary" onclick="closeModal()">キャンセル</button>
+                        <button type="submit" class="btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            let schools = [];
+            let editingSchoolId = null;
+
+            // 初期化
+            document.addEventListener('DOMContentLoaded', () => {
+                loadSchools();
+                setupEventListeners();
+            });
+
+            function setupEventListeners() {
+                // カラーピッカー
+                document.querySelectorAll('.color-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+                        option.classList.add('selected');
+                        document.getElementById('school-color').value = option.dataset.color;
+                    });
+                });
+
+                // フォーム送信
+                document.getElementById('school-form').addEventListener('submit', handleFormSubmit);
+            }
+
+            async function loadSchools() {
+                try {
+                    const response = await fetch('/api/schools');
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        schools = data.schools;
+                        renderSchools();
+                    } else {
+                        throw new Error(data.error);
+                    }
+                } catch (error) {
+                    console.error('Error loading schools:', error);
+                    showError('スクール一覧の読み込みに失敗しました');
+                }
+            }
+
+            function renderSchools() {
+                const container = document.getElementById('schools-container');
+                
+                let html = '';
+                
+                // 追加カード
+                html += \`
+                    <div class="school-card add-school-card" onclick="showAddModal()">
+                        <div class="add-school-content">
+                            <div class="add-school-icon">➕</div>
+                            <h3>新しいスクールを追加</h3>
+                            <p>クリックして新規作成</p>
+                        </div>
+                    </div>
+                \`;
+
+                // 既存のスクール
+                schools.forEach(school => {
+                    html += \`
+                        <div class="school-card" style="border-left-color: \${school.color};">
+                            <div class="school-header">
+                                <h3 class="school-name">\${school.name}</h3>
+                                <div class="school-actions">
+                                    <button class="btn-icon" onclick="editSchool('\${school.id}')" title="編集">✏️</button>
+                                    <button class="btn-icon delete" onclick="deleteSchool('\${school.id}')" title="削除">🗑️</button>
+                                </div>
+                            </div>
+                            
+                            <div class="school-description">\${school.description || '説明なし'}</div>
+                            
+                            <div class="school-instructors">
+                                <strong>講師:</strong>
+                                <div class="instructor-list">
+                                    \${school.instructors && school.instructors.length > 0
+                                        ? school.instructors.map(instructor => \`<span class="instructor-tag">\${instructor}</span>\`).join('')
+                                        : '<span class="instructor-tag">未設定</span>'
+                                    }
+                                </div>
+                            </div>
+                            
+                            <div class="school-meta">
+                                作成日: \${new Date(school.created_at).toLocaleDateString('ja-JP')}
+                            </div>
+                        </div>
+                    \`;
+                });
+
+                container.innerHTML = html;
+            }
+
+            function showAddModal() {
+                editingSchoolId = null;
+                document.getElementById('modal-title').textContent = '新しいスクールを追加';
+                document.getElementById('school-form').reset();
+                
+                // デフォルトカラー設定
+                document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+                document.querySelector('[data-color="#007bff"]').classList.add('selected');
+                document.getElementById('school-color').value = '#007bff';
+                
+                // 講師入力をリセット
+                const container = document.getElementById('instructors-container');
+                container.innerHTML = \`
+                    <div class="instructor-input">
+                        <input type="text" placeholder="講師名" class="form-control">
+                        <button type="button" class="btn-remove" onclick="removeInstructor(this)">削除</button>
+                    </div>
+                \`;
+                
+                document.getElementById('school-modal').classList.add('show');
+            }
+
+            function editSchool(schoolId) {
+                const school = schools.find(s => s.id === schoolId);
+                if (!school) return;
+
+                editingSchoolId = schoolId;
+                document.getElementById('modal-title').textContent = 'スクールを編集';
+                
+                document.getElementById('school-name').value = school.name;
+                document.getElementById('school-description').value = school.description || '';
+                document.getElementById('school-color').value = school.color;
+                
+                // カラー選択
+                document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+                const colorOption = document.querySelector(\`[data-color="\${school.color}"]\`);
+                if (colorOption) colorOption.classList.add('selected');
+                
+                // 講師設定
+                const container = document.getElementById('instructors-container');
+                container.innerHTML = '';
+                
+                if (school.instructors && school.instructors.length > 0) {
+                    school.instructors.forEach(instructor => {
+                        const div = document.createElement('div');
+                        div.className = 'instructor-input';
+                        div.innerHTML = \`
+                            <input type="text" value="\${instructor}" placeholder="講師名" class="form-control">
+                            <button type="button" class="btn-remove" onclick="removeInstructor(this)">削除</button>
+                        \`;
+                        container.appendChild(div);
+                    });
+                } else {
+                    addInstructor();
+                }
+                
+                document.getElementById('school-modal').classList.add('show');
+            }
+
+            async function deleteSchool(schoolId) {
+                const school = schools.find(s => s.id === schoolId);
+                if (!school || !confirm(\`「\${school.name}」を削除しますか？\`)) return;
+
+                try {
+                    const response = await fetch(\`/api/schools/\${schoolId}\`, {
+                        method: 'DELETE'
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        showSuccess(data.message);
+                        await loadSchools();
+                    } else {
+                        throw new Error(data.error);
+                    }
+                } catch (error) {
+                    console.error('Error deleting school:', error);
+                    showError('スクールの削除に失敗しました');
+                }
+            }
+
+            async function handleFormSubmit(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('school-name').value.trim();
+                const description = document.getElementById('school-description').value.trim();
+                const color = document.getElementById('school-color').value;
+                
+                // 講師収集
+                const instructorInputs = document.querySelectorAll('#instructors-container input');
+                const instructors = Array.from(instructorInputs)
+                    .map(input => input.value.trim())
+                    .filter(value => value.length > 0);
+
+                if (!name) {
+                    showError('スクール名は必須です');
+                    return;
+                }
+
+                const schoolData = { name, description, color, instructors };
+
+                try {
+                    const url = editingSchoolId ? \`/api/schools/\${editingSchoolId}\` : '/api/schools';
+                    const method = editingSchoolId ? 'PUT' : 'POST';
+                    
+                    const response = await fetch(url, {
+                        method,
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(schoolData)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        showSuccess(data.message);
+                        closeModal();
+                        await loadSchools();
+                    } else {
+                        throw new Error(data.error);
+                    }
+                } catch (error) {
+                    console.error('Error saving school:', error);
+                    showError('スクールの保存に失敗しました');
+                }
+            }
+
+            function addInstructor() {
+                const container = document.getElementById('instructors-container');
+                const div = document.createElement('div');
+                div.className = 'instructor-input';
+                div.innerHTML = \`
+                    <input type="text" placeholder="講師名" class="form-control">
+                    <button type="button" class="btn-remove" onclick="removeInstructor(this)">削除</button>
+                \`;
+                container.appendChild(div);
+            }
+
+            function removeInstructor(button) {
+                const container = document.getElementById('instructors-container');
+                if (container.children.length > 1) {
+                    button.parentElement.remove();
+                }
+            }
+
+            function closeModal() {
+                document.getElementById('school-modal').classList.remove('show');
+                editingSchoolId = null;
+            }
+
+            function showSuccess(message) {
+                alert(message); // 実際にはトースト通知を実装
+            }
+
+            function showError(message) {
+                alert(message); // 実際にはトースト通知を実装
+            }
+
+            // モーダル外クリックで閉じる
+            document.getElementById('school-modal').addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    closeModal();
+                }
+            });
+        </script>
+    </body>
+    </html>
+  `);
 });
 
 // API ドキュメントページ
@@ -583,6 +1163,156 @@ app.get('/test-payment', (req, res) => {
     </body>
     </html>
   `);
+});
+
+// ============================================
+// スクール管理API
+// ============================================
+
+// スクール一覧取得
+app.get('/api/schools', async (req, res) => {
+  try {
+    // デモモードの場合
+    if (!supabase) {
+      return res.json({ schools: DEMO_SCHOOLS });
+    }
+
+    const { data, error } = await supabase
+      .from('schools')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    res.json({ schools: data });
+  } catch (error) {
+    console.error('Error fetching schools:', error);
+    res.status(500).json({ error: 'スクール一覧の取得に失敗しました' });
+  }
+});
+
+// スクール作成
+app.post('/api/schools', async (req, res) => {
+  try {
+    const { name, description, color, instructors = [] } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ error: 'スクール名は必須です' });
+    }
+
+    // デモモードの場合
+    if (!supabase) {
+      const newSchool = {
+        id: 'school-demo-' + Date.now(),
+        name,
+        description: description || '',
+        color: color || '#007bff',
+        is_default: false,
+        instructors: Array.isArray(instructors) ? instructors : [],
+        created_at: new Date().toISOString()
+      };
+      
+      DEMO_SCHOOLS.push(newSchool);
+      return res.json({ school: newSchool, message: 'スクールが作成されました（デモモード）' });
+    }
+
+    const { data, error } = await supabase
+      .from('schools')
+      .insert({
+        name,
+        description: description || '',
+        color: color || '#007bff',
+        instructors: Array.isArray(instructors) ? instructors : []
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    res.json({ school: data, message: 'スクールが作成されました' });
+  } catch (error) {
+    console.error('Error creating school:', error);
+    res.status(500).json({ error: 'スクールの作成に失敗しました' });
+  }
+});
+
+// スクール更新
+app.put('/api/schools/:schoolId', async (req, res) => {
+  try {
+    const { schoolId } = req.params;
+    const { name, description, color, instructors } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ error: 'スクール名は必須です' });
+    }
+
+    // デモモードの場合
+    if (!supabase) {
+      const schoolIndex = DEMO_SCHOOLS.findIndex(s => s.id === schoolId);
+      if (schoolIndex === -1) {
+        return res.status(404).json({ error: 'スクールが見つかりません' });
+      }
+
+      DEMO_SCHOOLS[schoolIndex] = {
+        ...DEMO_SCHOOLS[schoolIndex],
+        name,
+        description: description || '',
+        color: color || DEMO_SCHOOLS[schoolIndex].color,
+        instructors: Array.isArray(instructors) ? instructors : DEMO_SCHOOLS[schoolIndex].instructors
+      };
+
+      return res.json({ school: DEMO_SCHOOLS[schoolIndex], message: 'スクールが更新されました（デモモード）' });
+    }
+
+    const { data, error } = await supabase
+      .from('schools')
+      .update({
+        name,
+        description,
+        color,
+        instructors: Array.isArray(instructors) ? instructors : undefined
+      })
+      .eq('id', schoolId)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    res.json({ school: data, message: 'スクールが更新されました' });
+  } catch (error) {
+    console.error('Error updating school:', error);
+    res.status(500).json({ error: 'スクールの更新に失敗しました' });
+  }
+});
+
+// スクール削除
+app.delete('/api/schools/:schoolId', async (req, res) => {
+  try {
+    const { schoolId } = req.params;
+
+    // デモモードの場合
+    if (!supabase) {
+      const schoolIndex = DEMO_SCHOOLS.findIndex(s => s.id === schoolId);
+      if (schoolIndex === -1) {
+        return res.status(404).json({ error: 'スクールが見つかりません' });
+      }
+
+      DEMO_SCHOOLS.splice(schoolIndex, 1);
+      return res.json({ message: 'スクールが削除されました（デモモード）' });
+    }
+
+    const { error } = await supabase
+      .from('schools')
+      .delete()
+      .eq('id', schoolId);
+
+    if (error) throw error;
+
+    res.json({ message: 'スクールが削除されました' });
+  } catch (error) {
+    console.error('Error deleting school:', error);
+    res.status(500).json({ error: 'スクールの削除に失敗しました' });
+  }
 });
 
 // ============================================

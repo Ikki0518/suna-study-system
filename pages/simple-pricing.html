@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>料金プラン - Suna Study System</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        .pricing-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .pricing-header h1 {
+            font-size: 2.5rem;
+            color: #1a365d;
+            margin-bottom: 20px;
+        }
+        
+        .pricing-header p {
+            font-size: 1.2rem;
+            color: #718096;
+        }
+        
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .plan-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .plan-card.popular {
+            border-color: #007bff;
+            transform: scale(1.05);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .plan-description {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        
+        .plan-period {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .plan-features {
+            text-align: left;
+            margin: 20px 0;
+        }
+        
+        .plan-features ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .plan-features li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .plan-features li:before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .plan-button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .plan-button:hover {
+            background: linear-gradient(45deg, #0056b3, #004085);
+        }
+        
+        .plan-button.contact {
+            background: linear-gradient(45deg, #28a745, #20a039);
+        }
+        
+        .current-plan {
+            background: linear-gradient(45deg, #6c757d, #5a6268);
+            cursor: not-allowed;
+        }
+        
+        .comparison-section {
+            margin-top: 60px;
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 15px;
+        }
+        
+        .comparison-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            color: #333;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .comparison-table th {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .feature-check {
+            color: #28a745;
+            font-size: 1.2rem;
+        }
+        
+        .feature-cross {
+            color: #dc3545;
+            font-size: 1.2rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="pricing-container">
+        <a href="../pages/admin.html" class="back-link">← 管理画面に戻る</a>
+        
+        <div class="pricing-header">
+            <h1>💰 料金プラン</h1>
+            <p>あなたの塾に最適なプランをお選びください</p>
+        </div>
+        
+        <div class="plans-grid">
+            <!-- スタータープラン -->
+            <div class="plan-card">
+                <div class="plan-name">スタータープラン</div>
+                <div class="plan-description">小規模な塾や個人指導に最適</div>
+                <div class="plan-price">¥3,980</div>
+                <div class="plan-period">/ 月</div>
+                
+                <div class="plan-features">
+                    <ul>
+                        <li>最大生徒数: 20名</li>
+                        <li>最大コース数: 10</li>
+                        <li>基本的な学習管理</li>
+                        <li>進捗追跡</li>
+                        <li>5科目対応</li>
+                        <li>メールサポート</li>
+                    </ul>
+                </div>
+                
+                <button class="plan-button" onclick="selectPlan('starter')">
+                    このプランを選択
+                </button>
+            </div>
+            
+            <!-- スタンダードプラン -->
+            <div class="plan-card popular">
+                <div class="popular-badge">人気プラン</div>
+                <div class="plan-name">スタンダードプラン</div>
+                <div class="plan-description">中規模な塾におすすめ</div>
+                <div class="plan-price">¥9,980</div>
+                <div class="plan-period">/ 月</div>
+                
+                <div class="plan-features">
+                    <ul>
+                        <li>最大生徒数: 100名</li>
+                        <li>最大コース数: 50</li>
+                        <li>全機能利用可能</li>
+                        <li>詳細な分析機能</li>
+                        <li>カスタマイズ可能</li>
+                        <li>優先サポート</li>
+                        <li>データエクスポート</li>
+                    </ul>
+                </div>
+                
+                <button class="plan-button current-plan">
+                    現在のプラン
+                </button>
+            </div>
+            
+            <!-- プレミアムプラン -->
+            <div class="plan-card">
+                <div class="plan-name">プレミアムプラン</div>
+                <div class="plan-description">大規模な塾や法人向け</div>
+                <div class="plan-price">¥19,980</div>
+                <div class="plan-period">/ 月</div>
+                
+                <div class="plan-features">
+                    <ul>
+                        <li>最大生徒数: 500名</li>
+                        <li>無制限コース作成</li>
+                        <li>高度な分析機能</li>
+                        <li>専用サポート</li>
+                        <li>API アクセス</li>
+                        <li>白ラベル対応</li>
+                        <li>シングルサインオン</li>
+                    </ul>
+                </div>
+                
+                <button class="plan-button" onclick="selectPlan('premium')">
+                    このプランを選択
+                </button>
+            </div>
+            
+            <!-- エンタープライズプラン -->
+            <div class="plan-card">
+                <div class="plan-name">エンタープライズ</div>
+                <div class="plan-description">教育機関向けカスタムプラン</div>
+                <div class="plan-price">お問い合わせ</div>
+                <div class="plan-period"></div>
+                
+                <div class="plan-features">
+                    <ul>
+                        <li>無制限の生徒・コース</li>
+                        <li>完全カスタマイズ</li>
+                        <li>専用サーバー</li>
+                        <li>24/7サポート</li>
+                        <li>研修プログラム</li>
+                        <li>導入コンサルティング</li>
+                        <li>SLA保証</li>
+                    </ul>
+                </div>
+                
+                <button class="plan-button contact" onclick="contactUs()">
+                    お問い合わせ
+                </button>
+            </div>
+        </div>
+        
+        <!-- プラン比較表 -->
+        <div class="comparison-section">
+            <h2 class="comparison-title">プラン比較表</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>機能</th>
+                        <th>スタータープラン</th>
+                        <th>スタンダードプラン</th>
+                        <th>プレミアムプラン</th>
+                        <th>エンタープライズ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>最大生徒数</strong></td>
+                        <td>20名</td>
+                        <td>100名</td>
+                        <td>500名</td>
+                        <td>無制限</td>
+                    </tr>
+                    <tr>
+                        <td><strong>最大コース数</strong></td>
+                        <td>10</td>
+                        <td>50</td>
+                        <td>無制限</td>
+                        <td>無制限</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5科目対応</strong></td>
+                        <td><span class="feature-check">✓</span></td>
+                        <td><span class="feature-check">✓</span></td>
+                        <td><span class="feature-check">✓</span></td>
+                        <td><span class="feature-check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>詳細分析機能</strong></td>
+                        <td><span class="feature-cross">✗</span></td>
+                        <td><span class="feature-check">✓</span></td>
+                        <td><span class="feature-check">✓</span></td>
+                        <td><span class="feature-check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>API アクセス</strong></td>
+                        <td><span class="feature-cross">✗</span></td>
+                        <td><span class="feature-cross">✗</span></td>
+                        <td><span class="feature-check">✓</span></td>
+                        <td><span class="feature-check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>専用サポート</strong></td>
+                        <td><span class="feature-cross">✗</span></td>
+                        <td><span class="feature-cross">✗</span></td>
+                        <td><span class="feature-check">✓</span></td>
+                        <td><span class="feature-check">✓</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        function selectPlan(planType) {
+            const planNames = {
+                'starter': 'スタータープラン',
+                'premium': 'プレミアムプラン'
+            };
+            
+            if (confirm(`${planNames[planType]}に変更しますか？\n\n注意: これは簡易版のデモです。実際の決済は行われません。`)) {
+                alert(`${planNames[planType]}を選択しました。\n\n実際のシステムでは、ここで決済処理が行われます。`);
+                
+                // 現在のプランを更新（デモ）
+                updateCurrentPlan(planType);
+            }
+        }
+        
+        function updateCurrentPlan(newPlan) {
+            // すべてのボタンをリセット
+            document.querySelectorAll('.plan-button').forEach(btn => {
+                btn.classList.remove('current-plan');
+                btn.textContent = 'このプランを選択';
+                btn.onclick = function() {
+                    const card = this.closest('.plan-card');
+                    const planName = card.querySelector('.plan-name').textContent;
+                    if (planName.includes('スタータープラン')) {
+                        selectPlan('starter');
+                    } else if (planName.includes('プレミアムプラン')) {
+                        selectPlan('premium');
+                    }
+                };
+            });
+            
+            // 新しい現在プランを設定
+            const planCards = document.querySelectorAll('.plan-card');
+            planCards.forEach(card => {
+                card.classList.remove('popular');
+                const planName = card.querySelector('.plan-name').textContent.toLowerCase();
+                if ((newPlan === 'starter' && planName.includes('スタータープラン'.toLowerCase())) ||
+                    (newPlan === 'premium' && planName.includes('プレミアムプラン'.toLowerCase()))) {
+                    card.classList.add('popular');
+                    const btn = card.querySelector('.plan-button');
+                    btn.classList.add('current-plan');
+                    btn.textContent = '現在のプラン';
+                    btn.onclick = null;
+                }
+            });
+        }
+        
+        function contactUs() {
+            alert('お問い合わせありがとうございます。\n\nメール: support@suna-study.com\n電話: 03-1234-5678\n\n営業時間: 平日 9:00-18:00');
+        }
+    </script>
+</body>
+</html>
