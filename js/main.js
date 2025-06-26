@@ -36,35 +36,116 @@ class StudyApp {
         // Supabaseからデータを取得、失敗時はデモデータを使用
         try {
             if (window.supabaseClient) {
+                console.log('🔍 [SUPABASE] Attempting to load data from Supabase...');
                 await this.loadFromSupabase();
+                console.log('🔍 [SUPABASE] Successfully loaded data from Supabase');
             } else {
+                console.log('🔍 [SUPABASE] No Supabase client, using demo data');
                 this.loadDemoData();
             }
         } catch (error) {
-            console.log('Supabase loading failed, using demo data:', error);
+            console.log('🔍 [SUPABASE] Supabase loading failed, using demo data:', error);
             this.loadDemoData();
         }
     }
 
     async loadFromSupabase() {
-        // 実際のSupabaseデータ取得処理
-        const { data: subjects, error } = await window.supabaseClient
-            .from('study_subjects')
-            .select(`
-                *,
-                study_courses (
-                    *,
-                    study_chapters (
-                        *,
-                        study_lessons (*)
-                    )
-                )
-            `)
-            .eq('is_active', true)
-            .order('sort_order');
+        try {
+            console.log('🔍 [SUPABASE] Loading subjects from database...');
+            
+            // 科目データを取得
+            const { data: subjects, error: subjectsError } = await window.supabaseClient
+                .from('subjects')
+                .select('*')
+                .eq('is_active', true)
+                .order('sort_order');
 
-        if (error) throw error;
-        this.subjects = subjects || [];
+            if (subjectsError) {
+                console.error('🔍 [SUPABASE] Error loading subjects:', subjectsError);
+                throw subjectsError;
+            }
+
+            console.log('🔍 [SUPABASE] Subjects loaded:', subjects?.length || 0);
+
+            // 各科目のコースデータを取得
+            this.subjects = [];
+            for (const subject of subjects || []) {
+                console.log('🔍 [SUPABASE] Loading courses for subject:', subject.name);
+                
+                const { data: courses, error: coursesError } = await window.supabaseClient
+                    .from('courses')
+                    .select('*')
+                    .eq('subject_id', subject.id)
+                    .eq('is_active', true)
+                    .order('sort_order');
+
+                if (coursesError) {
+                    console.error('🔍 [SUPABASE] Error loading courses for subject', subject.name, ':', coursesError);
+                    continue;
+                }
+
+                // 各コースの章データを取得
+                const coursesWithChapters = [];
+                for (const course of courses || []) {
+                    console.log('🔍 [SUPABASE] Loading chapters for course:', course.title);
+                    
+                    const { data: chapters, error: chaptersError } = await window.supabaseClient
+                        .from('chapters')
+                        .select('*')
+                        .eq('course_id', course.id)
+                        .eq('is_active', true)
+                        .order('sort_order');
+
+                    if (chaptersError) {
+                        console.error('🔍 [SUPABASE] Error loading chapters for course', course.title, ':', chaptersError);
+                        continue;
+                    }
+
+                    // 各章のレッスンデータを取得
+                    const chaptersWithLessons = [];
+                    for (const chapter of chapters || []) {
+                        console.log('🔍 [SUPABASE] Loading lessons for chapter:', chapter.title);
+                        
+                        const { data: lessons, error: lessonsError } = await window.supabaseClient
+                            .from('lessons')
+                            .select('*')
+                            .eq('chapter_id', chapter.id)
+                            .eq('is_active', true)
+                            .order('sort_order');
+
+                        if (lessonsError) {
+                            console.error('🔍 [SUPABASE] Error loading lessons for chapter', chapter.title, ':', lessonsError);
+                            continue;
+                        }
+
+                        chaptersWithLessons.push({
+                            ...chapter,
+                            study_lessons: lessons || []
+                        });
+                    }
+
+                    coursesWithChapters.push({
+                        ...course,
+                        study_chapters: chaptersWithLessons
+                    });
+                }
+
+                this.subjects.push({
+                    id: subject.id,
+                    name: subject.name,
+                    description: subject.description,
+                    color: subject.color || '#3b82f6',
+                    icon: subject.icon || '📚',
+                    study_courses: coursesWithChapters
+                });
+            }
+
+            console.log('🔍 [SUPABASE] Final subjects data:', this.subjects);
+            
+        } catch (error) {
+            console.error('🔍 [SUPABASE] Error in loadFromSupabase:', error);
+            throw error;
+        }
     }
 
     loadDemoData() {
@@ -929,14 +1010,12 @@ class AuthManager {
     }
 
     requireStudentAuth() {
-        // 一時的に認証チェックを無効化
+        if (!this.isLoggedIn || !this.currentUser) {
+            console.log('🔐 Authentication required, redirecting to login...');
+            this.redirectToLogin();
+            return false;
+        }
         return true;
-        // if (!this.isLoggedIn || !this.currentUser) {
-        //     console.log('🔐 Authentication required, redirecting to login...');
-        //     this.redirectToLogin();
-        //     return false;
-        // }
-        // return true;
     }
 
     redirectToLogin() {
