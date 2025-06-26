@@ -1,3 +1,29 @@
+// 基底アプリケーションクラス（Supabase経由でデータ取得・画面遷移管理）
+class StudyApp {
+    constructor() {
+        this.subjects = [];
+        this.courses = [];
+        this.lessons = [];
+        this.currentView = 'subjects';
+        this.currentSubject = null;
+        this.currentCourse = null;
+        this.currentLesson = null;
+        this.init();
+    }
+
+    async init() {
+        // subjects一覧をSupabaseから取得
+        if (window.supabaseManager) {
+            this.subjects = await window.supabaseManager.getSubjects();
+            if (typeof renderSubjects === 'function') {
+                renderSubjects(this.subjects);
+            }
+        }
+    }
+
+    // 画面遷移やデータ取得のメソッドは必要に応じて追加
+}
+window.StudyApp = StudyApp;
 // スクール管理システム - ローカルストレージから読み込み
 function loadSchools() {
     const stored = localStorage.getItem('schools');
