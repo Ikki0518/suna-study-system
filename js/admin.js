@@ -34,25 +34,62 @@ class AdminApp {
     }
 
     // 受講生データの読み込み
-    loadStudentData() {
-        // 実際の登録済み受講生データを読み込み
+    async loadStudentData() {
+        try {
+            // Supabaseから受講生データを取得
+            if (window.supabaseManager) {
+                const { data: supabaseStudents, error } = await window.supabaseManager.getStudents(this.currentSchool);
+                
+                if (!error && supabaseStudents && supabaseStudents.length > 0) {
+                    console.log('Loading students from Supabase:', supabaseStudents.length);
+                    this.students = supabaseStudents.map(student => ({
+                        id: student.id,
+                        name: student.name,
+                        email: student.email,
+                        grade: student.grade,
+                        schoolDivision: student.school_division || this.getSchoolDivisionFromGrade(student.grade),
+                        tags: student.tags || [],
+                        registrationDate: student.created_at?.split('T')[0] || new Date().toISOString().split('T')[0],
+                        lastAccess: student.last_access || student.created_at,
+                        status: student.status || 'active',
+                        totalProgress: this.calculateTotalProgress(student.email),
+                        subjects: this.getStudentSubjects(student.email),
+                        supabaseUserId: student.user_id
+                    }));
+                } else {
+                    console.log('No Supabase data or error, falling back to localStorage');
+                    this.loadStudentDataFromLocalStorage();
+                }
+            } else {
+                console.log('Supabase not available, using localStorage');
+                this.loadStudentDataFromLocalStorage();
+            }
+        } catch (error) {
+            console.error('Error loading Supabase data, falling back to localStorage:', error);
+            this.loadStudentDataFromLocalStorage();
+        }
+        
+        // 現在選択されているスクールでフィルタリング
+        this.filterStudentsBySchool();
+    }
+
+    // localStorageからの受講生データ読み込み（フォールバック）
+    loadStudentDataFromLocalStorage() {
         const registrations = JSON.parse(localStorage.getItem('studentRegistrations') || '[]');
         this.students = registrations.map(reg => ({
             id: reg.id,
             name: reg.name,
             email: reg.email,
             grade: reg.grade,
-            schoolDivision: this.getSchoolDivisionFromGrade(reg.grade),
+            schoolDivision: reg.schoolDivision || this.getSchoolDivisionFromGrade(reg.grade),
             tags: reg.tags || [],
             registrationDate: reg.registrationDate,
             lastAccess: reg.lastAccess || reg.registrationDate,
             status: reg.status || 'active',
             totalProgress: this.calculateTotalProgress(reg.email),
-            subjects: this.getStudentSubjects(reg.email)
+            subjects: this.getStudentSubjects(reg.email),
+            supabaseUserId: reg.supabaseUserId
         }));
-        
-        // 現在選択されているスクールでフィルタリング
-        this.filterStudentsBySchool();
     }
 
     // 学年からスクール部門を判定
@@ -646,55 +683,81 @@ class AdminApp {
             return;
         }
 
-        // タグの処理（カンマ区切りの文字列を配列に変換）
-        const tags = tagsInput.split(',')
-            .map(tag => tag.trim())
-            .filter(tag => tag.length > 0);
+        try {
+            // タグの処理（カンマ区切りの文字列を配列に変換）
+            const tags = tagsInput.split(',')
+                .map(tag => tag.trim())
+                .filter(tag => tag.length > 0);
 
-        // 学年からスクール部門を自動判定
-        const schoolDivision = this.getSchoolDivisionFromGrade(grade);
+            // 学年からスクール部門を自動判定
+            const schoolDivision = this.getSchoolDivisionFromGrade(grade);
 
-        // パスワード生成
-        const password = this.generatePassword();
-        
-        // 受講生データを保存
-        const registration = {
-            id: Date.now(),
-            email: email,
-            name: name,
-            grade: grade,
-            schoolDivision: schoolDivision,
-            tags: tags,
-            password: password,
-            registrationDate: new Date().toISOString().split('T')[0],
-            status: 'active',
-            createdBy: 'admin'
-        };
+            // パスワード生成
+            const password = this.generatePassword();
+            
+            // 1. Supabase Authでユーザー作成
+            const { data: authData, error: authError } = await window.supabaseManager.signUp(email, password, {
+                name: name,
+                grade: grade,
+                role: 'student'
+            });
 
-        // ローカルストレージに保存
-        const registrations = JSON.parse(localStorage.getItem('studentRegistrations') || '[]');
-        registrations.push(registration);
-        localStorage.setItem('studentRegistrations', JSON.stringify(registrations));
+            if (authError) {
+                throw new Error(`認証エラー: ${authError}`);
+            }
 
-        // ユーザーアカウントも作成
-        const users = JSON.parse(localStorage.getItem('sunaUsers') || '[]');
-        users.push({
-            email: email,
-            password: password,
-            name: name,
-            role: 'student',
-            grade: grade,
-            registrationDate: registration.registrationDate
-        });
-        localStorage.setItem('sunaUsers', JSON.stringify(users));
+            // 2. ユーザープロファイルを作成
+            const profileData = {
+                name: name,
+                email: email,
+                grade: grade,
+                school_division: schoolDivision,
+                tags: tags,
+                role: 'student',
+                status: 'active',
+                created_by: 'admin'
+            };
 
-        this.showMessage(`受講生「${name}」を登録しました`, 'success');
-        
-        // データを更新
-        this.loadStudentData();
-        this.renderStatsCards();
-        this.renderStudentTable();
-        this.closeRegistrationModal();
+            const { data: profileResult, error: profileError } = await window.supabaseManager.createUserProfile(
+                authData.user.id,
+                profileData
+            );
+
+            if (profileError) {
+                throw new Error(`プロファイル作成エラー: ${profileError}`);
+            }
+
+            // 3. フォールバック用にlocalStorageにも保存
+            const registration = {
+                id: Date.now(),
+                email: email,
+                name: name,
+                grade: grade,
+                schoolDivision: schoolDivision,
+                tags: tags,
+                password: password,
+                registrationDate: new Date().toISOString().split('T')[0],
+                status: 'active',
+                createdBy: 'admin',
+                supabaseUserId: authData.user.id
+            };
+
+            const registrations = JSON.parse(localStorage.getItem('studentRegistrations') || '[]');
+            registrations.push(registration);
+            localStorage.setItem('studentRegistrations', JSON.stringify(registrations));
+
+            this.showMessage(`受講生「${name}」をSupabaseに登録しました`, 'success');
+            
+            // データを更新
+            this.loadStudentData();
+            this.renderStatsCards();
+            this.renderStudentTable();
+            this.closeRegistrationModal();
+
+        } catch (error) {
+            console.error('Registration error:', error);
+            this.showMessage(`登録エラー: ${error.message}`, 'error');
+        }
 
         // ログイン情報を表示
         this.showLoginInfo(email, password);
