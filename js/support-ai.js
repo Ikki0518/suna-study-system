@@ -71,7 +71,8 @@ console.log('🤖 AI Sidebar Chat script loaded!');
         aiInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                handleSendMessage();
+                e.stopPropagation();
+                handleSendMessage(e);
             }
         });
         
@@ -82,9 +83,26 @@ console.log('🤖 AI Sidebar Chat script loaded!');
     // 入力状態の監視
     function monitorInputState() {
         aiInput.addEventListener('input', () => {
-            const hasText = aiInput.value.trim().length > 0;
-            aiSendBtn.disabled = !hasText || isAIResponding;
+            updateSendButtonState();
+            autoResizeTextarea();
         });
+    }
+
+    // 送信ボタンの状態を更新
+    function updateSendButtonState(hasText = null) {
+        if (hasText === null) {
+            hasText = aiInput.value.trim().length > 0;
+        }
+        aiSendBtn.disabled = !hasText || isAIResponding;
+        
+        // ボタンの見た目も更新
+        if (aiSendBtn.disabled) {
+            aiSendBtn.style.opacity = '0.5';
+            aiSendBtn.style.cursor = 'not-allowed';
+        } else {
+            aiSendBtn.style.opacity = '1';
+            aiSendBtn.style.cursor = 'pointer';
+        }
     }
 
     // テキストエリアの自動リサイズ
@@ -125,21 +143,29 @@ console.log('🤖 AI Sidebar Chat script loaded!');
     }
 
     // メッセージ送信処理
-    async function handleSendMessage() {
+    async function handleSendMessage(event) {
+        console.log('🤖 handleSendMessage called');
+        
+        // イベントの伝播を防ぐ
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
         const message = aiInput.value.trim();
         if (!message || isAIResponding) return;
 
         console.log('🤖 Sending message:', message);
 
+        // 入力欄を即座にクリア（送信前にクリア）
+        aiInput.value = '';
+        autoResizeTextarea();
+        
         // ユーザーメッセージを表示
         appendMessage('user', message);
         
         // 会話履歴に追加
         conversationHistory.push({ role: 'user', content: message });
-        
-        // 入力欄をクリア
-        aiInput.value = '';
-        autoResizeTextarea();
         
         // AI応答中状態に設定
         setAIResponding(true);
@@ -192,7 +218,9 @@ console.log('🤖 AI Sidebar Chat script loaded!');
     // AI応答中状態の管理
     function setAIResponding(responding) {
         isAIResponding = responding;
-        aiSendBtn.disabled = responding || aiInput.value.trim().length === 0;
+        
+        // 送信ボタンの状態を更新
+        updateSendButtonState();
         
         if (responding) {
             // 3つの泡のタイピングインジケーターを表示

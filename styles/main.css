@@ -852,7 +852,7 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
     padding: 20px 0;
-    max-width: 900px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
@@ -980,6 +980,153 @@ body {
 
 .subject-card[style*="#059669"] {
     --subject-color: #059669;
+}
+
+/* ========================================
+   New Subject Cards Design (新しい科目カードデザイン)
+======================================== */
+.new-subject-card {
+    background: white;
+    border-radius: 24px;
+    padding: 40px 32px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    border: 2px solid #f1f5f9;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 400px;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.new-subject-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    border-color: #e2e8f0;
+}
+
+.subject-icon-large {
+    font-size: 4.5rem;
+    margin-bottom: 24px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    display: block;
+}
+
+.subject-name {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #1f2937;
+    margin: 0 0 16px 0;
+    letter-spacing: 0.5px;
+}
+
+.subject-description-new {
+    color: #6b7280;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    font-weight: 500;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.subject-stats-new {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 32px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #9ca3af;
+}
+
+.course-count-new,
+.lesson-count-new {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.count-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #374151;
+    display: block;
+}
+
+.count-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #9ca3af;
+}
+
+.start-learning-btn {
+    width: 100%;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.5px;
+}
+
+.start-learning-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.start-learning-btn:active {
+    transform: translateY(0);
+}
+
+/* 科目別の特別なアイコンスタイル */
+.new-subject-card[data-subject-color="#dc2626"] .subject-icon-large {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 32px;
+}
+
+.new-subject-card[data-subject-color="#2563eb"] .subject-icon-large {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 32px;
+}
+
+.new-subject-card[data-subject-color="#059669"] .subject-icon-large {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 32px;
+}
+
+.new-subject-card[data-subject-color="#7c3aed"] .subject-icon-large {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 32px;
+}
+
+.new-subject-card[data-subject-color="#ea580c"] .subject-icon-large {
+    background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 32px;
 }
 
 /* ========================================
@@ -4747,6 +4894,8 @@ body:has([id="subject-icon"]) .lesson-count {
     justify-content: center;
     transition: all 0.2s ease;
     flex-shrink: 0;
+    position: relative;
+    z-index: 10;
 }
 
 .ai-send-btn:hover:not(:disabled) {
