@@ -93,3 +93,17 @@ window.addEventListener('DOMContentLoaded', () => {
         console.log('[STUDENT INIT] window.authManager created:', !!window.authManager);
     }
 });
+// 最小限のAuthManagerクラス（ダミー実装、必要に応じて拡張）
+class AuthManager {
+    constructor() {
+        this.isLoggedIn = true;
+        this.currentUser = { name: "ゲスト", email: "guest@example.com", grade: "高校1年" };
+        this.currentSchool = { id: "production-school", name: "あなたの学習塾" };
+    }
+    requireStudentAuth() { return true; }
+    getCurrentSchool() { return this.currentSchool; }
+    logout() { alert("ログアウト（ダミー）"); }
+    showMessage(msg, type) { alert(`[${type}] ${msg}`); }
+    changeSchool(schoolId) { this.currentSchool = { id: schoolId, name: schoolId }; }
+}
+window.AuthManager = AuthManager;
