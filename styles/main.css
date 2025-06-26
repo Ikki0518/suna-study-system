@@ -1,4 +1,4 @@
-じゅk/* ========================================
+/* ========================================
    CSS Reset & Base Styles - UPDATED 2025/06/23 16:52
 ======================================== */
 * {
@@ -3358,4 +3358,124 @@ body:has([id="subject-icon"]) .lesson-count {
         font-size: 13px;
         margin-bottom: 8px;
     }
+}
+/* ========================================
+   科目・コース表示用スタイル
+======================================== */
+.subjects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.subject-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.subject-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.subject-header {
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+.subject-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.subject-content {
+    padding: 20px;
+}
+
+.subject-content p {
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.course-count {
+    color: #3b82f6;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.course-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.course-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.course-card h4 {
+    color: #1e293b;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.course-card p {
+    color: #666;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.chapter-count {
+    color: #10b981;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.no-subjects {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.no-subjects h3 {
+    color: #374151;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.breadcrumb {
+    margin-bottom: 20px;
+    padding: 10px 0;
+}
+
+.breadcrumb button {
+    background: none;
+    border: none;
+    color: #3b82f6;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 1rem;
+}
+
+.breadcrumb button:hover {
+    color: #1d4ed8;
 }
