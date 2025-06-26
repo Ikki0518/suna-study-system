@@ -656,67 +656,64 @@ class StudyApp {
     }
 
     renderLesson() {
-        console.log('📋 [UI REQUIREMENTS] Rendering lesson with unified video, PDF, and text content');
+        console.log('📋 [UI REQUIREMENTS] Rendering lesson with simple unified content');
         const container = document.getElementById('subjects-container');
         if (!container || !this.currentLesson) return;
 
         const lesson = this.currentLesson;
         
+        // コンテンツの存在チェック
+        const hasVideo = lesson.video_url && lesson.video_url.trim() !== '';
+        const hasPDF = lesson.pdf_url && lesson.pdf_url.trim() !== '';
+        const hasText = lesson.text_content && lesson.text_content.trim() !== '';
+        
         container.innerHTML = `
-            <div class="lesson-container">
-                <div class="lesson-header">
-                    <h2>${lesson.title}</h2>
-                    <p class="lesson-breadcrumb">${this.currentSubject?.name} > ${this.currentCourse?.title} > ${this.currentChapter?.title}</p>
-                    <div class="lesson-meta">
+            <div class="lesson-container-simple">
+                <div class="lesson-header-simple">
+                    <h1>${lesson.title}</h1>
+                    <div class="lesson-meta-simple">
                         <span class="duration">⏱️ ${lesson.duration}</span>
                         <span class="views">👁️ ${lesson.views} views</span>
                     </div>
-                    <p class="lesson-description">${lesson.description}</p>
+                    <p class="lesson-description-simple">${lesson.description}</p>
                 </div>
                 
-                <div class="lesson-content-unified">
-                    <!-- 動画セクション（最上部） -->
-                    <div class="video-section-unified">
-                        <h3 class="section-title">📹 動画講義</h3>
-                        <div class="video-container">
-                            <video controls poster="/api/placeholder/800/450">
-                                <source src="${lesson.video_url}" type="video/mp4">
-                                お使いのブラウザは動画再生に対応していません。
-                            </video>
-                        </div>
-                    </div>
-
-                    <!-- PDFセクション（2段目） -->
-                    ${lesson.pdf_url ? `
-                    <div class="pdf-section-unified">
-                        <div class="pdf-header">
-                            <h3 class="section-title">📋 PDF資料</h3>
-                            <a href="${lesson.pdf_url}" target="_blank" class="pdf-download-btn">
-                                📥 ダウンロード
-                            </a>
-                        </div>
-                        <div class="pdf-viewer">
-                            <iframe src="${lesson.pdf_url}" width="100%" height="600px" frameborder="0">
-                                PDFを表示できません。<a href="${lesson.pdf_url}" target="_blank">こちらからダウンロード</a>してください。
-                            </iframe>
-                        </div>
+                <div class="lesson-content-simple">
+                    ${hasVideo ? `
+                    <div class="video-container-simple">
+                        <video controls>
+                            <source src="${lesson.video_url}" type="video/mp4">
+                            お使いのブラウザは動画再生に対応していません。
+                        </video>
                     </div>
                     ` : ''}
-
-                    <!-- テキストセクション（最下部） -->
-                    <div class="text-section-unified">
-                        <h3 class="section-title">📄 講義テキスト</h3>
-                        <div class="text-content">
-                            <div class="text-body">
-                                ${lesson.text_content || 'テキスト内容が準備中です。'}
-                            </div>
+                    
+                    ${hasPDF ? `
+                    <div class="pdf-section-simple">
+                        <div class="pdf-header-simple">
+                            <span>📋 PDF資料</span>
+                            <a href="${lesson.pdf_url}" target="_blank" class="pdf-download-simple">ダウンロード</a>
                         </div>
+                        <iframe src="${lesson.pdf_url}" class="pdf-iframe-simple"></iframe>
                     </div>
+                    ` : ''}
+                    
+                    ${hasText ? `
+                    <div class="text-content-simple">
+                        ${lesson.text_content}
+                    </div>
+                    ` : ''}
+                    
+                    ${!hasVideo && !hasPDF && !hasText ? `
+                    <div class="no-content-message">
+                        <p>📝 講座コンテンツを準備中です</p>
+                    </div>
+                    ` : ''}
                 </div>
 
-                <div class="lesson-navigation">
-                    <button class="nav-btn secondary" onclick="app.goBack()">← 戻る</button>
-                    <button class="nav-btn primary" onclick="app.nextLesson()">次の講座 →</button>
+                <div class="lesson-navigation-simple">
+                    <button class="nav-btn-simple secondary" onclick="app.goBack()">← 戻る</button>
+                    <button class="nav-btn-simple primary" onclick="app.nextLesson()">次の講座 →</button>
                 </div>
             </div>
         `;

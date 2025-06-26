@@ -37,7 +37,8 @@ class LoginManager {
         
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        const rememberMe = document.getElementById('rememberMe').checked;
+        const rememberMeElement = document.getElementById('rememberMe');
+        const rememberMe = rememberMeElement ? rememberMeElement.checked : false;
 
         console.log('🔐 Attempting login for:', email);
 
@@ -145,19 +146,17 @@ class LoginManager {
 
     setLoginButtonLoading(isLoading) {
         const loginButton = document.querySelector('.login-button');
-        const buttonText = loginButton.querySelector('.button-text');
-        const buttonIcon = loginButton.querySelector('.button-icon');
+        
+        if (!loginButton) return;
 
         if (isLoading) {
             loginButton.disabled = true;
             loginButton.style.opacity = '0.7';
-            buttonText.textContent = 'ログイン中...';
-            buttonIcon.textContent = '⏳';
+            loginButton.textContent = 'ログイン中...';
         } else {
             loginButton.disabled = false;
             loginButton.style.opacity = '1';
-            buttonText.textContent = 'ログイン';
-            buttonIcon.textContent = '→';
+            loginButton.textContent = 'ログイン';
         }
     }
 
@@ -179,7 +178,7 @@ class LoginManager {
 
     redirectToStudentPage() {
         console.log('🔐 Redirecting to student page...');
-        window.location.href = 'student.html';
+        window.location.href = 'pages/student.html';
     }
 }
 
