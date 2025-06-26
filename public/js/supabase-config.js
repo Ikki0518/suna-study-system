@@ -1,5 +1,3 @@
-// ...（ファイル冒頭省略、既存のSupabaseManagerやAPI定義はそのまま）...
-
 // ローカルストレージのsubjects/courses/lessonsをSupabaseに一括インポートする関数
 async function migrateLocalSubjectsToSupabase() {
     const localSubjects = JSON.parse(localStorage.getItem('subjects') || '{}');
