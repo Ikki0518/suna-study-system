@@ -57,38 +57,38 @@
         </div>
     </nav>
 
+    <!-- メインコンテンツ -->
     <main class="main-content">
-        <!-- ホーム画面 -->
-        <div id="home-view" class="home-view">
+        <div class="container">
+            <!-- サイドバー -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-content">
+                    <h3>目次</h3>
+                    <div class="chapter-list" id="chapter-list">
+                        <!-- 章リストはJavaScriptで生成 -->
+                    </div>
+                </div>
+            </aside>
 
-            <!-- 科目一覧 -->
-            <div id="subjects-container" class="subjects-container">
-                <!-- 科目カードがJavaScriptで動的に生成されます -->
+            <!-- メインエリア -->
+            <div class="content-area" id="main-content">
+                <!-- ホーム画面 -->
+                <div class="home-view" id="home-view">
+                    <div id="subjects-container"></div>
+                </div>
+
+                <!-- コース詳細画面 -->
+                <div class="course-view" id="course-view" style="display: none;">
+                    <!-- コース詳細はJavaScriptで生成 -->
+                </div>
+
+                <!-- レッスン画面 -->
+                <div class="lesson-view" id="lesson-view" style="display: none;">
+                    <!-- レッスン詳細はJavaScriptで生成 -->
+                </div>
             </div>
-
-            <!-- コース一覧 -->
-            <div id="courses-container" class="courses-container">
-                <!-- コースカードがJavaScriptで動的に生成されます -->
-            </div>
-        </div>
-
-        <!-- コース詳細画面 -->
-        <div id="course-view" class="course-view" style="display: none;">
-            <!-- コース詳細がJavaScriptで動的に生成されます -->
-        </div>
-
-        <!-- 講義画面 -->
-        <div id="lesson-view" class="lesson-view" style="display: none;">
-            <!-- 講義内容がJavaScriptで動的に生成されます -->
         </div>
     </main>
-
-    <!-- サイドバー -->
-    <aside id="sidebar" class="sidebar">
-        <div class="sidebar-content">
-            <!-- サイドバー内容がJavaScriptで動的に生成されます -->
-        </div>
-    </aside>
 
     <!-- パスワード変更モーダル -->
     <div class="modal-overlay" id="student-change-password-modal" style="display: none;">
@@ -137,7 +137,6 @@
         </div>
     </div>
 
-    <script src="../js/supabase-config.js"></script>
     <script src="../js/main.js"></script>
     <script src="../js/student.js"></script>
     <script src="../js/support-ai.js"></script>
