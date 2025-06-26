@@ -226,10 +226,18 @@ class StudyApp {
             return;
         }
 
+        // 要件適合性チェック
+        console.log('📋 [UI REQUIREMENTS] Checking subject card requirements...');
+        console.log('📋 [UI REQUIREMENTS] - Expected: Card format for subject selection');
+        console.log('📋 [UI REQUIREMENTS] - Expected: Multiple subjects displayed as cards');
+        console.log('📋 [UI REQUIREMENTS] - Current subjects data:', this.subjects);
+
         const subjectsHTML = this.subjects.map(subject => {
             console.log('🔍 [DIAGNOSIS] - Rendering subject:', subject.name);
+            console.log('📋 [UI REQUIREMENTS] - Subject color:', subject.color);
+            console.log('📋 [UI REQUIREMENTS] - Subject icon:', subject.icon);
             return `
-                <div class="subject-card" onclick="app.selectSubject('${subject.id}')" style="background: ${subject.color}">
+                <div class="subject-card" onclick="app.selectSubject('${subject.id}')" style="--subject-color: ${subject.color}">
                     <div class="subject-icon">${subject.icon}</div>
                     <h3 class="subject-title">${subject.name}</h3>
                     <p class="subject-description">${subject.description}</p>
@@ -247,6 +255,7 @@ class StudyApp {
         `;
 
         console.log('🔍 [DIAGNOSIS] - HTML rendered, length:', container.innerHTML.length);
+        console.log('📋 [UI REQUIREMENTS] - Subjects grid HTML:', container.innerHTML.substring(0, 200) + '...');
 
         // 他の画面を非表示
         this.hideOtherViews(['subjects-container']);

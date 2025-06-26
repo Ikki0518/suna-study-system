@@ -16,6 +16,29 @@ class StudentApp extends StudyApp {
         console.log('🔍 [DIAGNOSIS] - main-content:', !!document.getElementById('main-content'));
         console.log('🔍 [DIAGNOSIS] - home-view:', !!document.getElementById('home-view'));
         
+        // 要件チェック用の詳細診断
+        console.log('📋 [REQUIREMENTS CHECK] Analyzing current implementation vs requirements...');
+        console.log('📋 [REQUIREMENTS CHECK] Expected flow: 科目選択 → コース選択 → 章選択 → 講座選択');
+        console.log('📋 [REQUIREMENTS CHECK] Current data structure analysis:');
+        if (this.subjects && this.subjects.length > 0) {
+            this.subjects.forEach((subject, index) => {
+                console.log(`📋 [REQUIREMENTS CHECK] Subject ${index + 1}: ${subject.name}`);
+                console.log(`📋 [REQUIREMENTS CHECK] - Courses: ${subject.study_courses?.length || 0}`);
+                if (subject.study_courses && subject.study_courses.length > 0) {
+                    subject.study_courses.forEach((course, courseIndex) => {
+                        console.log(`📋 [REQUIREMENTS CHECK]   Course ${courseIndex + 1}: ${course.title}`);
+                        console.log(`📋 [REQUIREMENTS CHECK]   - Chapters: ${course.study_chapters?.length || 0}`);
+                        if (course.study_chapters && course.study_chapters.length > 0) {
+                            course.study_chapters.forEach((chapter, chapterIndex) => {
+                                console.log(`📋 [REQUIREMENTS CHECK]     Chapter ${chapterIndex + 1}: ${chapter.title}`);
+                                console.log(`📋 [REQUIREMENTS CHECK]     - Lessons: ${chapter.study_lessons?.length || 0}`);
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        
         // 受講生権限チェック
         if (!window.authManager || !window.authManager.requireStudentAuth()) {
             console.log('🔍 [DIAGNOSIS] Student auth check failed');

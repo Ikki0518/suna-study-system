@@ -6,10 +6,8 @@
   "main": "index.html",
   "scripts": {
     "start": "node server.js",
-    "payment": "node payment-server.js",
     "static": "python3 -m http.server 8000",
     "dev": "nodemon server.js",
-    "dev-payment": "nodemon payment-server.js",
     "build": "echo 'Build completed'",
     "deploy": "vercel --prod"
   },
@@ -36,7 +34,6 @@
     "express": "^4.19.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.2",
-    "stripe": "^14.21.0",
     "@supabase/supabase-js": "^2.39.3"
   }
 } 
