@@ -82,3 +82,14 @@ window.addEventListener('DOMContentLoaded', async () => {
         }
     }
 });
+window.addEventListener('DOMContentLoaded', () => {
+    if (window.StudyApp) {
+        window.app = new StudyApp();
+        console.log('[STUDENT INIT] window.app created:', !!window.app);
+    }
+    // AuthManagerのグローバル生成も必要ならここで
+    if (typeof AuthManager === 'function' && !window.authManager) {
+        window.authManager = new AuthManager();
+        console.log('[STUDENT INIT] window.authManager created:', !!window.authManager);
+    }
+});
