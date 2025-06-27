@@ -1,18 +1,16 @@
-// Support AI Sidebar Chat
+// Support AI Sidebar Chat - DISABLED IN PRODUCTION
 // Author: Suna Study System
 // ------------------------------
-// 右側サイドバー式のAIチャット機能
+// AIチャット機能は現在無効化されています
 // ------------------------------
 
-console.log('🤖 AI Sidebar Chat script loaded!');
+console.log('🤖 AI Sidebar Chat disabled in production');
 
 (function () {
-    console.log('🤖 AI Sidebar Chat IIFE started');
+    console.log('🤖 AI Sidebar Chat disabled - no fetch calls will be made');
     
-    // API エンドポイント（開発環境でのみ有効）
-    const ENDPOINT_URL = window.location.hostname === 'localhost' || window.location.protocol === 'file:'
-        ? 'http://localhost:8000/api/support-ai'
-        : null; // 本番環境では無効化
+    // API は完全に無効化
+    const ENDPOINT_URL = null;
     
     // 会話履歴を保持
     let conversationHistory = [];
