@@ -9,8 +9,10 @@ console.log('🤖 AI Sidebar Chat script loaded!');
 (function () {
     console.log('🤖 AI Sidebar Chat IIFE started');
     
-    // API エンドポイント
-    const ENDPOINT_URL = (window.location.protocol === 'file:' ? 'http://localhost:8000' : '') + '/api/support-ai';
+    // API エンドポイント（開発環境でのみ有効）
+    const ENDPOINT_URL = window.location.hostname === 'localhost' || window.location.protocol === 'file:'
+        ? 'http://localhost:8000/api/support-ai'
+        : null; // 本番環境では無効化
     
     // 会話履歴を保持
     let conversationHistory = [];
@@ -169,6 +171,16 @@ console.log('🤖 AI Sidebar Chat script loaded!');
         
         // AI応答中状態に設定
         setAIResponding(true);
+        
+        // API が利用できない場合の処理
+        if (!ENDPOINT_URL) {
+            console.log('🤖 API not available in production environment');
+            setTimeout(() => {
+                appendMessage('assistant', 'すみません、AI機能は現在開発中です。しばらくお待ちください。');
+                setAIResponding(false);
+            }, 1000);
+            return;
+        }
         
         try {
             // 現在の講座コンテキストを取得
