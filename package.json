@@ -2,7 +2,6 @@
   "name": "learning-management-system",
   "version": "1.0.0",
   "description": "塾向け学習管理システム - 本番版",
-  "type": "module",
   "main": "index.html",
   "scripts": {
     "start": "node server.js",
