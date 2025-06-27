@@ -186,14 +186,20 @@ console.log('🤖 AI Sidebar Chat script loaded!');
             }
 
             // API呼び出し
+            console.log('🤖 Making API request to:', ENDPOINT_URL);
+            
             const response = await fetch(ENDPOINT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestBody)
             });
 
+            console.log('🤖 API response status:', response.status);
+
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const errorText = await response.text();
+                console.error('🤖 API Error Response:', errorText);
+                throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`);
             }
 
             const data = await response.json();
@@ -208,8 +214,23 @@ console.log('🤖 AI Sidebar Chat script loaded!');
             console.log('🤖 AI response received successfully');
             
         } catch (error) {
-            console.error('🤖 AI API Error:', error);
-            appendMessage('assistant', 'すみません、エラーが発生しました。しばらく時間をおいてから再度お試しください。');
+            console.error('🤖 AI API Error details:', {
+                message: error.message,
+                stack: error.stack,
+                name: error.name
+            });
+            
+            let errorMessage = 'すみません、エラーが発生しました。';
+            
+            if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                errorMessage = 'ネットワーク接続に問題があります。インターネット接続を確認してください。';
+            } else if (error.message.includes('404')) {
+                errorMessage = 'APIエンドポイントが見つかりません。管理者に連絡してください。';
+            } else if (error.message.includes('500')) {
+                errorMessage = 'サーバーエラーが発生しました。しばらく時間をおいてから再度お試しください。';
+            }
+            
+            appendMessage('assistant', errorMessage);
         } finally {
             setAIResponding(false);
         }
