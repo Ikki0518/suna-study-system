@@ -77,7 +77,11 @@ class LoginManager {
                 
                 // 少し待ってからリダイレクト
                 setTimeout(() => {
-                    this.redirectToStudentPage();
+                    if (userData.role === 'admin') {
+                        this.redirectToAdminPage();
+                    } else {
+                        this.redirectToStudentPage();
+                    }
                 }, 1000);
 
             } else {
@@ -98,6 +102,14 @@ class LoginManager {
             setTimeout(() => {
                 // デモユーザーデータ
                 const demoUsers = [
+                    {
+                        id: 'ikki',
+                        email: 'ikki_y0518@icloud.com',
+                        password: 'ikki0518',
+                        name: '山本一輝',
+                        grade: '管理者',
+                        role: 'admin'
+                    },
                     {
                         id: 'student1',
                         email: 'student@example.com',
@@ -179,6 +191,11 @@ class LoginManager {
     redirectToStudentPage() {
         console.log('🔐 Redirecting to student page...');
         window.location.href = 'pages/student.html';
+    }
+
+    redirectToAdminPage() {
+        console.log('🔐 Redirecting to admin page...');
+        window.location.href = 'pages/admin.html';
     }
 }
 
