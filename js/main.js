@@ -743,6 +743,11 @@ class StudyApp {
 
         const lesson = this.currentLesson;
         
+        // 最後の講座かどうかチェック
+        const lessons = this.currentChapter.study_lessons;
+        const currentIndex = lessons.findIndex(l => l.id === this.currentLesson.id);
+        const isLastLesson = currentIndex === lessons.length - 1;
+        
         // コンテンツの存在チェック
         const hasVideo = lesson.video_url && lesson.video_url.trim() !== '';
         const hasPDF = lesson.pdf_url && lesson.pdf_url.trim() !== '';
@@ -794,7 +799,12 @@ class StudyApp {
 
                 <div class="lesson-navigation-simple">
                     <button class="nav-btn-simple secondary" onclick="app.goBack()">← 戻る</button>
-                    <button class="nav-btn-simple primary" onclick="app.nextLesson()">次の講座 →</button>
+                    ${isLastLesson ?
+                        `<button class="nav-btn-simple primary complete" onclick="app.completeChapter()">
+                            <span>🎉</span> 完了
+                        </button>` :
+                        `<button class="nav-btn-simple primary" onclick="app.nextLesson()">次の講座 →</button>`
+                    }
                 </div>
             </div>
         `;
@@ -888,6 +898,140 @@ class StudyApp {
         } else {
             alert('これが最後の講座です。');
         }
+    }
+
+    completeChapter() {
+        if (!this.currentChapter || !this.currentCourse) return;
+        
+        const container = document.getElementById('subjects-container');
+        container.innerHTML = `
+            <div class="completion-celebration">
+                <div class="celebration-content">
+                    <div class="celebration-icon">
+                        <span class="trophy">🏆</span>
+                        <div class="sparkles">
+                            <span class="sparkle">✨</span>
+                            <span class="sparkle">✨</span>
+                            <span class="sparkle">✨</span>
+                            <span class="sparkle">✨</span>
+                        </div>
+                    </div>
+                    
+                    <h1 class="celebration-title">おめでとうございます！</h1>
+                    
+                    <div class="completion-message">
+                        <p class="chapter-completed">
+                            <strong>${this.currentChapter.title}</strong>を完了しました！
+                        </p>
+                        <p class="course-progress">
+                            ${this.currentCourse.title}の学習を着実に進めています
+                        </p>
+                    </div>
+                    
+                    <div class="achievement-stats">
+                        <div class="stat-item">
+                            <span class="stat-icon">📚</span>
+                            <span class="stat-label">完了した講座数</span>
+                            <span class="stat-value">${this.currentChapter.study_lessons.length}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">⏱️</span>
+                            <span class="stat-label">学習時間</span>
+                            <span class="stat-value">${this.calculateChapterDuration()}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">🔥</span>
+                            <span class="stat-label">連続学習</span>
+                            <span class="stat-value">素晴らしい！</span>
+                        </div>
+                    </div>
+                    
+                    <div class="celebration-actions">
+                        <button class="celebration-btn secondary" onclick="app.goBack()">
+                            章一覧に戻る
+                        </button>
+                        <button class="celebration-btn primary" onclick="app.continueToNextChapter()">
+                            次の章へ進む →
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="confetti-container">
+                    ${this.generateConfetti()}
+                </div>
+            </div>
+        `;
+        
+        // 達成エフェクトのアニメーション開始
+        setTimeout(() => {
+            const celebration = document.querySelector('.completion-celebration');
+            if (celebration) {
+                celebration.classList.add('animate');
+            }
+        }, 100);
+    }
+
+    calculateChapterDuration() {
+        if (!this.currentChapter) return '0分';
+        
+        let totalMinutes = 0;
+        this.currentChapter.study_lessons.forEach(lesson => {
+            const duration = parseInt(lesson.duration) || 0;
+            totalMinutes += duration;
+        });
+        
+        if (totalMinutes >= 60) {
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            return minutes > 0 ? `${hours}時間${minutes}分` : `${hours}時間`;
+        }
+        return `${totalMinutes}分`;
+    }
+
+    generateConfetti() {
+        const colors = ['#FFE066', '#F25C54', '#3B82F6', '#10B981', '#8B5CF6'];
+        let confetti = '';
+        
+        for (let i = 0; i < 50; i++) {
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const left = Math.random() * 100;
+            const delay = Math.random() * 3;
+            const duration = 3 + Math.random() * 2;
+            
+            confetti += `
+                <div class="confetti-piece"
+                     style="left: ${left}%;
+                            background-color: ${color};
+                            animation-delay: ${delay}s;
+                            animation-duration: ${duration}s;">
+                </div>
+            `;
+        }
+        
+        return confetti;
+    }
+
+    continueToNextChapter() {
+        if (!this.currentCourse) return;
+        
+        const chapters = this.currentCourse.study_chapters;
+        const currentIndex = chapters.findIndex(ch => ch.id === this.currentChapter.id);
+        
+        if (currentIndex < chapters.length - 1) {
+            this.currentChapter = chapters[currentIndex + 1];
+            this.currentLesson = null;
+            this.currentView = 'lessons';
+            this.renderCurrentView();
+        } else {
+            // コースも完了した場合
+            this.completeCourse();
+        }
+    }
+
+    completeCourse() {
+        // コース完了時の特別な達成画面（将来的に実装）
+        alert('🎊 コースを完了しました！素晴らしい成果です！');
+        this.goHome();
     }
 
     goHome() {
